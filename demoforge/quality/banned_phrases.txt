@@ -1,0 +1,28 @@
+# One banned phrase per line. Case-insensitive, matched on word boundaries.
+# Lines starting with # are ignored.
+revolutionize
+revolutionary
+unleash
+game-changing
+game changing
+next-generation
+next generation
+supercharge
+unlock the power
+seamless
+seamlessly
+cutting-edge
+cutting edge
+empower
+leverage
+leveraging
+harness the power
+elevate
+effortless
+robust
+delve
+in today's fast-paced world
+take it to the next level
+best-in-class
+world-class
+synergy
