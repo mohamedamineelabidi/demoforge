@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
+import { createProject, STORAGE_KEY } from "../src/model";
 
 test("fixture contains a real completed filter and produces the local reference image", async ({
   page,
@@ -14,18 +15,14 @@ test("fixture contains a real completed filter and produces the local reference 
   await page.screenshot({ path: "public/taskroom.png" });
 });
 
-test("create, edit, reorder, undo and persist a browser draft", async ({
+test("edit, reorder, undo and persist a browser draft", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1024, height: 768 });
   await page.goto("/");
-  await page.getByRole("button", { name: "New project", exact: true }).click();
-  await page
-    .getByRole("textbox", { name: "Project name" })
-    .fill("September launch");
-  await page
-    .getByRole("button", { name: "Create project", exact: true })
-    .click();
+  await page.evaluate(({ key, project }) => localStorage.setItem(key, JSON.stringify({ version: 1, projects: [project] })), { key: STORAGE_KEY, project: createProject("September launch") });
+  await page.reload();
+  await page.getByRole("button", { name: /September launch/ }).first().click();
   await expect(
     page.getByRole("heading", { name: "September launch" }),
   ).toBeVisible();
@@ -153,11 +150,9 @@ test("conflicting tabs cannot overwrite a draft and corrupt storage is preserved
     .click();
   const other = await context.newPage();
   await other.goto("/");
-  await other.getByRole("button", { name: "New project", exact: true }).click();
-  await other.getByRole("textbox", { name: "Project name" }).fill("Other tab");
-  await other
-    .getByRole("button", { name: "Create project", exact: true })
-    .click();
+  await other.getByRole("button", { name: "Open demo data", exact: true }).first().click();
+  await other.getByRole("textbox", { name: "Caption", exact: true }).fill("Edited in another tab.");
+  await other.getByRole("textbox", { name: "Caption", exact: true }).press("Tab");
   await expect(page.getByRole("alert")).toContainText("another tab");
   await expect(
     page.getByRole("button", { name: "Move scene 1 down", exact: true }),
@@ -174,7 +169,7 @@ test("conflicting tabs cannot overwrite a draft and corrupt storage is preserved
   ).toBe("{corrupt");
 });
 
-test("keyboard dialog escape returns focus and 200-percent-equivalent layout reflows", async ({
+test("keyboard entry cancellation and 200-percent-equivalent layout reflows", async ({
   page,
 }) => {
   await page.goto("/");
@@ -183,11 +178,10 @@ test("keyboard dialog escape returns focus and 200-percent-equivalent layout ref
     exact: true,
   });
   await trigger.click();
-  await expect(
-    page.getByRole("textbox", { name: "Project name" }),
-  ).toBeFocused();
-  await page.keyboard.press("Escape");
-  await expect(trigger).toBeFocused();
+  await expect(page.getByRole("heading", { name: "Repository", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Cancel new project" }).focus();
+  await page.keyboard.press("Enter");
+  await expect(trigger).toBeVisible();
   await page
     .getByRole("button", { name: "Open demo data", exact: true })
     .first()
@@ -328,7 +322,7 @@ test("deleting a project removes the browser draft", async ({ page }) => {
     .getByRole("button", { name: "Delete local project", exact: true })
     .click();
   await expect(
-    page.getByRole("heading", { name: "Your next release, in the making.", exact: true }),
+    page.getByRole("heading", { name: /Turn a shipped feature, a brief and your own footage/ }),
   ).toBeVisible();
   expect(
     await page.evaluate(

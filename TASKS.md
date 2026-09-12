@@ -44,6 +44,25 @@ Do not install hosted infrastructure or start deck/logo work to complete this mi
 
 ## Completed local proof tasks
 
+- [x] **TASK-094**: Session-local evidence catalog and quality report imports.
+  - Completed on: 2026-09-12. Frontend-only lane under ADR-0004, separate from Hermes's
+    TASK-072/073. Strict version-1 JSON parsing, bounded collections/uploads, required nullable
+    fields, unique IDs, claim support, safe source rendering and catalog revision checks.
+  - Evidence displays imported claim status, IDs/revisions, limitations, source lines and hashes.
+    Review displays reported checks, reasons, missing inputs/questions/warnings and exact catalog
+    subject/revision association, including stale/unassociated states. Import never grants approval,
+    links scenes automatically or enables export. Sanitized-input confirmation is not a secret scan.
+  - Imports stay in project-scoped memory, outside localStorage/draft downloads. Invalid replacements
+    retain the last valid artifact; navigation/removal invalidates pending reads. README and frontend
+    recipe document stricter browser policies and backend boundaries. No Python files changed.
+  - Verification: parser RED then GREEN; `npm --prefix frontend test` 29 passed;
+    `npm --prefix frontend run build` passed; `npm --prefix frontend run test:browser` 17 passed,
+    including desktop/mobile import screenshots, axe, hostile HTML as text, stale reports, project
+    isolation and replacement/removal races. Older editor tests aligned with TASK-093 entry flow.
+    `uv run pytest tests -q` exited 0 (one skipped); `uv run ruff check .` clean. Both synthetic JSON
+    fixtures validated against committed Pydantic models; claim support and report association pass.
+    TASK-083 API/controller/render integration remains open. No new rendered-video gate claimed.
+
 - [x] **TASK-071**: Fixture app and evaluation fixtures (FR-08).
   - Completed on: 2026-09-12. `fixtures/taskroom/` (static, dependency-free task list: 8 seeded
     tasks, 3 completed, All/Active/Completed filter, data-testids, visible count), `demoforge/

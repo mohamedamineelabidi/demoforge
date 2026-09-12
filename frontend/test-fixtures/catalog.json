@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "catalog_id": "test-catalog",
+  "revision": 1,
+  "repository": {
+    "repo_url": "https://github.com/example/taskroom",
+    "full_name": "example/taskroom",
+    "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "acquired_at": "2026-09-12T00:00:00Z",
+    "license": null,
+    "metadata_evidence_ids": []
+  },
+  "evidence": [{
+    "schema_version": 1,
+    "evidence_id": "test-evidence",
+    "kind": "repository",
+    "source": "README.md",
+    "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "line_start": 1,
+    "line_end": 2,
+    "quote": "Filter completed tasks. Synthetic test evidence, not a customer claim.",
+    "acquired_at": "2026-09-12T00:00:00Z",
+    "content_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "observation_id": null,
+    "attestation_id": null
+  }],
+  "claims": [{
+    "schema_version": 1,
+    "claim_id": "test-claim",
+    "revision": 1,
+    "text": "Filter completed tasks.",
+    "evidence_ids": ["test-evidence"],
+    "verification_status": "documented",
+    "limitations": ["Synthetic fixture; not runtime proof."]
+  }],
+  "assets": [],
+  "files": []
+}

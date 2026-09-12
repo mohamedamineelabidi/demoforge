@@ -49,6 +49,8 @@ import {
 import type { Project, Scene } from "./model";
 import { EntryFlow, EntryLanding } from "./entry/EntryFlow";
 import type { EntryResult } from "./entry/EntryFlow";
+import { CatalogPanel, ReportPanel } from "./evidence/ArtifactPanels";
+import type { ImportedArtifacts } from "./evidence/imports";
 import "./entry/entry.css";
 
 type View = "Projects" | "New" | "Storyboard" | "Evidence" | "Footage" | "Review";
@@ -216,6 +218,7 @@ function Workspace() {
   const [pane, setPane] = useState("scenes");
   const [message, setMessage] = useState("");
   const [media, setMedia] = useState<Record<string, Media>>({});
+  const [imports, setImports] = useState<Record<string, ImportedArtifacts>>({});
   const [frame, setFrame] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [mediaReady, setMediaReady] = useState(false);
@@ -425,6 +428,7 @@ function Workspace() {
       return;
     if (persist(projects.filter((item) => item.id !== project.id))) {
       removeMedia();
+      setImports(previous => { const next = { ...previous }; delete next[project.id]; return next; });
       setActiveId(null);
       setView("Projects");
       setMessage("Local project deleted.");
@@ -1248,12 +1252,13 @@ function Workspace() {
                         </p>
                       </div>
                       <Badge tone="amber">
-                        {project.demo
-                          ? "Demo catalog"
-                          : "Catalog not connected"}
+                        {imports[project.id]?.catalog ? "Imported / unverified" : "No imported catalog"}
                       </Badge>
                     </div>
-                    <div className="evidence-layout">
+                    <CatalogPanel key={project.id} catalog={imports[project.id]?.catalog} repository={project.repository}
+                      onImport={value => setImports(previous => ({ ...previous, [project.id]: { ...previous[project.id], ...value } }))}
+                      onRemove={() => setImports(previous => ({ ...previous, [project.id]: { ...previous[project.id], catalog: undefined } }))} />
+                    {project.demo && !imports[project.id]?.catalog && <div className="evidence-layout">
                       <div>
                         <div className="panel-heading">
                           CLAIMS<span>{project.demo ? "01" : "00"}</span>
@@ -1315,7 +1320,7 @@ function Workspace() {
                           <dd>Not recorded</dd>
                         </dl>
                       </div>
-                    </div>
+                    </div>}
                     <div className="brief-form">
                       <label>
                         Repository reference
@@ -1498,6 +1503,9 @@ function Workspace() {
                         </p>
                       </div>
                     </div>
+                    <ReportPanel key={project.id} report={imports[project.id]?.report} catalog={imports[project.id]?.catalog}
+                      onImport={value => setImports(previous => ({ ...previous, [project.id]: { ...previous[project.id], ...value } }))}
+                      onRemove={() => setImports(previous => ({ ...previous, [project.id]: { ...previous[project.id], report: undefined } }))} />
                     <div className="checks">
                       {[
                         {

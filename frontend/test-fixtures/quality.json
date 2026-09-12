@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "report_id": "test-quality",
+  "subject_id": "test-catalog",
+  "subject_revision": 1,
+  "gate": "fail",
+  "checks": [{
+    "check_id": "privacy-review",
+    "status": "not_run",
+    "required": true,
+    "measurement": null,
+    "reason": "Full review has not run."
+  }],
+  "missing_inputs": [],
+  "questions": [],
+  "warnings": []
+}
