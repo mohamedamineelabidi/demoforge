@@ -2,6 +2,13 @@
 
 ## Scope and status
 
+Implementation update, 2026-09-12: the user's later Magnific/SchoolAI and finance screenshots supersede
+the initial chrome palette/layout examples below for the local frontend. The current visual library
+uses a slim rail, neutral #F7F8FA canvas, restrained #234E44 actions and thumbnail-led draft tiles.
+See [frontend implementation notes](../frontend/README.md) and frontend/src/studio.css. Preserve the
+evidence, accessibility, responsive and customer-brand boundaries in this document. Local editing is
+implemented under the parallel workstream; authoritative API/render integration remains TASK-083.
+
 Design contract for the planned DemoForge application, not a shipped frontend or a customer video
 template. [PRD](../PRD.md) defines behavior; [TASKS](../TASKS.md) controls delivery and dependencies.
 The planned editor uses React, TypeScript, Vite and TanStack Query. This document does not authorize

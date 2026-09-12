@@ -1,0 +1,350 @@
+.app-shell {
+  --canvas: #f3f4f8;
+  --inset: #f8f9fc;
+  --border: #e7e9f0;
+  --muted: #626778;
+  --secondary: #555b6c;
+  --action: #18181b;
+  --accent: #646a7c;
+  --soft-shadow:
+    0 10px 30px -10px rgb(24 27 45 / 5%), 0 4px 12px -2px rgb(24 27 45 / 2%);
+  background: var(--canvas);
+  color: #1a1c23;
+}
+.sidebar {
+  border-right: 0;
+  box-shadow: var(--soft-shadow);
+}
+.topbar {
+  background: var(--canvas);
+  border-bottom-color: transparent;
+}
+.brand-icon {
+  border-radius: 50%;
+}
+.workspace-switch {
+  padding-top: 16px;
+  padding-bottom: 24px;
+}
+.nav-item {
+  min-height: 44px;
+  margin-bottom: 8px;
+}
+.nav-item.selected {
+  background: #18181b;
+  color: #fff;
+}
+.nav-item.selected:hover:not(:disabled) {
+  background: #303036;
+}
+.nav-item.selected span {
+  color: #e7e9f0;
+}
+.nav-item svg {
+  background: #f3f4f8;
+  color: #626778;
+  border-radius: 50%;
+  padding: 5px;
+  width: 28px;
+  height: 28px;
+}
+.nav-item.selected svg {
+  background: #ffffff20;
+  color: #fff;
+}
+.nav-item:nth-of-type(3) svg {
+  background: #fff0e9;
+  color: #a53a12;
+}
+.nav-item:nth-of-type(4) svg {
+  background: #f2e8ff;
+  color: #7d36b2;
+}
+.nav-item:nth-of-type(5) svg {
+  background: #e5f6ef;
+  color: #08734e;
+}
+.primary {
+  background: #18181b;
+  box-shadow: var(--soft-shadow);
+}
+.primary:hover:not(:disabled) {
+  background: #303036;
+}
+.secondary {
+  border-color: transparent;
+  box-shadow: var(--soft-shadow);
+}
+.badge {
+  border-radius: 999px;
+  padding: 4px 9px;
+  background: #eceef4;
+  color: #555b6c;
+}
+.badge.amber {
+  background: #fff0e9;
+  color: #a53a12;
+}
+.badge.green {
+  background: #e5f6ef;
+  color: #08734e;
+}
+.local-marker {
+  background: white;
+  padding: 8px 12px;
+  border-radius: 999px;
+  box-shadow: var(--soft-shadow);
+  color: #626778;
+}
+.profile-avatar {
+  border: 0;
+  background: #e6e8f0;
+}
+.project-heading {
+  padding-top: 30px;
+  padding-bottom: 26px;
+}
+.heading-meta {
+  margin-bottom: 12px;
+}
+.view-tabs {
+  background: transparent;
+}
+.view-tabs button.active {
+  color: #18181b;
+  border-bottom-color: #18181b;
+}
+.editor-toolbar {
+  background: transparent;
+  border-bottom: 0;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  height: 66px;
+}
+.editor-grid {
+  background: transparent;
+}
+.scene-panel {
+  border-right: 0;
+}
+.scene-list {
+  gap: 14px;
+}
+.scene-item {
+  border-color: transparent;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: var(--soft-shadow);
+}
+.scene-item.selected {
+  border-color: #707787;
+  box-shadow: var(--soft-shadow);
+}
+.scene-select strong {
+  font-size: 12px;
+}
+.scene-select > small {
+  font-size: 9px;
+}
+.scene-thumbnail {
+  background: #f8f9fc;
+}
+.panel-heading {
+  color: #626778;
+}
+.preview-panel {
+  background: transparent;
+}
+.preview-mat {
+  background: #fff;
+  border: 0;
+  border-radius: 8px;
+  box-shadow: var(--soft-shadow);
+  padding: 24px;
+}
+.scene-preview {
+  border-color: transparent;
+  box-shadow: none;
+}
+.transport .icon-button {
+  border-radius: 50%;
+}
+.transport .icon-button:nth-child(2) {
+  background: #eee3fc;
+  color: #7835a6;
+}
+.timeline-tracks button {
+  background: #e8ebf2;
+  border-color: transparent;
+}
+.timeline-tracks button.active {
+  background: #dceff6;
+  color: #18506a;
+  border-color: #4386a2;
+}
+.inspector {
+  border-left: 0;
+  background: #fff;
+}
+.inspector-section {
+  padding: 20px;
+  border-bottom-color: #f0f1f5;
+}
+.inspector-section h2 {
+  font-size: 13px;
+}
+.inspector-section label {
+  font-size: 11px;
+}
+.inspector-section input:not([type="range"]),
+.inspector-section textarea {
+  font-size: 12px;
+  background: #f8f9fc;
+  border-color: #8b91a0;
+}
+.field-note {
+  font-size: 9px;
+}
+.evidence-link {
+  background: #f8f9fc;
+}
+.execution-region {
+  margin-top: 20px;
+  background: transparent;
+}
+.execution-toggle {
+  min-height: 52px;
+}
+.execution-toggle > svg {
+  background: #e7eaf1;
+  color: #555b6c;
+  padding: 5px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+}
+.pane-selector {
+  background: transparent;
+}
+.pane-selector .active {
+  background: #18181b;
+  color: white;
+}
+.project-symbol,
+.empty-glyph {
+  border: 0;
+  background: white;
+  box-shadow: var(--soft-shadow);
+}
+.empty-projects {
+  background-color: var(--canvas);
+}
+.project-row {
+  padding-top: 24px;
+  padding-bottom: 24px;
+}
+.search-field input {
+  background: white;
+}
+.upload-zone {
+  background: #fff;
+  border-color: #8b91a0;
+  box-shadow: var(--soft-shadow);
+}
+.review-summary {
+  background: #fff0e9;
+  border-color: transparent;
+  color: #a53a12;
+}
+.check-icon.amber {
+  background: #fff0e9;
+  color: #a53a12;
+}
+.check-icon.green {
+  background: #e5f6ef;
+  color: #08734e;
+}
+.source-detail pre {
+  background: #eaeef3;
+}
+.draft-footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 18px;
+  color: #626778;
+  font-size: 11px;
+}
+.breadcrumbs,
+.breadcrumbs button,
+.eyebrow,
+.project-meta,
+.view-tabs button,
+.saved-indicator,
+.scene-footnote,
+.preview-heading,
+.preview-resolution,
+.timeline-ruler,
+.preview-notice,
+.execution-toggle > span:last-child,
+.project-table-head,
+.workspace-footer,
+.subheading,
+.empty-projects p,
+.check-row small,
+.permission-note,
+.inline-empty,
+dt,
+.claim-entry .mono,
+.claim-entry p,
+.media-file small {
+  color: #626778;
+}
+.app-shell button:focus-visible,
+.app-shell a:focus-visible,
+.app-shell input:focus-visible,
+.app-shell textarea:focus-visible,
+.app-shell select:focus-visible {
+  outline-color: #555b6c;
+}
+.log-viewer button:focus-visible {
+  outline-color: #a5b4fc;
+}
+@media (max-width: 760px) {
+  .project-heading {
+    padding: 22px 18px;
+  }
+  .scene-item {
+    padding: 8px;
+  }
+  .scene-select strong {
+    font-size: 11px;
+  }
+  .scene-select > small {
+    font-size: 8px;
+  }
+  .inspector-section input:not([type="range"]),
+  .inspector-section textarea {
+    font-size: 16px;
+  }
+  .preview-mat {
+    padding: 16px;
+  }
+  .nav-item {
+    min-height: 44px;
+  }
+}
+@media (max-width: 370px) {
+  .scene-item {
+    padding: 12px;
+  }
+  .scene-select strong {
+    font-size: 12px;
+  }
+  .scene-select > small {
+    font-size: 9px;
+  }
+  .preview-mat {
+    padding: 10px;
+  }
+}

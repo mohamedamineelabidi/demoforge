@@ -131,6 +131,18 @@ new IDs replace unstarted legacy tasks rather than silently reusing their meanin
 
 ## Editing experience
 
+- [x] **TASK-092**: Parallel local frontend and visual project-library redesign, explicitly requested
+  on 2026-09-12 while Hermes owns Python work. ADR-0004 authorizes React/TypeScript/Vite now.
+  - Scope: frontend/ browser drafts, scene editing, session footage, evidence/review views, responsive
+    library UI and tests. No backend adapter, authoritative approvals, render or MP4 export.
+  - Verified 2026-09-12: 6 Vitest tests, TypeScript/Vite production build, 11 foreground Playwright
+    tests including axe A/AA checks and screenshots at 1440/1024/390/320px. Real browser playback,
+    permission blocking, edits/undo, persistence/conflicts, library filters, draft download/deletion pass.
+    `uv run pytest tests -q` exits 0 (one skipped); `uv run ruff check .` clean. Documentation links pass.
+  - Mobbin public discovery page inspected; authenticated screen library not accessed or scraped.
+    User-supplied screenshots inform the redesign. No third-party product imagery copied.
+    Scoped commit/push required; TASK-083 API/render integration and media export remain open.
+
 - [ ] **TASK-082**: Renderer benchmark and selection ADR (depends 079; FR-10).
   - Compare identical three-scene HTML/FFmpeg and Remotion prototypes under frozen assets/fonts/spec.
   - Gate: report export latency, peak memory, text quality, preview/export consistency and development

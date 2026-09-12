@@ -7,8 +7,22 @@ scenario -> footage checks -> editable storyboard -> render -> technical QA and 
 The first local milestone uses supplied footage, a 30-second 16:9 video and reusable brand assets.
 Controlled capture, a browser editor and hosting follow. Decks, docs and logo generation are deferred.
 
-Status: foundation only. The version CLI and copy lint exist; ingestion, rendering and editing do not.
+Status: the version CLI, copy lint and typed contract slice exist. A local browser draft editor is
+available under frontend/: project library, scene editing, session-only footage and review views.
+It does not yet connect to the Python controller, render video or approve/export artifacts.
 See [TASKS.md](TASKS.md) for the next task and [PRD.md](PRD.md) for requirements.
+
+## Local frontend
+
+```bash
+npm --prefix frontend ci
+npm --prefix frontend run dev -- --port 5174
+```
+
+Open the URL printed by Vite. Create a local project or select **Open sample project** for labeled
+demo data. The revised dashboard uses a visual project library and slim navigation inspired by the
+user's supplied creative-tool screenshots. See [frontend/README.md](frontend/README.md) for tests,
+asset provenance, browser-storage behavior and the backend integration boundary.
 
 ## Quick start
 
@@ -38,8 +52,8 @@ uv run python -m demoforge version
 
 We are building a tool that turns repository evidence and authorized footage into a truthful, editable
 release-demo video, not a generator that invents product screens. The current repository implements
-only its foundation CLI and copy lint. The next coding task is **TASK-068**, the first evidence,
-claim, approval and artifact contracts with rejection/round-trip tests.
+the foundation CLI, copy lint, typed contracts and a separate local browser draft editor. Hermes owns
+the next Python workspace/controller steps; full frontend integration remains **TASK-083**.
 
 The [motion production knowledge base](docs/MOTION_PRODUCTION.md) stores the supplied film references,
 adapted camera/typography/state-flow techniques and a concrete first visual-test brief: record an actual
