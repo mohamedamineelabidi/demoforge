@@ -8,23 +8,15 @@ Live backlog and state machine. Updated in the same commit as the code it descri
 ---
 
 ### Active (In Progress)
-- [ ] **TASK-002**: `AGENTS.md`, `PRD.md`, `README.md`, `TASKS.md` governance files
-  - *Current step:* files written, awaiting commit with TASK-001.
-  - *Target verification:* files exist, README links them, AGENTS.md < 2000 words.
+- [ ] **TASK-010**: Pydantic schemas for every pack (`demoforge/schemas/`) with round-trip tests
+  - *Current step:* not started.
+  - *Target verification:* `uv run pytest tests/schemas -q` green; every example in `docs/DATA_CONTRACTS.md` validates.
 
 ---
 
 ### Backlog (Pending)
 
-#### Phase 0: foundation
-- [ ] **TASK-003**: `docs/QUALITY_BAR.md` + `demoforge/quality/banned_phrases.txt` + `lint_copy()` with test
-- [ ] **TASK-004**: `docs/DATA_CONTRACTS.md` (all pack entities, Agent Context Pack, quality report)
-- [ ] **TASK-005**: `.agents/architecture.md` (layers, data lake, pipeline, swarm protocol) + ADR-0001/0002
-- [ ] **TASK-006**: `.agents/skills/` scaffold: demoforge-dev, context-pack-ingest, logo-as-code, grounded-narrative, deck-as-code, video-as-code, swarm-roles
-- [ ] **TASK-007**: Public GitHub repo created, initial history pushed, `main` protected from force-push
-
 #### Phase 1: ingestion to Context Pack v1
-- [ ] **TASK-010**: Pydantic schemas for every pack (`demoforge/schemas/`) with round-trip tests
 - [ ] **TASK-011**: Run workspace (`workspace/<run_id>/{raw,staging,curated,outputs}`, `run.json`)
 - [ ] **TASK-012**: GitHub metadata via API (`ingest/github_api.py`), mocked tests, opt-in live smoke
 - [ ] **TASK-013**: Shallow clone (`ingest/clone.py`)
@@ -97,6 +89,20 @@ Live backlog and state machine. Updated in the same commit as the code it descri
 ---
 
 ### Completed
+- [x] **TASK-007**: Public GitHub repo `https://github.com/mohamedamineelabidi/demoforge`, history pushed, `.github/copilot-instructions.md` mirrors AGENTS.md
+  - *Completed on:* 2026-09-12
+- [x] **TASK-006**: `.agents/skills/` scaffold (7 recipes: demoforge-dev, context-pack-ingest, logo-as-code, grounded-narrative, deck-as-code, video-as-code, swarm-roles)
+  - *Completed on:* 2026-09-12
+- [x] **TASK-005**: `.agents/architecture.md` + ADR-0001 (Python data layer, HTML renderers) + ADR-0002 (JSON/SQLite MVP)
+  - *Completed on:* 2026-09-12
+- [x] **TASK-004**: `docs/DATA_CONTRACTS.md` (13 contracts incl. Agent Context Pack, EDL, DeckSpec, swarm message)
+  - *Completed on:* 2026-09-12
+- [x] **TASK-003**: `docs/QUALITY_BAR.md`, `demoforge/quality/banned_phrases.txt`, `lint_copy()` / `assert_clean()`
+  - *Completed on:* 2026-09-12
+  - *Verification:* `uv run pytest tests -q` 5 passed; `uv run ruff check .` clean.
+- [x] **TASK-002**: `AGENTS.md`, `PRD.md`, `README.md`, `TASKS.md` governance files
+  - *Completed on:* 2026-09-12
+  - *Commit:* `docs: add AGENTS.md operating manual and PRD [TASK-002]`
 - [x] **TASK-001**: Initialize repository: `pyproject.toml` (uv, hatchling), package skeleton, Typer CLI, first test, `.gitignore`, `.env.example`
   - *Completed on:* 2026-09-12
   - *Verification:* `uv run pytest tests -q` 1 passed; `uv run ruff check .` clean; `uv run python -m demoforge version` prints `DemoForge 0.0.1`.
