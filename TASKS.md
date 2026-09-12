@@ -1,94 +1,178 @@
 # Project Task Tracker
 
-Live backlog and state machine. Updated in the same commit as the code it describes. Phases and details: `.hermes/plans/2026-09-12_100000-demoforge-backlog.md`. Rules: `AGENTS.md`.
+Authoritative backlog as of 2026-09-12. Requirements: PRD.md. Boundaries: .agents/architecture.md.
+Decision: docs/decisions/ADR-0003-video-first-explicit-workflow.md. The Hermes plan is historical only.
+Tasks describe planned behavior, not implemented commands or modules. Never mark done before checks pass.
 
-## Current sprint focus
-**Objective:** Phase 0, repository foundation and governance files, then Phase 1 data ingestion to Agent Context Pack v1.
+## Current focus
 
----
+Local video-first proof: public repository + feature brief + authorized supplied footage -> approved
+claims/scenario -> three-scene storyboard -> 30-second 16:9 export with evidence and QA.
+Do not install hosted infrastructure or start deck/logo work to complete this milestone.
 
-### Active (In Progress)
-- [ ] **TASK-010**: Pydantic schemas for every pack (`demoforge/schemas/`) with round-trip tests
-  - *Current step:* not started.
-  - *Target verification:* `uv run pytest tests/schemas -q` green; every example in `docs/DATA_CONTRACTS.md` validates.
+## Planning update completed
 
----
+- [x] **TASK-067**: Align product, architecture, contracts, instructions, backlog and CLI/package descriptions.
+  - Completed on: 2026-09-12. ADR-0003 accepted; old pending IDs retired; historical plans marked archived.
+  - Verification: `uv run pytest tests/test_cli.py -q` RED then GREEN (2 passed);
+    `uv run pytest tests -q` 6 passed; `uv run ruff check .` clean; document checks passed for
+    20 Markdown files, 30 unique task definitions, 2 local links and 2 contract JSON examples.
+  - `git diff --check` clean. Contract checks validate example syntax, not unimplemented Pydantic models.
+    No pipeline/media/hosted feature completion claimed. Changes left uncommitted; no commit requested.
 
-### Backlog (Pending)
+- [x] **TASK-090**: Adopt the supplied frontend branding and document the full platform in README.
+  - Scope: frontend design contract, linked PRD/architecture/recipes, editor acceptance and README
+    frontend/backend/database/storage/auth/jobs/deployment overview. No frontend implementation.
+  - Completed on: 2026-09-12. Design-guide work delegated to a subagent and reviewed locally.
+  - Verification: `uv run pytest tests -q` 6 passed; `uv run ruff check .` clean; documentation checks
+    passed for 7 files, 16 local links and 31 unique task IDs; editor diagnostics and diff whitespace clean.
+  - README uses a plain-text architecture diagram, avoiding a sign-in-dependent Mermaid validator.
+    No frontend build/screenshots claimed; TASK-083 retains implementation and visual QA. No commit requested.
 
-#### Phase 1: ingestion to Context Pack v1
-- [ ] **TASK-011**: Run workspace (`workspace/<run_id>/{raw,staging,curated,outputs}`, `run.json`)
-- [ ] **TASK-012**: GitHub metadata via API (`ingest/github_api.py`), mocked tests, opt-in live smoke
-- [ ] **TASK-013**: Shallow clone (`ingest/clone.py`)
-- [ ] **TASK-014**: File classifier with ignore/priority rules (`ingest/file_classifier.py`)
-- [ ] **TASK-015**: README/docs extraction with line-level evidence (`extract/readme.py`)
-- [ ] **TASK-016**: Manifest extraction + tech stack inference + install cross-verify (`extract/manifests.py`)
-- [ ] **TASK-017**: Secret scanner and redaction (`quality/secrets.py`)
-- [ ] **TASK-018**: Image asset extraction and scoring (`extract/images.py`)
-- [ ] **TASK-019**: Website capture with Playwright (`extract/website.py`, `video/capture/capture_site.mjs`, `scripts/install_rig.sh`)
-- [ ] **TASK-020**: Brand signals (`extract/brand_signals.py`)
-- [ ] **TASK-021**: Quality scoring and questions for user (`quality/scoring.py`)
-- [ ] **TASK-022**: Context Pack v1 + `demoforge ingest` CLI; tag `v0.1-context-pack`
+- [x] **TASK-091**: Save verified-work publication preference and motion-reference production knowledge.
+  - Scope: agent instructions, README, motion guide/reference archive and first fixture-video test brief.
+  - Documentation verified on 2026-09-12: `uv run pytest tests -q` 6 passed;
+    `uv run ruff check .` clean; 8 documents, 18 local links and 32 unique task IDs checked;
+    README headings, editor diagnostics and `git diff --check` clean.
+  - Publication includes the previously uncommitted TASK-067/090 work under the new standing request.
+    Normal push and remote hash comparison are required before reporting publication success.
+    Media/fixture/schema implementation and independent reference-film review remain pending.
 
-#### Phase 2: Brand Kit v1
-- [ ] **TASK-023**: Parametric logo engine with collision math (`brand/logo/mark.py`)
-- [ ] **TASK-024**: Logo export family + size strip + MD5 dedupe (`brand/logo/export.py`)
-- [ ] **TASK-025**: Lockup measurement via getBBox (`brand/logo/measure.py`)
-- [ ] **TASK-026**: Look-alike vision gate (`brand/logo/lookalike.py`)
-- [ ] **TASK-027**: Design tokens + WCAG contrast (`brand/tokens.py`)
-- [ ] **TASK-028**: Offline brand page + zip + integrity sweep (`brand/kit_page.py`)
-- [ ] **TASK-029**: `demoforge brand` CLI, Brand role prompt, skill update
+## Ready next
 
-#### Phase 3: Narrative Pack v1
-- [ ] **TASK-030**: Provider-agnostic LLM with schema validation and FakeLLM (`enrich/llm.py`)
-- [ ] **TASK-031**: Evidence-grounded product profile (`enrich/product_profile.py`)
-- [ ] **TASK-032**: Narrative pack and audience arcs (`enrich/narrative.py`)
-- [ ] **TASK-033**: Copy lint gate with one regeneration
-- [ ] **TASK-034**: Style archetype selector + style corpus data (`enrich/style.py`)
-- [ ] **TASK-035**: `demoforge narrate` CLI, Narrative role prompt, skill grounded-narrative
+- [ ] **TASK-068**: First typed contract slice and fixtures (FR-02, FR-04, FR-05).
+  - Files: demoforge/schemas/, tests/schemas/, docs/DATA_CONTRACTS.md.
+  - Scope: Evidence, Claim, ArtifactRef/Manifest, Approval, QualityReport; no deck/logo/swarm schemas.
+  - Tests first: JSON round trips, hashes/ranges/enums, dangling evidence, missing required checks,
+    unsupported runtime-observed claims and stale approval matching. No network, model or media tools.
+  - Gate: `uv run pytest tests/schemas -q`, then full pytest and Ruff. This is the next coding task.
 
-#### Phase 4: Deck
-- [ ] **TASK-036**: Slide spec generator, 10 slides (`deck/slides.py`)
-- [ ] **TASK-037**: Curated Jinja2 layouts (`deck/layouts/`)
-- [ ] **TASK-038**: Offline HTML deck (`deck/html_deck.py`)
-- [ ] **TASK-039**: PDF export via headless Chrome, page count check
-- [ ] **TASK-040**: PPTX export via python-pptx
-- [ ] **TASK-041**: Deck visual QA with vision critique (`qa/deck_review.py`)
-- [ ] **TASK-042**: `demoforge deck` CLI, Deck role prompt, skill deck-as-code
-- [ ] **TASK-043**: Milestone demo 1: `demoforge run <url> --until deck`; tag `v0.2-deck`
+## Local proof backlog
 
-#### Phase 5: Motion teaser
-- [ ] **TASK-044**: EDL model + ported `test_edl.py` (`video/edl.py`)
-- [ ] **TASK-045**: Storyboard generator to `edit.json` (`video/storyboard.py`)
-- [ ] **TASK-046**: Product capture with Playwright recordVideo (`video/capture/record_site.mjs`)
-- [ ] **TASK-047**: Assemble base picture with ffmpeg (`video/assemble.py`)
-- [ ] **TASK-048**: HTML overlay renderer + Playwright frame loop + node tests (`video/overlay/`)
-- [ ] **TASK-049**: Composite + synthesized SFX mix + loudness (`video/mix.py`)
-- [ ] **TASK-050**: Verification gates (`video/verify.py`)
-- [ ] **TASK-051**: 9:16 and 1:1 variants
-- [ ] **TASK-052**: `demoforge video` CLI, Video role prompt, skill video-as-code
-- [ ] **TASK-053**: Milestone demo 2: 30 s teaser + outputs README; tag `v0.3-teaser`
+Every task requires the full pytest/Ruff gates plus the scoped acceptance below. Dependencies are explicit;
+new IDs replace unstarted legacy tasks rather than silently reusing their meanings.
 
-#### Phase 6: Documentation
-- [ ] **TASK-054**: Code signals extraction (`extract/code_signals.py`)
-- [ ] **TASK-055**: Markdown docs generator with source footnotes (`docs_gen/markdown_docs.py`)
-- [ ] **TASK-056**: Offline HTML docs site (`docs_gen/html_docs.py`)
-- [ ] **TASK-057**: Docs QA: every command verified, copy lint
-- [ ] **TASK-058**: `demoforge docs` CLI, Docs role prompt; tag `v0.4-docs`
+- [ ] **TASK-069**: Safe workspace and local state (depends 068; FR-03, FR-11).
+  - pack/ + workflow/state.py; configurable non-synced workspace root, SQLite runs/attempts/approvals,
+    versioned manifests, atomic publication, path/symlink escape protection and quarantine retention.
+  - Gate: tests/pack and tests/workflow validate crash-after-write recovery, DB authority, hash mismatch,
+    snapshot export/import and cleanup on success/failure/cancellation. Do not place SQLite in OneDrive.
+- [ ] **TASK-070**: Explicit controller, approvals, resume/cancel (depends 069; FR-05, FR-11).
+  - workflow/ stage request/context/result interface; persist checkpoint and exit while awaiting approval.
+  - Gate: tests/workflow covers transition legality, duplicate execution, stale approvals, cancellation,
+    stage invalidation, transient three-attempt budget and one content-repair budget using Fake stages.
+- [ ] **TASK-071**: Early evaluation fixtures and measurement format (depends 068; PRD section 7).
+  - First visual fixture and rejection matrix: docs/MOTION_PRODUCTION.md section 6. Implement the actual
+    seeded filter app and record permitted footage; reference-video assets are not test assets to copy.
+  - tests/fixtures/ and evals/; five authorized repo/recording cases with permission records and expected
+    claims, plus small local invalid-media/missing-evidence/injection/privacy/failure fixtures.
+  - Gate: fixture tests run offline; metrics distinguish unknown from zero and include model/compute/
+    storage/retry cost, correction time, capture success, render failure and user acceptance.
+- [ ] **TASK-072**: Bounded ingestion, sanitization and evidence catalog (depends 069, 071; FR-01..04).
+  - ingest/, extract/, quality/secrets.py, pack/context_pack.py; GitHub API, pinned shallow clone,
+    classifier, README/manifests, curated context snapshot and missing-input questions.
+  - Gate: mocked tests cover rate limits, timeouts, byte/file limits, malicious paths, redaction before
+    model/curated access and prompt injection treated as data. Never execute repo code or scanner config.
+- [ ] **TASK-073**: Supplied footage and existing brand assets (depends 069, 071; FR-06, FR-08).
+  - video/import_media.py + brand/tokens.py; permission/provenance, decode/format limits, normalization,
+    privacy review, neutral fallback tokens and contrast. No website capture or generated logo required.
+  - Gate: media-fixture tests, ffprobe metadata/frame count and decode; reject invalid/unapproved assets.
+- [ ] **TASK-074**: Typed AI adapter, grounded claims/narrative and scenario approval (depends 070, 072; FR-04..08).
+  - enrich/ + scenario schema; FakeLLM first, one OpenAI SDK adapter; approved source-linked copy,
+    supplied-footage scenario, bounded repair and explicit missing-evidence handling.
+  - Gate: tests/enrich rejects fabricated/dangling claims and injected instructions; literal commands
+    unchanged; scenario/claim changes invalidate approvals. Live provider evaluation is separately opt-in.
+- [ ] **TASK-075**: Versioned three-scene storyboard and EDL (depends 073, 074; FR-09..11).
+  - Apply docs/MOTION_PRODUCTION.md: evidence-linked starting state/action/result, 30 fps pilot pacing,
+    frame-sampled motion, no invented metrics/progress, no mandatory 60 fps or unapproved 3D dependency.
+  - video/storyboard.py + schemas; local JSON scene editing, trims, captions, ordering and revision history.
+  - Gate: tests/video covers contiguity, source bounds, 900 frames at 30 fps, approved references and
+    caption-only changes preserving catalog/footage. No arbitrary generated renderer code.
+- [ ] **TASK-076**: Local HTML/FFmpeg render pipeline (depends 075; FR-12).
+  - Include the motion guide's random-access frame repeatability and transformed-mask tests; no
+    wall-clock CSS loops in exports. Visual review is required in addition to frame/decode checks.
+  - video/assemble.py, overlay/, mix.py; pinned rig, fonts/tools, deterministic frame API, owned subprocesses.
+  - Gate: node:test + Python render tests; real three-scene output, full decode and exactly 900 frames.
+    Print time/peak memory; audio optional, true peak <= -1 dBTP when present; foreground rendering only.
+- [ ] **TASK-077**: QA report, offline review and final export approval (depends 076; FR-12).
+  - video/verify.py + quality/; text/asset integrity, full-video privacy/motion review, artifact-bound approval.
+  - Gate: failed/not_run required checks block export; source report links resolve, no missing offline
+    assets; print duration/frame count/audio peak/hashes. Contact sheets alone cannot approve privacy.
+- [ ] **TASK-078**: CLI vertical slice and recovery (depends 077; FR-01..12).
+  - cli.py exposes planned ingest/run/approve/resume/cancel behavior through workflow/; no duplicated logic.
+  - Gate: CLI integration tests plus authorized supplied-footage run from input to approved MP4;
+    pause/resume and caption-only rerender work. Help accurately documents implemented commands.
+- [ ] **TASK-079**: Local pilot evaluation and release decision (depends 078, 071).
+  - Run the five-case set, collect correction time/cost and whether users accept/publish videos.
+  - Gate: publish measured gate results and failure analysis; no five-minute/$0.50 promise without data.
+    Proceed to capture/editor based on observed friction; retain supplied-footage fallback.
 
-#### Phase 7: Swarm and product surface
-- [ ] **TASK-059**: Blackboard + message bus (`swarm/blackboard.py`, `swarm/bus.py`)
-- [ ] **TASK-060**: Orchestrator DAG with stop-and-ask and one retry (`swarm/orchestrator.py`)
-- [ ] **TASK-061**: Hermes runner emitting delegate_task batches (`swarm/hermes_runner.py`)
-- [ ] **TASK-062**: QA role aggregating gates into `qa_report.json` + `REVIEW.md`
-- [ ] **TASK-063**: `demoforge run <url>` end to end + `outputs/index.html`
-- [ ] **TASK-064**: Evaluation set of 5 repos + metrics CSV (`evals/`)
-- [ ] **TASK-065**: Dogfood: run on this repo, choose final product name, own brand
-- [ ] **TASK-066**: README with dogfood video, release v0.5
+## Controlled capture
 
----
+- [ ] **TASK-080**: Approved Playwright scenarios on trusted demos (depends 079; FR-07).
+  - video/capture/; typed allowlisted actions, preconditions, reset, readiness/result assertions, intentional
+    holds, explicit viewport/recording size and observation evidence; close browser context before finalizing.
+  - Gate: local fixture app replay/reset tests, authorization and sensitive-region checks; failed assertions
+    cannot become runtime_observed claims. No automated install/run of submitted repositories.
+- [ ] **TASK-081**: Capture security and reliability gate (depends 080; FR-03, FR-07).
+  - Isolated Linux job design; network/redirect/DNS/IPv4/IPv6/metadata restrictions, no production/broker/DB
+    secrets inside browser jobs, resource limits, credential cleanup and failure/cancellation handling.
+  - Gate: hostile-URL and worker-loss tests, full-video masking review, repeat-run success measurements.
+    Arbitrary hosted URL capture remains disabled until isolation review and these checks pass.
 
-### Completed
+## Editing experience
+
+- [ ] **TASK-082**: Renderer benchmark and selection ADR (depends 079; FR-10).
+  - Compare identical three-scene HTML/FFmpeg and Remotion prototypes under frozen assets/fonts/spec.
+  - Gate: report export latency, peak memory, text quality, preview/export consistency and development
+    effort; review license eligibility and record explicit approval before adoption. Select one backend.
+- [ ] **TASK-083**: React scene editor and local API adapter (depends 082, 078; FR-10).
+  - React/TypeScript/Vite, TanStack Query, accessible components; preview, captions, trims, ordering,
+    brand controls and revision history. FastAPI adapter binds to loopback for single-user local use.
+  - Design: docs/FRONTEND_DESIGN.md; light canvas/white workspaces, obsidian logs, restrained semantic
+    accents and locally bundled Geist fonts. Customer video branding stays isolated from app chrome.
+  - Gate: frontend typecheck/tests, API tests, Playwright desktop/mobile editing and preview/export checks;
+    stale edits rejected by revision control. Remotion Player only if selected; no generic timeline suite.
+    Include the design contract's responsive/state matrix, contrast, keyboard/focus, reduced-motion,
+    stable-preview and brand-isolation checks. The branding document alone does not complete this task.
+
+## Hosted beta
+
+- [ ] **TASK-084**: API, identity and tenant persistence (depends 083; FR-13).
+  - FastAPI/Uvicorn, managed identity (Clerk candidate), PostgreSQL/SQLAlchemy/Alembic; REST/progress
+    polling, server-side tenant authorization, quotas and migrations. Reuse workflow/ business rules.
+  - Gate: issuer/audience/expiry tests, cross-tenant denial, concurrent revisions, migration/restore tests.
+- [ ] **TASK-085**: Durable dispatch and private artifact storage (depends 084; FR-11, FR-13).
+  - Celery/RabbitMQ, transactional outbox, private S3, signed object access, attempt reconciliation,
+    processing/render queues and trusted supervisors for isolated capture. Linux/WSL2, not native Windows.
+  - Gate: duplicate delivery, broker outage, worker loss, publish/DB crash windows, cancellation, tenant
+    isolation, signed-URL scope/expiry and retention tests. No media bytes/secrets in queue payloads.
+- [ ] **TASK-086**: Deployment and operational acceptance (depends 085, 081).
+  - Linux containers with separate capture isolation, GitHub Actions, OpenTelemetry, sanitized logs,
+    backups/restore, retention deletion, concurrency limits and usage budgets; no Kubernetes required.
+  - Gate: hosted end-to-end fault/load/security checks, observed resource/cost limits and recovery drill.
+
+## Deferred expansion (requires validated demand)
+
+- [ ] **TASK-087**: Saved release scenarios, revision diffs and stale-claim detection (depends 086).
+  - Gate: changed evidence invalidates affected claims; unchanged footage reused only with freshness approval.
+- [ ] **TASK-088**: GitHub App/private repos, extra aspect ratios and optional narration (depends 086).
+  - Split into scoped tasks before implementation; require least-privilege/revocation tests and media gates.
+- [ ] **TASK-089**: Evidence-derived technical decks/docs and brand deliverables (depends 079 plus demand).
+  - Split before implementation. Investor/business claims need supplied evidence; logo/PPTX/Figma remain opt-in.
+
+## Retired task IDs
+
+TASK-010..066 were unstarted and are superseded, not completed. Historical recipes remain in the archived
+Hermes plan only. Mapping: 010 -> 068 plus owning schemas; 011 -> 069/070; 012..022 -> 072/073/080;
+023..029 -> neutral/reused tokens in 073, logo family deferred to 089; 030..035 -> 074;
+036..043 -> 089; 044..053 -> 073/075..083/088; 054..058 -> 089;
+059..061 -> 070/085 (swarm/Hermes removed); 062..063 -> 077/078; 064..066 -> 071/079.
+
+## Completed foundation history
+
+Historical completion records below describe the original foundation, not completion of revised features.
+
 - [x] **TASK-007**: Public GitHub repo `https://github.com/mohamedamineelabidi/demoforge`, history pushed, `.github/copilot-instructions.md` mirrors AGENTS.md
   - *Completed on:* 2026-09-12
 - [x] **TASK-006**: `.agents/skills/` scaffold (7 recipes: demoforge-dev, context-pack-ingest, logo-as-code, grounded-narrative, deck-as-code, video-as-code, swarm-roles)

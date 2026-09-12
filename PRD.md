@@ -1,88 +1,100 @@
-# Product Requirements Document (PRD)
+# DemoForge Product Requirements
 
-## 1. Executive summary
+Status: accepted direction, 2026-09-12. This document specifies planned behavior, not shipped features.
+Implementation order and acceptance checks live in TASKS.md. Architecture lives in .agents/architecture.md.
 
-- **Product name:** DemoForge (working name; final name decided in TASK-065).
-- **Core value proposition:** Turn a GitHub repository into a startup-quality demo video, an investor-grade presentation, polished documentation and a consistent brand kit, generated from the real product and looking human-made.
-- **Differentiator:** Not "we generate videos with AI" but "we understand the product deeply from the repository, extract its real brand and UI, and generate launch-quality assets that look human-made". Understanding comes first; generation is constrained by evidence, brand system, design rules and narrative strategy.
-- **Target users:** founders (investor decks, launch videos), developers and open-source maintainers (showcase without design skills), product teams (release demos), agencies and freelancers (client deliverables faster).
+## 1. Product and audience
 
-## 2. Problem
+DemoForge turns a shipped feature into a source-linked, editable release-demo video of the real product.
+The first audience is developers and small product teams building developer tools and web applications.
+The value hypothesis is less time spent producing and updating credible demos; demand remains to be validated.
+Do not promise investor-grade decks or superiority over competitors without evidence.
 
-Founders and developers have a working product, a repository, a README, screenshots and code, but not a demo video, a professional deck, a clear narrative, a consistent identity or launch-ready docs. Existing AI tools produce generic, robotic content disconnected from the real product.
+## 2. Inputs and outputs
 
-## 3. Inputs
+Required inputs: a public GitHub URL pinned to a revision, a feature/audience brief, and an authorized
+recording or demo environment. A repository alone is not proof that a feature runs.
+Existing logos, licensed fonts, colors and screenshots are optional. Reuse supplied brand assets;
+when absent, use neutral design tokens, not an invented identity.
 
-| Input | Required | Notes |
-|---|---|---|
-| GitHub repository URL | yes | public in MVP; private via token later |
-| Product website URL | no | inferred from repo homepage when present |
-| Brand kit (logo, colors, fonts, guidelines, screenshots, Figma tokens) | no | Mode B: user kit overrides extracted signals |
-| Target audience | no | investors, developers, customers, enterprise |
-| Style preference, tone, language | no | style archetype selector otherwise |
-| Video duration, aspect ratio | no | defaults 30 s, 16:9; also 9:16 and 1:1 |
+The first local milestone accepts supplied footage and exports a 30-second, 16:9 MP4, a versioned
+scene specification, an evidence report and an offline review page. The product target expands to
+30-60 seconds and a browser scene editor. Controlled capture follows the supplied-footage milestone.
+No automatic publication: export requires technical QA and human approval of the exact revision.
 
-## 4. Outputs
+## 3. Product flow
 
-- **A. Motion demo video:** 30 s teaser (MVP), 60 s demo and 2 min walkthrough later; 16:9, 9:16, 1:1; product choreography (real screenshots, zoom, callouts, terminal typing), not a slideshow.
-- **B. Presentation deck:** 10 slides (MVP); HTML (offline), PDF, PPTX.
-- **C. Documentation:** overview, installation, quickstart, configuration, CLI/API reference, FAQ; Markdown + offline HTML site.
-- **D. Brand kit:** logo family (or reuse of the existing logo), palette, typography, spacing, radii, motion style, tone of voice, do/don't rules, offline brand page.
-- **E. Marketing assets (later):** tagline options, landing copy, social posts, README improvements.
+1. Ingest bounded sources into quarantine, scan/redact, and create a versioned evidence catalog.
+2. Draft source-linked claims and a scenario describing starting state, actions and observable result.
+3. Ask the user to resolve missing evidence and approve claims and scenario.
+4. Import authorized footage or execute an approved capture scenario; verify observations and privacy.
+5. Build a storyboard using approved claims, reusable brand tokens and verified assets.
+6. Review and revise captions, trims, ordering and brand controls; approve the storyboard revision.
+7. Render, run technical gates, review the full result, and export the approved artifact.
 
-## 5. Functional requirements
+Approval waits persist state and release workers. Missing inputs produce questions, not invented facts.
+Changing captions must not reclone the repository or recapture footage.
 
-### Data layer (Phase 1)
-- **FR-1** Ingest a GitHub URL: metadata via API, shallow clone, file classification with ignore rules.
-- **FR-2** Extract README/docs structure (headings, code blocks, images, install and usage sections) with line-level evidence.
-- **FR-3** Extract manifests and infer tech stack; cross-verify install commands.
-- **FR-4** Extract and score visual assets (size, palette, blur, duplicates, screenshot vs logo).
-- **FR-5** Capture the product website (desktop + mobile screenshots, DOM headings, CSS colors and fonts, favicon, OG image).
-- **FR-6** Scan and redact secrets before anything reaches curated data.
-- **FR-7** Produce a quality report (completeness, evidence coverage, missing fields, questions for the user) and an Agent Context Pack.
+## 4. Functional requirements
 
-### Brand (Phase 2)
-- **FR-8** Mode A auto brand kit from extracted signals; Mode B merge user kit. Reuse an existing logo when present; generate a proposed logo-as-code only when none exists.
-- **FR-9** Logo generation follows the parametric procedure: at most 5 primitives, single stroke weight, collision math before render, 46/28/18/14 px survival strip, look-alike test, measured lockup, hash-verified exports.
-- **FR-10** WCAG contrast check for text/background pairs.
+| ID | Requirement and acceptance condition |
+|---|---|
+| FR-01 | Pin repository revision; bound clone/file/download sizes and API timeouts; record source provenance. |
+| FR-02 | Extract README/docs and manifests deterministically with source paths, line ranges and quotes. |
+| FR-03 | Quarantine raw inputs; scan/redact before curated packs, model requests or logs; report skipped files. |
+| FR-04 | Claims retain evidence IDs through narrative and displayed copy; distinguish documented, statically_supported, runtime_observed and user_attested. |
+| FR-05 | Approvals bind to immutable claim/scenario/storyboard revisions; changes invalidate affected approvals. |
+| FR-06 | Footage carries ownership/permission attestation, capture time, hash and source; supplied footage is always a fallback. |
+| FR-07 | Scenarios specify preconditions, allowlisted actions, assertions, reset and sensitive regions; capture never executes arbitrary model-generated code. |
+| FR-08 | Reuse brand assets and check text contrast; plain English/French copy lint excludes literal source code and commands. |
+| FR-09 | Frame-based storyboards validate source bounds, scene contiguity, total duration, captions, safe areas and evidence references. |
+| FR-10 | Local scene-spec editing precedes the React editor; browser editor supports preview, trims, captions, ordering, brand controls and revision history. |
+| FR-11 | Checkpoint stages with atomic writes, bounded retries, cancellation, resume and input-based invalidation. |
+| FR-12 | Export only after full decode, exact frame count, asset integrity, text/privacy checks and human review; audio peak <= -1 dBTP when present. |
+| FR-13 | Hosted API enforces tenant authorization, quotas and scoped artifact access; queued jobs cannot rely on web-request lifetime. |
 
-### Narrative (Phase 3)
-- **FR-11** Product profile and narrative pack where every feature or claim carries `evidence` and `confidence`; unevidenced claims are dropped.
-- **FR-12** Copy lint: banned phrases and em-dashes rejected, one regeneration with violations listed.
-- **FR-13** Style archetype selection (minimal SaaS, developer infra, AI-native, enterprise, open-source friendly).
+## 5. Security and reproducibility
 
-### Deck (Phase 4)
-- **FR-14** 10-slide spec, one message per slide, at most 3 supporting points, real assets only, curated layouts, white background default.
-- **FR-15** Exports: offline HTML, PDF (page count = slides), PPTX.
-- **FR-16** Visual QA via contact sheet and vision critique; failed review re-queues the deck once.
+Never automatically install dependencies or run submitted repositories. Initial capture supports trusted,
+authorized demo environments only. Before accepting arbitrary hosted URLs, isolate capture jobs from
+production secrets and private networks; enforce HTTP(S), DNS/redirect/IPv4/IPv6 egress restrictions,
+resource limits and sandboxing. A normal container is not a complete hostile-browser boundary.
+Treat repository text and websites as untrusted data, never agent instructions. Validate media and SVG;
+do not run supplied scripts in trusted render templates. Public visibility is not a reuse license.
 
-### Video (Phase 5)
-- **FR-17** Video-as-code: `edit.json` EDL in frames, tested before render (contiguity, total, zoom <= 1.5x, sources exist).
-- **FR-18** Pipeline: assemble (masks, zoom, window) -> HTML overlay via Playwright -> composite -> sparse synthesized SFX -> gates (full decode, frame count, true peak <= -1 dBTP, contact sheet read, privacy list).
+Raw data is quarantined with explicit access and retention limits, not promised secret-free storage.
+Delete quarantine and sensitive recordings according to policy, including failure/cancellation paths.
+Record hashes, schema/template/model versions, prompts and tool versions without exposing secrets.
+Pinned rendering inputs support repeatability; live capture and model generation are not pixel-deterministic.
+Generated HTML deliverables remain offline with local/system fonts and no CDN.
 
-### Docs (Phase 6)
-- **FR-19** Docs generated only from verified facts and code signals; every command in docs traceable to a source.
+## 6. Delivery stages and exclusions
 
-### Swarm (Phase 7)
-- **FR-20** Blackboard orchestration: roles read/write packs and `messages.jsonl`; parallel stages (brand, narrative, docs) then (deck, video) then QA; stop-and-ask when required inputs are missing; one retry per rejected output.
-- **FR-21** `demoforge run <url>` end to end with an `outputs/index.html` launcher.
+1. Local proof: Python/uv/Pydantic/Typer, SQLite run state, JSON artifacts, supplied footage,
+	HTML overlays and FFmpeg, one aspect ratio, early evaluation fixtures.
+2. Controlled capture: Playwright/Chromium scenarios and readiness assertions, reset and privacy gates.
+3. Editing: React/TypeScript/Vite, TanStack Query and accessible controls. Benchmark Remotion against
+	HTML overlays before selecting one production renderer; licensing and ADR approval are required.
+	App branding and responsive workspace rules follow [docs/FRONTEND_DESIGN.md](docs/FRONTEND_DESIGN.md),
+	independently of customer video branding. The frontend must reflect actual workflow and approval state.
+4. Hosted beta: FastAPI/Uvicorn, PostgreSQL/SQLAlchemy/Alembic, private S3, managed identity (Clerk
+	initial candidate), Celery/RabbitMQ, isolated Linux jobs, GitHub Actions and OpenTelemetry.
+5. Validated expansion: saved release scenarios, stale-claim detection, GitHub App/private repositories,
+	additional aspects and optional narration, then evidence-derived decks and documentation.
 
-## 6. Non-functional requirements
+Defer logo generation, PPTX, investor decks, Figma integration, autonomous swarms, Hermes coupling,
+vector databases, self-hosted models, generative video, Kubernetes and Kafka. No new infrastructure
+is required merely to implement local contracts. AI starts with one provider SDK (OpenAI) behind a
+small typed interface and FakeLLM; model choice is evaluation-driven. Pydantic AI is optional later.
 
-- **Truthfulness:** zero fabricated facts, metrics or UI. Missing data produces a question, never an invention.
-- **Quality bar:** see `docs/QUALITY_BAR.md` (anti-AI-look rules).
-- **Cost and latency targets (evals):** < 5 min and < $0.50 per public repo for the MVP path.
-- **Reproducibility:** every output regenerable from packs + specs with one command; renders deterministic.
-- **Security:** no secrets stored; licenses respected; only public data or user-authorised sources.
-- **Offline deliverables:** HTML outputs work from `file://` with no network.
-- **Testing:** pytest for Python, node:test for overlay; fixtures local; network tests opt-in.
+## 7. Evaluation and release gates
 
-## 7. MVP scope (first demo, section "Ideal first product demo")
-
-Input: one GitHub URL. Output in under 5 minutes: product profile, brand kit, 10-slide deck, 30-second teaser, one-page docs. Milestones: v0.1 context pack, v0.2 deck, v0.3 teaser, v0.4 docs, v0.5 end-to-end dogfood on this repository.
-
-Out of MVP: FastAPI service and job queue, Postgres + pgvector embeddings and knowledge graph, web UI, private repos via GitHub App, Figma export, Remotion, Prefect.
-
-## 8. Definition of done
-
-A task is complete only when: code lints, tests pass locally, documentation and `TASKS.md` are updated, a skill is added or updated if a new procedure appeared, and the change is committed cleanly with an explanatory Conventional Commit referencing the task id.
+Start with five representative authorized repositories/recordings and local negative fixtures for
+missing evidence, invalid media, sensitive content, prompt injection and stage failure/recovery.
+Track cost per accepted video (model + compute + storage + retries), correction time, capture success,
+render failures, evidence coverage and whether users publish outputs. Record environment and inputs.
+The former five-minute/$0.50 goals are benchmark hypotheses, not release promises.
+No milestone is complete without its tests and documented acceptance checks passing in that session.
+All changes require `uv run pytest tests -q`, `uv run ruff check .`, updated documentation and TASKS.md.
+Media milestones additionally require real artifacts and printed gate measurements; vision/contact
+sheets assist review but do not prove factual correctness, motion quality or full-frame privacy.

@@ -1,210 +1,176 @@
 # Data Contracts
 
-Every pack the data layer produces and every spec a generator consumes. Pydantic models in `demoforge/schemas/` are the executable version; this file is the human-readable one. Examples here are used as round-trip fixtures by `tests/schemas/`.
+Status: v1 design for the video-first flow, accepted 2026-09-12; executable models are not yet built.
+TASK-068 implements the first slice. This replaces the original unimplemented 13-pack draft; no stored
+production-data migration is required. Examples below are illustrative until schema tests implement them.
+The remaining contracts are implemented with their owning tasks, not all in one large schema task.
 
-Conventions: snake_case keys; timestamps ISO-8601 UTC; paths relative to the run folder `workspace/<run_id>/`; every inferred field carries `confidence` in [0,1]; every factual claim carries `evidence`.
+## Shared rules
 
-## Shared types
+- Pydantic v2, snake_case, explicit schema_version, UTC timestamps, stable IDs, immutable revisions.
+- Reject unexpected input fields. Validate positive dimensions, counts and durations, finite numbers,
+  supported enums and schema versions. Reject absolute/traversing artifact paths, including symlink escapes
+  at storage access; runtime safe-path checks supplement schema checks.
+- Artifact references use SHA-256 and run-relative paths; hosted references use object IDs, not expiring URLs.
+- Repository revisions are full commit hashes. Every source has acquisition time and provenance.
+- Evidence IDs must resolve in the referenced snapshot. Schema validation alone cannot establish support.
+- A heuristic confidence score is optional, named heuristic_score, and is never a probability or approval.
+- User brief text is input, not verified fact. Factual copy references Claim IDs; code/commands remain literal.
 
-```json
-"Evidence": {"source": "README.md", "line": 45, "url": null, "quote": "npm install agentflow"}
-```
-`source` is a repo-relative file or `website`, `github_api`, `manifest:package.json`. `line` optional. `quote` <= 200 chars.
+## 1. Evidence (TASK-068)
 
-## 1. RepositoryEntity (`curated/repository.json`) — required
-
-```json
-{
-  "repo_url": "https://github.com/example/product",
-  "name": "product",
-  "full_name": "example/product",
-  "description": "A framework for building AI agents",
-  "default_branch": "main",
-  "commit_sha": "abc123",
-  "homepage": "https://product.dev",
-  "stars": 12000, "forks": 900, "open_issues": 45,
-  "license": "MIT",
-  "languages": {"TypeScript": 78, "Python": 15, "Shell": 7},
-  "topics": ["ai", "agents", "framework", "developer-tools"],
-  "latest_release": {"tag": "v1.4.0", "published_at": "2026-05-01T00:00:00Z"},
-  "created_at": "2024-01-01T00:00:00Z",
-  "updated_at": "2026-06-01T00:00:00Z"
-}
-```
-
-## 2. FileRecord (`staging/files.json`, list) — required
-
-```json
-{"path": "README.md", "classification": "readme", "priority": "high", "size_bytes": 8123, "content_hash": "sha1:...", "language": "markdown"}
-```
-`classification` in: readme, documentation, example, asset, image, video, config, manifest, source_code, test, ci_cd, license, changelog, deployment, security, ignored. `priority` in: high, medium, low.
-
-## 3. Fact (`curated/facts.json`, list) — required
+Fields: schema_version, evidence_id, kind (repository, website, api, observation, attestation), source,
+revision (nullable outside repositories), line_start, line_end, quote, acquired_at, content_sha256,
+observation_id and attestation_id (nullable). Repository evidence requires a revision and valid line
+range; observations/attestations require the matching referenced record. Quotes contain sanitized text.
 
 ```json
 {
-  "fact_id": "fact_0001",
-  "topic": "installation",
-  "field": "install_command",
-  "value": "npm install agentflow",
-  "language": "bash",
-  "evidence": {"source": "README.md", "line": 45, "quote": "npm install agentflow"},
-  "verified_by": ["manifest:package.json"],
-  "confidence": 0.98
+  "schema_version": 1,
+  "evidence_id": "ev_readme_1",
+  "kind": "repository",
+  "source": "README.md",
+  "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "line_start": 12,
+  "line_end": 12,
+  "quote": "Export results as CSV.",
+  "acquired_at": "2026-09-12T10:00:00Z",
+  "content_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "observation_id": null,
+  "attestation_id": null
 }
 ```
-`topic` in: identity, installation, usage, feature, architecture, configuration, api, cli, deployment, security, license, changelog, audience, problem, solution.
 
-## 4. VisualAssetEntity (`curated/visual_assets.json`, list)
+Hashes and product text above are synthetic fixtures, not claims about DemoForge.
+
+## 2. Claim and EvidenceCatalog (TASK-068, TASK-072)
+
+Claim fields: schema_version, claim_id, revision, text, evidence_ids (nonempty), verification_status
+(documented, statically_supported, runtime_observed, user_attested), limitations (list).
+`runtime_observed` requires a passing CaptureObservation linked through evidence, never just a README.
+`user_attested` requires an attestation actor/time/text. Human approval is separate from verification_status.
+
+EvidenceCatalog fields: schema_version, catalog_id, revision, repository, evidence[], claims[], assets[].
+Repository fields: repo_url, full_name, commit_sha, acquired_at, license (nullable), metadata_evidence_ids.
+FileRecord fields: path, classification, size_bytes, content_sha256, scan_status, exclusion_reason (nullable).
+Tech-stack/install claims use the same claim model; no unreferenced marketing strings in a product profile.
 
 ```json
 {
-  "asset_id": "va_001",
-  "type": "screenshot",
-  "source": "https://product.dev",
-  "path": "staging/extracted_images/homepage_desktop.png",
-  "page": "homepage", "viewport": "desktop",
-  "width": 1920, "height": 1080,
-  "dominant_colors": ["#0A84FF", "#FFFFFF", "#0B0C10"],
-  "ui_elements_detected": ["navbar", "hero", "cta_button"],
-  "blur_score": 812.4, "phash": "d1c4...",
-  "quality_score": 0.92,
-  "usable_in_video": true, "usable_in_deck": true
-}
-```
-`type` in: screenshot, logo, favicon, social_preview, diagram, icon, gif, video, illustration, unknown. `viewport` in: desktop, tablet, mobile, null.
-
-## 5. BrandKitEntity (`curated/brand_kit.json`)
-
-```json
-{
-  "mode": "auto",
-  "logo": {"primary": "outputs/brand/svg/lockup-dark.svg", "icon": "outputs/brand/svg/icon.svg", "favicon": "outputs/brand/png/favicon-32.png", "social_preview": null, "origin": "generated", "label": "proposed"},
-  "colors": {"primary": "#0A84FF", "secondary": "#5856D6", "accent": "#FF9F0A", "background_light": "#FFFFFF", "background_dark": "#0B0C10", "text_primary": "#111111", "text_secondary": "#555555"},
-  "typography": {"headline_font": "Inter", "body_font": "Inter", "code_font": "JetBrains Mono", "source": "local"},
-  "ui_style": {"border_radius": 12, "shadow_style": "soft", "spacing_scale": [4, 8, 12, 16, 24, 32, 48, 64, 96], "icon_style": "linear", "dark_mode": true},
-  "type_scale": {"display": 64, "heading_1": 40, "heading_2": 28, "body": 18, "caption": 14, "code": 14},
-  "motion": {"easing": "easeInOutCubic", "duration_fast_ms": 150, "duration_normal_ms": 300, "duration_slow_ms": 600, "scene_transition": "fade_slide"},
-  "tone_of_voice": {"personality": ["technical", "confident", "clear"], "avoid": ["salesy", "buzzwords", "fake urgency"]},
-  "contrast_checks": [{"fg": "#111111", "bg": "#FFFFFF", "ratio": 18.9, "pass": true}],
-  "do_not_use": ["random 3D shapes", "generic gradients", "fake dashboard screenshots", "stock illustrations"],
-  "confidence": 0.8
-}
-```
-`mode` in: auto, user, merged. `logo.origin` in: repo, website, user, generated.
-
-## 6. ProductProfileEntity (`curated/product_profile.json`) — required
-
-```json
-{
-  "product_name": "AgentFlow",
-  "tagline_options": ["Build production-ready AI agents faster"],
-  "category": "Developer Tool",
-  "problem": {"text": "...", "evidence": [{"source": "README.md", "line": 12}], "confidence": 0.8},
-  "solution": {"text": "...", "evidence": [{"source": "README.md", "line": 20}], "confidence": 0.85},
-  "primary_audience": "AI engineers", "secondary_audience": "Backend developers",
-  "key_features": [{"name": "Agent orchestration", "description": "...", "evidence": [{"source": "README.md", "line": 45}], "confidence": 0.95}],
-  "value_props": ["Reduce boilerplate"],
-  "use_cases": ["Customer support agents"],
-  "tech_stack": {"frontend": ["react"], "backend": ["fastapi"], "database": ["postgresql"], "ai": ["openai"], "deployment": ["docker"]},
-  "install_command": {"value": "npm install agentflow", "evidence": [{"source": "README.md", "line": 45}], "verified_by": ["manifest:package.json"]},
-  "confidence_score": 0.86
+  "schema_version": 1,
+  "claim_id": "claim_csv",
+  "revision": 1,
+  "text": "Export results as CSV.",
+  "evidence_ids": ["ev_readme_1"],
+  "verification_status": "documented",
+  "limitations": ["Runtime behavior has not been observed."]
 }
 ```
 
-## 7. NarrativePack (`curated/narrative_pack.json`)
+## 3. ArtifactRef and ArtifactManifest (TASK-068, TASK-069)
 
-```json
-{
-  "hero_headline": "Build agents faster.",
-  "tagline": "Production-ready AI agents in minutes",
-  "problem_framing": "...", "value_proposition": "...",
-  "arcs": [
-    {"arc_id": "customer_30s", "audience": "customers", "duration_seconds": 30,
-     "beats": [{"beat": "problem", "message": "Building AI agents is hard", "seconds": 5, "visual_hint": "typography"},
-               {"beat": "solution", "message": "Meet AgentFlow", "seconds": 4, "visual_hint": "logo_reveal"}]}
-  ],
-  "demo_script": ["..."],
-  "copy_lint": {"passed": true, "violations": []}
-}
-```
-`beat` in: problem, solution, product_demo, how_it_works, why_now, market, traction, team, install, cta.
+ArtifactRef fields: artifact_id, path, sha256, media_type, size_bytes. Never store credentials or signed URLs.
+ArtifactManifest fields: schema_version, manifest_id, run_id, stage_id, attempt_id, revision, created_at,
+input_manifest_ids, input_hashes, options_hash, tool_versions, schema_versions, template_version,
+model_id (nullable), prompt_hash (nullable), outputs (ArtifactRef list), gate, cost.
+Cost fields: currency, model, compute, storage, total; unknown measurements are null, not zero.
+Publishing a manifest requires all referenced outputs to exist, match hashes and pass required gates.
+Failed attempts retain sanitized diagnostics but never a successful-output pointer.
 
-## 8. MotionStyleEntity (`curated/motion_style.json`)
+## 4. Approval (TASK-068, TASK-070)
 
-```json
-{"style_id": "developer_infra", "fps": 30, "resolution": [1920, 1080], "duration_range": [25, 35], "easing": "easeOutQuint", "max_zoom": 1.5, "camera_language": ["smooth zoom", "soft pan"], "transition_style": ["cut", "fade"], "typography_animation": ["fade up", "line mask reveal"], "sfx_policy": {"max_per_minute": 14, "music": false}, "avoid": ["bouncy animations", "spinning", "particles"]}
-```
+Fields: schema_version, approval_id, run_id, subject_type (claims, scenario, storyboard, output),
+subject_id, subject_revision, subject_sha256, actor_id, decision (approved, rejected), decided_at, note.
+Approvals are immutable records; changed inputs require new approvals. Local actor identity is an
+explicit operator label; hosted identity comes from authenticated server context, never a client field.
+Export binds approval to the final artifact hash, not merely the storyboard that preceded rendering.
 
-## 9. Storyboard / EDL (`outputs/video/edit.json`)
+## 5. RunRecord, StageRequest and StageResult (TASK-069, TASK-070)
 
-```json
-{
-  "fps": 30, "width": 1920, "height": 1080, "canvas_color": "#0B0C10",
-  "frames": {"desktop": {"x": 160, "y": 90, "w": 1600, "h": 900, "radius": 18}, "phone": {"x": 765, "y": 60, "w": 390, "h": 844, "radius": 40}},
-  "total_frames": 900,
-  "scenes": [
-    {"id": "s01_problem", "layout": "graphic", "duration_frames": 150, "chapter": "01", "caption": "Building AI agents is hard.", "sfx": []},
-    {"id": "s03_home", "layout": "desktop", "source": "staging/extracted_images/homepage_desktop.png", "source_in_seconds": 0,
-     "duration_frames": 180, "chapter": "02", "caption": "One framework. Real agents.",
-     "zoom": [{"frame": 0, "scale": 1.0, "cx": 960, "cy": 540}, {"frame": 90, "scale": 1.4, "cx": 1200, "cy": 300}],
-     "spotlight": {"frame": 100, "hold": 40, "x": 1306, "y": 220},
-     "masks": [{"id": "email", "kind": "blur", "rect": [1250, 24, 1530, 78]}]}
-  ]
-}
-```
-Rules (tested): scenes contiguous, sum of `duration_frames` = `total_frames`, `zoom.scale` <= `max_zoom`, spotlight within scene, sources exist. `layout` in: graphic, desktop, phone, passthrough.
+RunRecord: schema_version, run_id, created_at, updated_at, state, current_stage, checkpoint,
+input_manifest_id, cancellation_requested, retention_deadline. Tenant/project IDs are added for hosting.
+Checkpoint identifies the approval subject and continuation stage. Allowed run states:
+pending, ingesting, planning, awaiting_approval, acquiring_footage, storyboarding, rendering, reviewing,
+complete, failed, cancelled. Terminal runs do not resume implicitly; resumption creates an explicit attempt.
 
-## 10. DeckSpec (`outputs/deck/deck.json`)
+StageRequest: schema_version, run_id, stage_id, attempt_id, input_manifest_ids, options, idempotency_key.
+StageContext is a Python dependency container, not serialized JSON: artifact store, state store, clock,
+configured service clients and cancellation check. StageResult: schema_version, run_id, stage_id,
+attempt_id, state, output_manifest_ids, gate, issues. Stage state enum: pending, running,
+awaiting_approval, complete, failed, cancelled. The controller validates transitions and owns DB commits.
 
-```json
-{
-  "style_id": "minimal_saas", "aspect": "16:9",
-  "slides": [
-    {"n": 1, "slide_type": "title", "layout": "hero_statement", "headline": "AgentFlow", "subheadline": "Build agents faster.", "asset": "outputs/brand/svg/lockup-dark.svg"},
-    {"n": 2, "slide_type": "problem", "layout": "split_text_image", "headline": "AI agents are powerful but fragile", "points": ["...", "...", "..."], "asset": "staging/extracted_images/homepage_desktop.png", "evidence": [{"source": "README.md", "line": 12}]}
-  ]
-}
-```
-`slide_type` in: title, problem, solution, how_it_works, demo, feature_grid, architecture, use_cases, install_cta, closing (MVP). `layout` in: hero_statement, split_text_image, feature_grid_4, screenshot_full, code_block, closing. Headline <= 8 words, <= 3 points.
+## 6. QualityReport (TASK-068 and each gate owner)
 
-## 11. QualityReport (`curated/quality_report.json`) — required
+Fields: schema_version, report_id, subject_id, subject_revision, gate (pass, ask_user, fail), checks[],
+missing_inputs[], questions[], warnings[]. Each check: check_id, status (pass, fail, not_run),
+required, measurement (nullable), reason (nullable). No aggregate score can override a failed required check.
+Required checks that are not_run block completion. Reports contain secret counts/locations only, never values.
+`ask_user` pauses the workflow; `fail` blocks it; `pass` does not substitute for an approval.
 
-```json
-{
-  "overall_score": 0.83,
-  "dimensions": {"completeness": 0.9, "evidence_coverage": 0.85, "asset_usability": 0.6, "brand_confidence": 0.8},
-  "missing_fields": ["logo", "target_audience"],
-  "warnings": ["No product website found", "Only one screenshot available"],
-  "questions_for_user": ["Upload 2 to 4 UI screenshots (min 1280 px wide)", "Confirm the target audience"],
-  "secrets_found": 0,
-  "gate": "pass"
-}
-```
-`gate` in: pass, ask_user, fail. Orchestrator stops on `ask_user` or `fail`.
+## 7. Asset and BrandTokens (TASK-073)
 
-## 12. AgentContextPack (`curated/context_pack.json`) — required
+Asset: schema_version, asset_id, artifact_ref, kind (video, screenshot, logo, font, audio), source,
+captured_at (nullable), acquired_at, permission (actor_id, attested_at, scope, license nullable),
+width/height (nullable for nonvisual assets), duration_frames/fps (nullable for nonvideo),
+privacy_status (pending, cleared, rejected), sanitized_derivative_id (nullable).
+Permission is an attestation, not a legal guarantee. Verified assets require integrity and privacy gates.
+Video is normalized to the storyboard frame rate; preserve source timestamps/timebase in the manifest.
 
-```json
-{
-  "run_id": "example-product-20260912-1000",
-  "generated_at": "2026-09-12T10:00:00Z",
-  "repository": "<RepositoryEntity>",
-  "product_profile": "<ProductProfileEntity>",
-  "facts": ["<Fact>"],
-  "visual_assets": ["<VisualAssetEntity>"],
-  "brand_kit": "<BrandKitEntity | null>",
-  "narrative": "<NarrativePack | null>",
-  "motion_style": "<MotionStyleEntity | null>",
-  "technical": {"languages": {}, "frameworks": [], "entrypoints": [], "cli_commands": [], "env_vars": [], "api_routes": []},
-  "style_constraints": {"quality_bar": "docs/QUALITY_BAR.md", "banned_phrases": "demoforge/quality/banned_phrases.txt", "avoid": []},
-  "quality": "<QualityReport>"
-}
-```
+BrandTokens: schema_version, revision, origin (user, extracted, neutral), logo_asset_id (nullable),
+colors, typography, spacing, motion, contrast_checks. Font references must resolve locally with permissions.
+No generated-logo origin in the pilot. Evidence IDs document extracted product-brand assertions.
 
-## 13. Swarm message (`workspace/<run>/messages.jsonl`, one per line)
+## 8. DemoScenario and CaptureObservation (TASK-074, TASK-080, TASK-081)
 
-```json
-{"ts": "2026-09-12T10:05:00Z", "from": "narrative", "to": "orchestrator", "type": "done", "subject": "narrative_pack ready", "refs": ["curated/narrative_pack.json"], "body": null}
-```
-`type` in: done, need, blocker, review_ok, review_reject, ask_user. `from`/`to` are role ids: orchestrator, ingest, brand, narrative, deck, video, docs, qa, user.
+DemoScenario: schema_version, scenario_id, revision, claim_ids, mode (supplied_footage, controlled_capture),
+starting_state, allowed_origins, preconditions[], actions[], assertions[], reset, sensitive_regions[].
+Supplied-footage mode describes the demonstrated flow but executes no actions. Automated mode requires
+explicit allowed origins, preconditions, reset and assertions. Credential references are ephemeral handles.
+Action kinds: navigate, click, fill, select, scroll, wait_for, hold; use typed per-kind payloads,
+bounded timeouts and constrained selectors. Never JavaScript, shell, purchase or destructive actions.
+`hold` is a deliberate viewing duration; `wait_for` uses readiness assertions, not guessed sleep delays.
+Sensitive regions include time range, source-space rectangle and masking method; reject out-of-bounds data.
+
+CaptureObservation: schema_version, observation_id, scenario_id, scenario_revision, claim_ids,
+recorded_at, assertion_results[], asset_id, frame_start, frame_end, tool_versions, reset_succeeded.
+Each assertion records expected/observed values, result and evidence artifact refs. Failed assertions
+cannot upgrade a claim to runtime_observed. Uploads do not automatically establish runtime verification.
+
+## 9. Narrative and StoryboardRevision (TASK-074, TASK-075)
+
+Narrative: schema_version, revision, audience, beats[]; each beat references approved claim IDs and
+contains purpose, copy and duration_frames. Factual copy must be supported by the referenced claims.
+Nonfactual labels/CTA may have no claim IDs but must not smuggle in product assertions. Literal code or
+commands use a separate content kind and preserve the source rather than passing through copy repair.
+
+StoryboardRevision: schema_version, storyboard_id, revision, parent_revision (nullable), scenario_id,
+scenario_revision, catalog_revision, brand_revision, fps, width, height, total_frames, scenes[].
+Pilot defaults: 30 fps, 1920x1080, 900 frames. Scene: scene_id, start_frame, duration_frames, asset_id,
+source_in_frame, caption, claim_ids, layout, zoom_keyframes[], masks[], sound_cues[].
+Caption distinguishes prose/label/literal. Zoom keyframes specify local frame, scale and center;
+masks specify source-space rectangle and active frame interval. Layout is a curated template ID.
+
+Enforce start_frame[0] = 0, contiguous scenes, positive durations, sum = total_frames, unique IDs,
+valid source bounds, zoom <= 1.5, masks/zoom/sound inside bounds, resolvable assets/claims and exact
+approved dependencies. Trims and time ranges are half-open [start, end). The EDL is generated from this
+approved specification, not a separate hand-maintained authority. A caption edit creates a new revision
+and invalidates dependent renders/approvals, but preserves unaffected evidence and footage.
+
+## 10. ContextPack and hosted transport (TASK-072, TASK-085)
+
+ContextPack: schema_version, context_id, revision, run_id, catalog_manifest_id, brief,
+brand_manifest_id (nullable), quality_report_id. No circular narrative dependency. Generators consume
+this frozen snapshot plus explicitly declared approved scenario/storyboard/asset manifests.
+
+Hosted job envelope: schema_version, job_id, run_id, stage_id, attempt_id, input_manifest_ids.
+Server-side lookup enforces ownership; no credentials, mutable model objects or media bytes on the broker.
+Database outbox and attempt records are authoritative. Optional events.jsonl records timestamp, run_id,
+stage_id, attempt_id, event and sanitized details for diagnostics only. There is no swarm message contract.
+
+## Implementation checks
+
+TASK-068 tests Evidence, Claim, ArtifactRef/Manifest, Approval and QualityReport JSON round trips plus
+invalid enums/hashes/ranges, unsupported schema versions and dangling evidence. Pure cross-reference
+validation is separate from I/O-backed checks. Later owning tasks add scenario, storyboard and state tests.
+Negative tests must cover stale approvals, unsupported runtime status, media bounds, copy losing claim
+references, path escape and required checks left not_run. Pydantic schema validity never equals verified truth.

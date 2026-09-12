@@ -1,6 +1,8 @@
 # Skill: swarm-roles
 
-Use when running a generation as a swarm of agents (Hermes subagents or in-process roles) or when writing a role prompt in `demoforge/swarm/roles/`.
+RETIRED 2026-09-12 by ADR-0003. Do not implement or dispatch this protocol. Use
+`.agents/skills/workflow-execution.md` and TASKS.md instead. The text below is historical reference only;
+its roles, message schemas, paths and retry rules are not current requirements.
 
 ## Blackboard rules
 - An agent reads packs, writes its own artifact, appends ONE line to `workspace/<run>/messages.jsonl` (schema: `docs/DATA_CONTRACTS.md` section 13). No agent calls another.

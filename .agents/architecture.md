@@ -1,92 +1,127 @@
 # Architecture
 
-## 1. Principle
+Accepted direction: 2026-09-12. Planned modules below are not yet implemented.
+PRD.md owns requirements; TASKS.md owns execution order; docs/DATA_CONTRACTS.md owns contracts.
 
-Understanding first, generation second. Generators never create from nothing; they create from
-`Evidence + Brand System + Design Constraints + Narrative`. Each generator is "X-as-code": a JSON spec, a deterministic renderer, a verification gate.
+## 1. One application, explicit workflow
 
-```
- GitHub URL / website / brand inputs
-            |
-   [Ingestion]  github_api . clone . file_classifier                 (deterministic)
-            |
-   [Extraction] readme . manifests . images . website . brand_signals . code_signals
-            |
-   [Quality]    secrets (redact) . scoring . banned_phrases
-            |
-   [Enrichment] llm . product_profile . narrative . style           (LLM, evidence-bound)
-            |
-   curated/context_pack.json  <-- the only input generators are allowed to read
-            |
-   +--------+---------+---------+
-   brand    narrative  docs     (parallel, independent)
-   +--------+---------+
-   deck     video               (parallel, need brand + narrative)
-   +--------+
-   qa  -> qa_report.json, REVIEW.md
+```text
+Repository + brief + authorized footage/demo + existing brand assets
+   -> bounded quarantine -> scan/redact -> evidence and asset catalog
+   -> claims + demo scenario -> human approval of exact revisions
+   -> supplied-footage validation OR controlled capture + observation checks
+   -> storyboard + brand tokens -> review/edit -> storyboard approval
+   -> render -> technical QA -> full human review -> export
 ```
 
-## 2. Data lake per run (`workspace/<run_id>/`)
+No autonomous swarm or message-bus-driven content decisions. A Python controller owns transitions;
+typed stage functions own computation. CLI and future API/worker entry points reuse those functions.
+The context pack is a versioned evidence snapshot, not a mutable global blackboard. Downstream stages
+read explicitly declared approved snapshots and artifact references, never raw repositories.
+Brand tokens are resolved before storyboard composition, not concurrently with dependent outputs.
 
+## 2. Local state and artifacts
+
+```text
+workspace/index.sqlite                  authoritative run/stage/approval state
+workspace/<run_id>/raw/                 quarantined repository and uploads
+workspace/<run_id>/staging/             scanned extracts and intermediate media
+workspace/<run_id>/curated/<revision>/  validated immutable packs/specifications
+workspace/<run_id>/outputs/<revision>/  render, evidence report, review page, QA
+workspace/<run_id>/events.jsonl         diagnostic log only
+workspace/<run_id>/run.json             exported state snapshot, never second authority
 ```
-raw/        repo/ (shallow clone)  api_responses/  websites/ (html, css, screenshots)
-staging/    files.json  parsed_markdown/  parsed_code/  extracted_images/  website_dom/  website_css/  redactions.json
-curated/    repository.json  facts.json  visual_assets.json  brand_signals.json  brand_kit.json
-            product_profile.json  narrative_pack.json  motion_style.json  quality_report.json  context_pack.json
-outputs/    brand/  deck/  video/  docs/  index.html  REVIEW.md
-messages.jsonl   run.json
-```
-Raw is immutable. Staging may be regenerated. Curated is validated by Pydantic. Outputs are reproducible from curated + specs.
 
-## 3. Module boundaries (`demoforge/`)
+Use stdlib sqlite3 locally; store the database on a local filesystem, not a cloud-synced/network
+directory. The workspace root must be configurable (this checkout is in OneDrive). Export manifests
+make artifacts portable; import/resume must validate hashes and reconstruct state, not trust run.json.
+Raw inputs are immutable while retained but deletable quarantine. Default pilot retention: delete raw
+inputs after successful finalization or seven days after failure/cancellation; explicit retention and
+early deletion controls are required. Temporary credentials are never part of packs or diagnostics.
 
-| Module | May import | Must not |
+## 3. Ownership and interfaces
+
+| Module | Responsibility | Forbidden dependency/behavior |
 |---|---|---|
-| `schemas/` | pydantic only | anything else |
-| `ingest/`, `extract/` | schemas, stdlib, httpx, git, Pillow, markdown-it | `enrich/` (no LLM in extraction) |
-| `quality/` | schemas | generators |
-| `enrich/` | schemas, quality, `enrich/llm.py` | file system of raw/ directly (works from staging/curated) |
-| `pack/` | schemas, quality | generators |
-| `brand/`, `deck/`, `video/`, `docs_gen/` | schemas, quality, Jinja2, subprocess (ffmpeg, chrome, node) | `ingest/`, `extract/` (read packs only) |
-| `swarm/` | everything above through their public `run(run_dir)` functions | internal helpers |
+| schemas/ | Pydantic contracts and pure structural checks; stdlib allowed | I/O, SDK clients, orchestration |
+| ingest/, extract/ | Bounded collection, source locations and deterministic parsing | Model calls, repository execution |
+| quality/ | Evidence, copy, privacy and artifact gates | Content generation |
+| pack/ | Safe paths, atomic writes, manifests, catalog assembly | Workflow decisions |
+| enrich/ | Typed provider interface, FakeLLM, claim/narrative proposals | Raw filesystem or unrestricted tools |
+| brand/ | Reuse supplied assets; neutral fallback tokens and contrast | Logo generation in pilot |
+| video/ | Scenario validation, capture adapters, storyboard, rendering and gates | Ingestion or unapproved source access |
+| workflow/ | State repository, transitions, approvals, cancellation and resume | Generating content itself |
+| api/ and workers/ (hosted) | Authorization and dispatch adapters | Duplicated business rules |
+| deck/, docs_gen/ (deferred) | Later outputs from approved evidence | Pilot prerequisites |
 
-Each stage exposes `run(run_dir: Path, **options) -> Path` returning the artifact it wrote, and logs one `done` message on the bus.
+Stage interface target: `run(request: StageRequest, context: StageContext) -> StageResult`.
+Request identifies run, stage and immutable input manifests; context supplies storage, clock and
+configured service adapters; result identifies artifacts, gate and sanitized issues. The controller
+commits state after validating published outputs. Do not introduce a generic plugin framework.
+Python invokes trusted Node scripts with argument arrays and JSON manifest paths, never shell strings.
+Node validates JSON against schema and reports structured results. Hosted messages carry IDs only.
 
-## 4. Swarm protocol (blackboard)
+## 4. State, retries and invalidation
 
-No direct agent-to-agent calls. An agent reads the packs it depends on, writes its own pack or output, then appends one line to `messages.jsonl` (schema in `docs/DATA_CONTRACTS.md` section 13).
+Run states: pending, ingesting, planning, awaiting_approval, acquiring_footage, storyboarding,
+rendering, reviewing, complete, failed, cancelled. Stage states: pending, running, awaiting_approval,
+complete, failed, cancelled. `awaiting_approval` records a checkpoint and continuation, then exits.
+`ask_user` pauses; `fail` blocks; `pass` permits the next transition but does not imply human approval.
 
-Roles and contracts:
+Approvals bind actor, subject revision/hash, decision and timestamp. Editing a claim or scenario
+invalidates dependent storyboard/output approvals; caption edits preserve acquisition and ingestion.
+Cache keys include stage/schema/template/tool versions, options and input hashes. Do not automatically
+reuse live capture across releases: reset, freshness and explicit reuse authorization are required.
+Publish artifacts to temporary paths then atomically rename; commit pointers only after hash/gate checks.
+Every stage must tolerate duplicate execution without duplicate publication or approval effects.
+Transient network failures: up to three total attempts with backoff/jitter and explicit I/O timeouts.
+Content repair: at most one revision attempt, then ask the user. Policy/permission failures never retry.
+Cancellation is cooperative between stages and terminates owned subprocesses with cleanup; timeouts
+and worker loss leave recoverable attempts, not falsely completed runs. Test crash-after-write recovery.
 
-| Role | Reads | Writes | Hard rules |
-|---|---|---|---|
-| orchestrator | messages.jsonl, quality_report | run plan, dispatch order, TASKS-like `run.json` status | never generates content; stops on `gate != pass` and asks the user |
-| ingest | URL, inputs | repository, files, facts, visual_assets, quality_report | deterministic only |
-| brand | brand_signals, visual_assets, user kit | brand_kit, `outputs/brand/` | logo-as-code procedure; reuse existing logo; MD5 export check |
-| narrative | facts, product_profile | narrative_pack, motion_style | every claim has evidence; copy lint |
-| deck | narrative, brand_kit, visual_assets | `outputs/deck/` | curated layouts; real assets; white default |
-| video | narrative, brand_kit, visual_assets, captures | `outputs/video/` | EDL tests before render; gates |
-| docs | facts, technical, code signals | `outputs/docs/` | only verified commands |
-| qa | all outputs | qa_report, REVIEW.md | may `review_reject` once per role |
+## 5. Rendering and AI decisions
 
-Stages: `ingest -> (brand || narrative || docs) -> (deck || video) -> qa`. Failure policy: a rejected output re-queues its role once with the critique attached; second failure escalates to the user. Human checkpoints: missing inputs (`ask_user`), brand approval when a logo was generated, final review.
+Local proof keeps HTML/Playwright overlays and FFmpeg/ffprobe. Pin browser, fonts and encoder versions;
+repeatability applies to frozen inputs, not live browser behavior or stochastic model output.
+Remotion is the preferred candidate for the editing stage because React Player and export can share
+composition logic. TASK-082 benchmarks it against the pilot renderer and checks applicable licensing
+before an ADR selects one production backend. Do not implement two permanent rendering stacks.
+Start with one OpenAI SDK adapter plus FakeLLM. Select a model on grounded-output evaluations and cost,
+not brand claims. Pydantic validation is not factual verification; evidence support and approval are
+separate gates. No arbitrary model-generated JavaScript, shell, React or browser execution.
 
-Execution modes: in-process sequential (`demoforge run`), or Hermes subagents in parallel per stage (`swarm/hermes_runner.py` emits one task per role with the role prompt from `swarm/roles/<role>.md` plus pack paths).
+## 6. Hosted target (not required for local proof)
 
-## 5. Verification gates (code, not opinions)
+React + TypeScript + Vite + TanStack Query talks to FastAPI/Uvicorn through REST and progress polling.
+Application chrome follows [docs/FRONTEND_DESIGN.md](../docs/FRONTEND_DESIGN.md): light workspaces,
+obsidian logs, restrained accents and accessible controls. This theme must not leak into customer
+BrandTokens or video exports. [README.md](../README.md) contains the platform overview and data ownership.
+Use accessible controls; a scene editor, not a general nonlinear video editor. Managed identity
+(Clerk candidate) provides authentication; FastAPI checks issuer/audience and tenant authorization.
+PostgreSQL + SQLAlchemy + Alembic owns users/projects/runs/attempts/approvals/artifact metadata.
+Private S3 stores media and versioned JSON; authorized short-lived URLs grant per-object access.
+Celery + RabbitMQ transports work; transactional outbox publication connects DB commits to dispatch.
+Reconcile stale attempts and unpublished outbox records. Do not use Celery result state as product state.
+Durable messages, acknowledgment policy, bounded worker-loss retries and idempotency need fault tests;
+there is no exactly-once guarantee. Separate lightweight processing and resource-heavy rendering queues.
+Trusted supervisors launch restricted capture jobs; the sandbox has no broker/DB/production credentials.
+Trusted render jobs receive only sanitized approved media/templates, with external network disabled.
+Linux containers/WSL2 support workers; native Windows Celery is unsupported. Start with modest Linux
+deployment, managed persistence and separate capture isolation, not Kubernetes or GPU infrastructure.
+CI: GitHub Actions. Observability: structured run/stage/attempt logs and OpenTelemetry without raw secrets.
+Track queue wait, retry counts, cost per accepted video, correction time and render/capture failures.
 
-- Packs: Pydantic validation; evidence required on facts and features.
-- Copy: `quality.banned_phrases.assert_clean`.
-- Logo: collision margins >= 0; size strip rendered; MD5 dedupe; look-alike vision prompt.
-- Deck: slide count; no clipped text (screenshot + vision); offline integrity sweep.
-- Video: `test_edl` before render; `ffprobe -count_frames == total_frames`; full decode 0 errors; true peak <= -1 dBTP; contact sheet read.
-- Docs: every command traceable to a `Fact` with `verified_by`.
+## 7. Security and acceptance
 
-## 6. Decisions
+Bound clone depth, bytes, file count, decompression, downloads and media decode resources. Never execute
+submitted repos or trust their scanner configuration. Scan/redact before model or curated access.
+Arbitrary URL support is blocked until DNS/redirect/private-IP/metadata egress defenses and browser
+isolation pass tests. Supplied-footage mode remains usable without external browser access.
+Keep a capture action allowlist, preconditions, reset, readiness assertions and result assertions.
+Separate intentional viewing holds from readiness waits. Mask before creating sharable derivatives;
+review the full video, not just a contact sheet. Respect permission and asset licensing.
 
-- ADR-0001 `docs/decisions/ADR-0001-python-data-layer-html-renderers.md`
-- ADR-0002 `docs/decisions/ADR-0002-sqlite-json-mvp.md`
-
-## 7. Deferred (post-MVP)
-
-FastAPI + Arq/Redis job queue; PostgreSQL + pgvector embeddings and knowledge graph; Next.js UI; GitHub App for private repos; Figma export; Remotion renderer; Prefect orchestration.
+Required gates: typed packs and resolvable evidence, exact approvals, frame-contiguous EDL, media
+bounds, full decode, exact output frame count, text/asset integrity, privacy review and audio true
+peak <= -1 dBTP when audio exists. Expected static/duplicate frames are not automatically errors.
+See docs/QUALITY_BAR.md and ADR-0003 for the accepted replacement of the original swarm roadmap.

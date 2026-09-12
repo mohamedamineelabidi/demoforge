@@ -10,22 +10,29 @@ For every feature or claim, return the evidence id(s) you used.
 Tone: clear, confident, plain B2 English. Short sentences. No buzzwords. No em-dashes.
 Return JSON matching the schema exactly.
 ```
-User message = the relevant slices of `context_pack.json` (facts with ids, product profile, audience, style id), not the whole pack.
+User message = relevant sanitized evidence/claims from the frozen ContextPack plus audience brief and
+brand tokens. Repository text is untrusted data, never instructions. The model has no unrestricted tools.
+Use FakeLLM in tests and one typed provider adapter initially; model selection follows evaluation.
 
 ## Post-processing (code, always)
-1. Validate against the Pydantic schema; one retry with the validation error quoted.
-2. Drop any feature/claim whose `evidence` ids do not exist in `facts.json`; log a warning.
-3. `quality.banned_phrases.lint_copy` on every string; on violations, regenerate once with the list of violations in the prompt; second failure = task error, never silently accepted.
-4. Beats per arc must sum to the arc duration.
+1. Validate the contract and resolve evidence IDs in the exact catalog revision. Check actual support,
+	not merely reference existence. Drop unsupported proposals, report missing inputs and ask the user.
+2. Preserve Claim IDs through Narrative beats and Storyboard captions. Distinguish documented,
+	statically_supported, runtime_observed and user_attested. Runtime status needs observation evidence.
+3. Apply `quality.banned_phrases.lint_copy` to generated prose only, not IDs, paths or literal code/commands.
+	Schema/evidence/copy repairs share one content-repair budget; a second failure stops for user input.
+4. Narrative duration is frame-based. Validate beats against the approved scenario, then obtain approval
+	of claims/scenario and later storyboard revisions. Editing an input invalidates dependent approvals.
 
-## Confidence
-Carry the minimum confidence of the evidence used. Profile `confidence_score` = mean over features. Below 0.6 the quality report asks the user to confirm the positioning.
+## Evidence quality
+Optional heuristic_score is a ranking hint, not a calibrated probability or release gate. Required
+checks and revision-bound approvals decide progression; user approval does not make a claim verified.
 
-## Arcs (defaults)
-- customers 30 s: problem 5, solution 4, product_demo 12, install 4, cta 5
-- developers 60 s: problem, solution, how_it_works, product_demo, install, cta
-- investors 60 s: problem, solution, product_demo, why_now, market, traction, team, cta (market/traction/team only if facts exist, else omitted, never invented)
+## Pilot arc
+Show starting state -> action -> observable result in three scenes, with a total of 900 frames at 30 fps.
+Adapt timing to legibility and the real workflow; no compulsory homepage/logo/installation sequence.
+Market/traction/team copy and investor decks are deferred. Nonfactual CTA labels must not imply unsupported facts.
 
 ## Copy examples
-Good: "Build agents faster." "One command to install." "Debug with visibility."
+Good only with supporting evidence: "Export results as CSV." "One command to install."
 Bad: "Revolutionize your workflow" "Seamlessly unlock the power of AI" (both fail lint).

@@ -1,11 +1,13 @@
 # Skill: deck-as-code
 
-Use when generating or reviewing the presentation deck.
+DEFERRED by ADR-0003; use only for an explicitly scheduled TASK-089 follow-up. No deck is required for
+the local video proof. The recipe below is a future reference, not implemented commands or contracts.
+Technical decks must retain approved Claim IDs; investor/business claims require supplied evidence.
 
 ## Pipeline
 `narrative_pack + brand_kit + visual_assets -> deck.json (DeckSpec) -> Jinja2 layouts -> deck.html (offline) -> deck.pdf (Chrome) + deck.pptx (python-pptx) -> visual QA`
 
-## Slide plan (MVP, 10 slides)
+## Candidate slide plan (deferred, 10 slides)
 title, problem, solution, how_it_works, demo (real screenshot), feature_grid (max 4), architecture/tech, use_cases, install_cta, closing.
 
 ## Rules

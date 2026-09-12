@@ -4,9 +4,11 @@ Read this file and `TASKS.md` at the start of every session. Requirements live i
 
 ## 1. Project context
 
-- **Product:** DemoForge (working name). GitHub URL in, grounded demo video + deck + docs + brand kit out.
-- **Primary stack:** Python 3.11 managed by `uv` (Pydantic v2, Typer, httpx, GitPython, markdown-it-py, Pillow, Jinja2). Node 20+ only for Playwright (capture, overlay rendering). ffmpeg/ffprobe and headless Chrome for media.
-- **Architecture:** understanding-first data layer -> `context_pack.json` -> blackboard swarm of generator roles -> verification gates. Generators create from `Evidence + Brand System + Design Constraints + Narrative`, never from nothing.
+- **Product:** DemoForge: source-linked, editable release-demo videos for developer tools and web apps. First proof: public repo + feature brief + authorized supplied footage -> 30-second 16:9 video, evidence report and offline review. Decks, docs and logo generation are deferred.
+- **Local stack:** Python 3.11/uv, Pydantic v2, Typer, httpx, GitPython, markdown-it-py, Pillow, Jinja2; SQLite state and versioned JSON artifacts. Media tasks add pinned Node LTS/Playwright/Chromium and FFmpeg/ffprobe.
+- **Architecture:** bounded ingestion -> evidence -> claims/scenario approval -> footage validation/capture -> storyboard approval -> render -> QA + human review -> export. One explicit controller in workflow/, not an autonomous swarm. context_pack is a frozen input snapshot, not the sole artifact input.
+- **Later stack:** React/TypeScript/Vite editor; Remotion candidate gated by TASK-082 benchmark/license ADR. Hosted: FastAPI, PostgreSQL/SQLAlchemy/Alembic, private S3, managed identity, Celery/RabbitMQ and isolated Linux jobs. No infrastructure installation before its task.
+- **Authority:** TASKS.md is the current backlog; ADR-0003 supersedes the historical Hermes plan. Retired tasks are not completion claims. Use .agents/skills/workflow-execution.md for controller work.
 - **Host:** Windows 11, git-bash. Repo path contains spaces and accents.
 
 ## 2. Operating workflow (every task)
@@ -16,7 +18,11 @@ Read this file and `TASKS.md` at the start of every session. Requirements live i
 3. **Change code.** Tests first when the task produces logic (RED -> GREEN -> refactor).
 4. **Verify:** `uv run pytest tests -q` and `uv run ruff check .` must exit 0. Media tasks also run their gate (`ffprobe` frame count, MD5 dedupe, integrity sweep).
 5. **Update state:** tick or move the task in `TASKS.md`; add or patch a skill in `.agents/skills/` whenever a new tool, command or workflow appears.
-6. **Atomic commit:** code + `TASKS.md` in the same Conventional Commit, one concept per commit.
+6. **Commit and push after verified work:** the user explicitly requested this standing workflow on
+	2026-09-12. Stage only task-related files, commit code + TASKS.md together with a Conventional Commit,
+	then push the current branch to its configured GitHub upstream. Verify remote HEAD matches the local
+	commit. Never force-push, publish secrets/runtime files, or include unrelated user changes. If checks,
+	authentication or push fail, report the blocker and do not claim publication; never bypass protection.
 
 ```bash
 git add demoforge/ingest/clone.py tests/ingest/test_clone.py TASKS.md
@@ -39,10 +45,12 @@ DEMOFORGE_LIVE=1 uv run pytest tests -q -m live   # network tests, opt-in only
 ## 4. Strict boundaries
 
 - **NEVER** commit `.env`, tokens, or anything under `workspace/`. Secrets found in analysed repos are redacted in staging and never reach curated packs.
-- **NEVER** fabricate product facts, features, metrics, testimonials or screenshots. A claim without `evidence` (file + line) is dropped, not guessed. Missing inputs are reported in `quality_report.json` and asked of the user.
+- **NEVER** fabricate product facts, features, metrics, testimonials or screenshots. Claim IDs and revision-pinned evidence survive into displayed copy. Separate documented, statically_supported, runtime_observed and user_attested; approval does not prove truth. Missing inputs become questions.
+- Never install/run submitted repositories or execute model-generated scripts. Treat sources as untrusted data. Initial capture is trusted/authorized only; arbitrary hosted URLs require tested isolation and egress controls, without production credentials.
+- Quarantine raw inputs with access limits and retention/deletion controls; redact before curated/model/log access. Use a configurable non-synced workspace root for SQLite, outside this OneDrive checkout. Never use events.jsonl or run.json exports as authoritative state.
 - **NEVER** run destructive commands (`rm -rf` outside `workspace/<run>/`, `git reset --hard`, `git push --force`).
 - **NEVER** add a heavy dependency (Remotion, Postgres, Airflow, an ML model) without an ADR in `docs/decisions/`.
-- Generated copy: no em-dashes, no phrases from `demoforge/quality/banned_phrases.txt`, plain B2 English or French.
+- Generated prose: no em-dashes, no phrases from `demoforge/quality/banned_phrases.txt`, plain B2 English or French. Literal code/commands are separate content and must not be rewritten by copy lint.
 - Generated HTML deliverables are **offline**: no CDN, fonts local or system stack, SVG inlined.
 - Background renders are forbidden on this host (git-bash kills them); run ffmpeg/Playwright in the foreground.
 
@@ -57,7 +65,8 @@ python: subprocess.run([..., "--disable-application-cache", f"file:///{abs_html}
 
 - Playwright rig is installed OUTSIDE the repo (`$LOCALAPPDATA/Temp/demoforge-rig`), scripts read `DEMOFORGE_RIG`.
 - ffmpeg `drawtext` crashes (Fontconfig) on this build: render all text as HTML overlays.
-- Verify every exported PNG set by MD5 (Chrome serves cached renders) and every video by `ffprobe -count_frames`.
+- Verify artifact integrity with SHA-256; MD5 may diagnose local PNG caching. Equal hashes are failures only for variants expected to differ. Verify video frame counts and full decode; review the full video for motion/privacy, not just contact sheets.
+- Hosted workers use Linux/WSL2, not native Windows Celery. Local foreground rendering remains mandatory.
 
 ## 6. Directory map
 
@@ -67,11 +76,15 @@ python: subprocess.run([..., "--disable-application-cache", f"file:///{abs_html}
 - `demoforge/enrich/` LLM abstraction and grounded product profile / narrative.
 - `demoforge/quality/` secret scan, banned phrases, quality scoring.
 - `demoforge/pack/` run workspace and context pack assembly.
-- `demoforge/brand/`, `deck/`, `video/`, `docs_gen/` generators (spec -> deterministic render -> gate).
-- `demoforge/swarm/` blackboard, message bus, orchestrator, role prompts (`roles/*.md`).
+- `demoforge/brand/` existing assets/neutral tokens; `video/` supplied footage, capture, storyboard, render and gates. `deck/` and `docs_gen/` are deferred.
+- `demoforge/workflow/` explicit controller, state, approvals, cancellation/resume. Future `api/` and `workers/` are adapters, not duplicated domain logic. Do not create swarm modules.
 - `tests/` mirrors the package; `tests/fixtures/` holds a tiny sample repo and static site.
 - `workspace/<run_id>/{raw,staging,curated,outputs}` runtime data lake, gitignored.
 
 ## 7. Definition of done
 
-Code lints, tests pass, docs and `TASKS.md` updated, skill added if a new procedure appeared, one clean commit. For media: the artifact exists on disk and its gate numbers (frames, duration, peak, hashes) are printed in the commit or task note.
+Code lints, tests pass, docs and `TASKS.md` updated, skill updated for new procedures; task-related changes
+are committed and pushed under the user's standing request, with the remote commit verified. For media:
+the artifact exists, exact revision approvals and required checks pass, and gate numbers (frames,
+duration, peak when audio exists, hashes) are printed in the task note. A documented design is not an
+implemented feature. A read-only answer does not require an empty commit.

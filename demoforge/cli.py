@@ -5,7 +5,7 @@ import typer
 from demoforge import PRODUCT_NAME, __version__
 
 app = typer.Typer(
-    help=f"{PRODUCT_NAME}: turn a GitHub repository into a demo video, deck, docs and brand kit.",
+    help=f"{PRODUCT_NAME}: source-linked release-demo videos (planned). Foundation CLI only.",
     no_args_is_help=True,
 )
 

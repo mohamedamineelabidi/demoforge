@@ -1,4 +1,4 @@
-"""DemoForge: repository -> grounded demo video, deck, docs and brand kit."""
+"""DemoForge: foundation for source-linked, editable release-demo videos."""
 
-PRODUCT_NAME = "DemoForge"  # working name; final choice is TASK-065
+PRODUCT_NAME = "DemoForge"
 __version__ = "0.0.1"

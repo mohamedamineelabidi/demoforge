@@ -1,7 +1,7 @@
 [project]
 name = "demoforge"
 version = "0.0.1"
-description = "Turn a GitHub repository into a grounded, brand-consistent demo video, deck, docs and brand kit."
+description = "Foundation for source-linked, editable release-demo videos of real software."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "Proprietary" }

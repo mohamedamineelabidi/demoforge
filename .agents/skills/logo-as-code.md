@@ -1,6 +1,8 @@
 # Skill: logo-as-code
 
-Use when a product has no logo and one must be proposed, or when building the brand page. Never use a generative image model: a logo must be vector, one-ink capable, editable, and legible at 16 px.
+DEFERRED by ADR-0003; use only for an explicitly scheduled TASK-089 follow-up, not the video pilot.
+Missing logos use neutral tokens, not generated marks. The procedure below is a historical reference
+for optional logo work; it does not define current BrandTokens contracts or a legal similarity guarantee.
 
 ## Procedure (9 steps, all mandatory)
 
@@ -16,7 +18,9 @@ Use when a product has no logo and one must be proposed, or when building the br
 6. **Small-size survival strip.** Render 46 / 28 / 18 / 14 px on one sheet. A mark that dissolves at 16 px is dead.
 7. **Look-alike test.** Vision prompt, fixed wording: "Does this resemble any existing well-known icon (RSS, wifi, power, menu/hamburger, camera lens, location pin, bluetooth, share)? Does it look intentional or accidental?" Concentric arcs are banned before vision (always RSS/wifi). A near-centred circle in a square is a lens: push dots to a quadrant.
 8. **Measure the lockup.** `getBBox()` after `document.fonts.ready` on mark and text; require `markCy == textCy`, gap ~0.25 x mark width, mark height ~1.2 x text height; set `viewBox` width = `textRight + left_margin` so margins are equal.
-9. **Export and verify the export.** Hash every PNG (`hashlib.md5`); identical hashes mean Chrome served cache. Fix: `file://`, `--disable-application-cache`, unique wrapper names, re-hash.
+9. **Export and verify the export.** Hash every PNG; identical hashes are suspicious only for variants
+   expected to differ. Diagnose caching with unique wrappers and disabled application cache, then inspect.
+   Use SHA-256 for artifact identity; MD5 is only a local diagnostic.
 
 ## Expected ratio
 About 15 candidates for 2 kept. Listing the rejected ones and why (RSS, hamburger, record button, drop shadow, broken frame) is part of the deliverable.

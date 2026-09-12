@@ -1,6 +1,9 @@
 # DemoForge — Implementation Plan & Backlog
 
-> **For Hermes:** Use subagent-driven-development to implement this plan task-by-task (one fresh subagent per task, spec review then quality review). Work in `C:\Users\hp\OneDrive - Université Abdelmalek Essaadi\Desktop\Demo_Builder`.
+> ARCHIVED 2026-09-12. Superseded by PRD.md, TASKS.md, .agents/architecture.md and ADR-0003.
+> Historical reference only: do not execute these tasks, dispatch subagents, install this stack or follow
+> its completion/commit instructions. Old task IDs are retired and mapped in TASKS.md. Timings below
+> were estimates, not measured commitments. Existing implementation paths may be useful references only.
 
 **Goal:** From a GitHub URL (+ optional website / brand kit), produce in one run: Product Profile, Brand Kit, 10-slide deck, 30-second motion teaser, one-page docs — all grounded in repo evidence, brand-consistent, and not "AI-looking".
 
