@@ -23,25 +23,20 @@ motion(caption, [
   { transform: "translateY(24px)", opacity: 0 }, { transform: "translateY(0)", opacity: 1 }
 ], 18, 30, "scene");
 motion(marker, [{ transform: "scaleX(0)" }, { transform: "scaleX(1)" }], 12, 42, "scene");
-const documentPoses = [
-  ["translate(-66px, 38px) rotate(-12deg)", "translate(-102px, 12px) rotate(-8deg)",
-    "translate(-128px, -6px) rotate(-8deg)", "translate(-36px, -28px) rotate(0deg)"],
-  ["translate(36px, 50px) rotate(8deg)", "translate(70px, 0px) rotate(7deg)",
-    "translate(82px, -28px) rotate(8deg)", "translate(26px, -10px) rotate(0deg)"],
-  ["translate(0px, 72px) rotate(0deg)", "translate(0px, 0px) rotate(0deg)",
-    "translate(-32px, 26px) rotate(-3deg)", "translate(-72px, 14px) rotate(0deg)"]
-];
-for (const [index, element] of [...document.querySelectorAll("[data-document]")].entries()) {
-  const poses = documentPoses[index];
+for (const [index, element] of [...document.querySelectorAll("[data-trail]")].entries()) {
+  const angle = (index - 2) * 4;
+  const poses = [
+    `translateX(-280px) rotate(${angle - 12}deg) scaleX(.2)`,
+    `translateX(0px) rotate(${angle}deg) scaleX(1)`,
+    `translateX(100px) rotate(${angle + 12}deg) scaleX(1.1)`,
+    `translateX(-80px) rotate(${angle - 4}deg) scaleX(.8)`
+  ];
   motion(element, [
-    { transform: poses[0], opacity: 0 }, { transform: poses[1], opacity: 1 }
-  ], index * 8, 42, "feature");
+    { transform: poses[0], opacity: 0 }, { transform: poses[1], opacity: .36 }
+  ], index * 4, 42, "feature");
   motion(element, [{ transform: poses[1] }, { transform: poses[2] }], 180, 48, "feature-move");
   motion(element, [{ transform: poses[2] }, { transform: poses[3] }], 330, 54, "feature-move");
 }
-motion(document.getElementById("connection"), [
-  { transform: "scaleX(0)", opacity: 0 }, { transform: "scaleX(1)", opacity: 1 }
-], 346, 38, "feature");
 let currentFrame = 0;
 let previousLayout = "";
 function fitText(element, maxHeight, minimum) {
@@ -64,14 +59,14 @@ window.renderFrame = function renderFrame(frame) {
   const sceneIndex = frame < 180 ? 0 : frame < 660 ? 1 : 2;
   const scene = spec.scenes[sceneIndex];
   const localFrame = frame - scene.start_frame;
-  const layout = `${sceneIndex}:${matchMedia("(max-width: 799px)").matches}`;
-  canvas.className = scene.kind;
+  const beat = sceneIndex !== 1 ? 0 : localFrame < 180 ? 0 : localFrame < 330 ? 180 : 330;
+  const layout = `${sceneIndex}:${beat}:${matchMedia("(max-width: 799px)").matches}`;
+  canvas.className = `${scene.kind} ${beat === 180 ? "spread" : beat === 330 ? "focus" : ""}`;
   identity.textContent = spec.product_name;
   headline.textContent = sceneIndex === 1 ? scene.text : spec.product_name;
   caption.textContent = scene.text;
   document.getElementById("eyebrow").textContent = sceneIndex === 1
     ? "Repository excerpt" : "From the repository";
-  document.getElementById("document-anchor").textContent = scene.evidence_id;
   evidence.textContent = `Documented source / ${scene.evidence_id}`;
   revision.textContent = `Commit ${spec.commit_sha.slice(0, 12)} / Revision ${spec.revision}`;
   source.textContent = spec.repository_url;
@@ -79,7 +74,6 @@ window.renderFrame = function renderFrame(frame) {
   if (layout !== previousLayout) {
     fitText(headline, document.getElementById("headline-mask").clientHeight, 24);
     if (sceneIndex !== 1) fitText(caption, caption.clientHeight, 18);
-    fitText(document.getElementById("document-anchor"), 128, 12);
     previousLayout = layout;
   }
   for (const { animation, start, duration, scope } of motions) {
@@ -92,7 +86,6 @@ window.renderFrame = function renderFrame(frame) {
   }
   canvas.dataset.frame = String(frame);
   canvas.dataset.scene = scene.scene_id;
-  const beat = sceneIndex !== 1 ? 0 : localFrame < 180 ? 0 : localFrame < 330 ? 180 : 330;
   const settled = sceneIndex === 1 ? (beat === 0 ? 58 : beat === 180 ? 48 : 54) : 54;
   const sample = reducedMotion.matches ? "reduced" : Math.min(localFrame - beat, settled);
   return { frame, scene_id: scene.scene_id,

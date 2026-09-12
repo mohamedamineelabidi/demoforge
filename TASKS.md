@@ -46,6 +46,23 @@ Do not install hosted infrastructure or start deck/logo work to complete this mi
 
 ## Initial Backend Integration
 
+- [x] **TASK-102**: Replace the rejected serif/document teaser with a provisional kinetic template.
+  - Directly inspected public LinkedIn post media and sampled frames from ML Intern, OUI-1 and
+    Qwen3-TTS/Nari Labs. Sandrine's public post exposed no playable video. Findings and limitations
+    are recorded in references/style_analysis/linkedin_posts.md; no audio/full-playback review claimed.
+  - User unavailable to select between UI-led and kinetic references. Template v3 provisionally uses
+    bold sans-serif text, contrasting fields and feature-only linear trails; no copied assets, fake UI,
+    fabricated metrics or changed approved source text. Creative acceptance is explicitly still open.
+  - RED/GREEN browser regression rejects the old illustration/serif type and checks random seeking,
+    motion, capture-key consistency, reduced motion, final holds and 320/390/1280/1920px bounds.
+  - Verified: full pytest 356 passed, 1 skipped with real-media enabled; Ruff clean. Synthetic render:
+    900 frames, 30 seconds, 1920x1080, 30 fps, silent (peak N/A), full decode and motion-pair MD5 checks.
+    SHA-256 eae06f414b2bd7bdf08d7f4f594717cb2940caa460f36f10bdad41903a60d61a;
+    273 captured frames, 61.391 seconds rendering on this host. Encoded samples and mobile screenshot
+    inspected. Full human motion/privacy/creative review and actual repository MP4 remain TASK-101.
+  - No frontend source changes; frontend suites were not rerun. Fixed three-scene pacing and no sound
+    design remain limits, not reference parity. Sample retained outside Git under reviews/kinetic-v3-20260912.
+
 - [x] **TASK-100**: Improve reference-inspired teaser composition, source selection and usability.
   - Three scoped agents improved scene composition, deterministic README selection and connected UI.
     Root README purpose/features outrank sample document lists. Whole bold/table excerpts retain

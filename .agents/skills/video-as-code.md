@@ -57,6 +57,12 @@ demoforge/video/capture/record_site.mjs
 	not pilot requirements. Silent output is valid; synthesized audio is optional.
 
 ## Pitfalls (already paid for)
+- For reference-directed edits, inspect the exact public media, not just post text or inherited notes.
+	Record sampled intervals, dimensions and uncertainty. A contact sheet does not establish audio timing
+	or full motion quality. Keep temporary reference media outside Git and never reuse copyrighted assets.
+- Teaser template v3 uses sans-serif fields and feature-only linear trails. Background animation must
+	not leak into title/end holds or invalidate capture keys. Run the browser test's nonsequential seeks,
+	reduced-motion checks and mobile bounds before the full foreground media gate.
 - Background node on git-bash dies ("no job control"); render in the foreground.
 - Zoom centres must be measured on an extracted frame; 60 px off is visible.
 - Blank frames come from `source_in` landing on a page load; move it, do not stretch.

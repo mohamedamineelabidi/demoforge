@@ -1,5 +1,27 @@
 # LinkedIn reference posts (lane B partial findings)
 
+## Direct inspection: 2026-09-12
+
+The following observations supersede conflicting historical notes below. Public post DOM and evenly
+spaced frames from publicly served videos were inspected locally. This was sampled visual inspection,
+not full playback or audio review. Temporary reference media is outside the checkout and is not reused.
+
+| Activity | Observed media | Sampled visual direction |
+|---|---|---|
+| 7503485868112891904 | ML Intern, 36.053 seconds | White field, compact sans-serif text, input box, staged research/budget/training/result UI, closing tagline. Samples every 4 seconds. |
+| 7503899570859585536 | Sandrine guide | Public DOM exposed written post content but no playable video. Carousel content was not verified. |
+| 7503735902351806464 | OUI-1, 730x720, 10.233 seconds | Persistent title above device frame, prompt, code output, dashboard reveal. Samples every second. |
+| 7503851876086644736 | Qwen3-TTS / Nari Labs, 1138x640, 41.216 seconds | Dark full-screen typography, bright linear trails, price chart, colored fields with feature list, brand ending. Samples every 4 seconds. |
+
+These are two different directions, not one shared style. The user rejected template v2's serif text
+and document-stack illustration. With the user unavailable to choose, template v3 provisionally follows
+the fourth reference's full-screen sans-serif/linear-motion direction because it needs no fabricated
+product UI. It does not copy its assets, metrics, exact composition or soundtrack. The current fixed
+three-scene contract and silent output do not reproduce its richer shot sequence or sound design.
+Creative approval remains pending. UI-led treatment needs actual permitted product assets.
+
+## Historical Partial Findings
+
 Source: a Hermes analyst subagent that inspected the media with vision but hit its iteration cap
 before writing per-video files. Only its top-level findings survived; they are recorded here so
 they are not lost. Treat as **lower confidence** than the per-video files in this folder (no

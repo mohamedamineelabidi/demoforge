@@ -141,7 +141,7 @@ def render_teaser(spec: "TeaserSpec", target: Path) -> dict:
         ], 300)
         result = _inspect_generated(final)
         result.update({
-            "origin": "generated_typography", "template_version": "2",
+            "origin": "generated_typography", "template_version": "3",
             "catalog_sha256": spec.catalog_sha256, "commit_sha": spec.commit_sha,
             "spec_revision": spec.revision, "captured_frames": capture["captured_frames"],
             "browser_version": capture["browser_version"], "playwright_version": "1.63.0",

@@ -167,11 +167,13 @@ const {chromium} = createRequire(path.join(process.argv[1], 'package.json'))('pl
     await page.evaluate(() => window.renderFrame(240));
     assert.equal(await page.locator('#headline').textContent(),
      'Every text line is linked to repository evidence.');
-    assert.match(await page.locator('#illustration-label').textContent(), /illustration/i);
-    assert.equal(await page.locator('[data-document]').count(), 3);
+    assert.equal(await page.locator('[data-document]').count(), 0);
+    assert.equal(await page.locator('[data-trail]').count(), 5);
+    assert.doesNotMatch(await page.locator('#headline').evaluate(
+     element => getComputedStyle(element).fontFamily), /Georgia|Times/);
     const geometry = async frame => {
      await page.evaluate(frame => window.renderFrame(frame), frame);
-    return page.locator('#document-focus').evaluate(
+    return page.locator('#trail-focus').evaluate(
      element => getComputedStyle(element).transform);
     };
     const assembled = await geometry(240);
@@ -210,10 +212,9 @@ const {chromium} = createRequire(path.join(process.argv[1], 'package.json'))('pl
      if (Math.max(headline.bottom, caption.bottom) > footer.top) issues.push('footer overlap');
     const illustration = document.getElementById('illustration');
     if (getComputedStyle(illustration).display !== 'none') {
-     const art = illustration.getBoundingClientRect();
-     if (art.bottom > footer.top) issues.push('illustration footer overlap');
-     if (innerWidth < 800 && headline.bottom > art.top) issues.push('illustration text overlap');
-     if (innerWidth >= 800 && headline.right > art.left) issues.push('illustration text overlap');
+    if (illustration.getAttribute('aria-hidden') !== 'true') {
+     issues.push('decorative trails exposed');
+    }
     }
      return issues;
     });
