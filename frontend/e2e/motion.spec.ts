@@ -1,5 +1,8 @@
 import { expect, test } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
+import { execFileSync } from "node:child_process";
+import { mkdirSync } from "node:fs";
+import { join } from "node:path";
 
 for (const width of [1440, 320]) {
   test(`realestate repository source draft and motion study at ${width}px`, async ({ page }) => {
@@ -66,4 +69,54 @@ test("motion study renders the owned demo still without calling it footage", asy
   await page.getByRole("slider", { name: "Preview frame" }).fill("90");
   await expect(page.locator(".motion-preview__caption")).toHaveText("Everything in one place.");
   await page.screenshot({ path: "test-results/motion-demo.png", fullPage: true });
+});
+
+test("motion footage seeks decoded frames and shares measurements without retaining media", async ({ page }) => {
+  const directory = join(process.cwd(), "test-results");
+  mkdirSync(directory, { recursive: true });
+  const output = join(directory, "motion-source.mp4");
+  execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-f", "lavfi", "-i",
+    "color=c=red:size=320x180:rate=30:duration=1", "-f", "lavfi", "-i",
+    "color=c=blue:size=320x180:rate=30:duration=1", "-filter_complex",
+    "[0:v][1:v]concat=n=2:v=1:a=0[out]", "-map", "[out]", "-c:v", "libx264",
+    "-pix_fmt", "yuv420p", "-an", output.replaceAll("\\", "/")], { timeout: 60000 });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Start from repository", exact: true }).click();
+  await page.getByRole("textbox", { name: "Public GitHub repository URL" }).fill("https://github.com/mohamedamineelabidi/realestate-rag");
+  await page.getByRole("button", { name: "Create source draft" }).click();
+  const tabs = page.locator(".view-tabs");
+  await tabs.getByRole("button", { name: "Footage", exact: true }).click();
+  await page.getByLabel("Select product footage", { exact: true }).setInputFiles(output);
+  await page.getByRole("checkbox", { name: "I have permission" }).check();
+  await page.getByRole("checkbox", { name: "I reviewed the full recording" }).check();
+  await page.getByRole("button", { name: "Open preview", exact: true }).click();
+  const video = page.locator(".motion-preview video");
+  const pixel = () => video.evaluate((element: HTMLVideoElement) => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 1;
+    canvas.height = 1;
+    const context = canvas.getContext("2d")!;
+    context.drawImage(element, 0, 0, 1, 1);
+    return Array.from(context.getImageData(0, 0, 1, 1).data);
+  });
+  await expect(video).toBeVisible();
+  await expect.poll(async () => (await pixel())[0]).toBeGreaterThan(200);
+  await page.getByRole("slider", { name: "Preview frame" }).fill("45");
+  await expect(video).toBeVisible();
+  await expect.poll(async () => (await pixel())[2]).toBeGreaterThan(200);
+  await page.getByRole("slider", { name: "Preview frame" }).fill("60");
+  await expect(page.getByText("Source frame outside footage / Preview blocked", { exact: true })).toBeVisible();
+  await expect(video).toBeHidden();
+  await expect(page.getByRole("button", { name: "Play motion preview" })).toBeDisabled();
+  await page.getByRole("button", { name: "Restart motion preview" }).click();
+  await expect(video).toBeVisible();
+  await expect.poll(async () => (await pixel())[0]).toBeGreaterThan(200);
+  await tabs.getByRole("button", { name: "Footage", exact: true }).click();
+  await expect(page.locator(".media-details")).toContainText("320 x 180");
+  await expect(page.locator(".media-details")).toContainText("2.00 seconds");
+  await page.getByRole("checkbox", { name: "I reviewed the full recording" }).uncheck();
+  await tabs.getByRole("button", { name: "Storyboard", exact: true }).click();
+  await expect(video).toHaveCount(0);
+  await expect(page.locator(".motion-preview")).toContainText("Footage unavailable");
+  expect(await page.evaluate(() => localStorage.getItem("demoforge.local-drafts.v1"))).not.toContain("blob:");
 });

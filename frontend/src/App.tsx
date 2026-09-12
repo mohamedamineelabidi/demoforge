@@ -822,6 +822,13 @@ function Workspace() {
                       compareStoryboard(project.scenes, project.storyboardReview.scenes).changed) &&
                       <div className="storyboard-reapproval" role="status"><CircleAlert size={17} /><span>Storyboard changed, re-approval required</span><button onClick={() => navigate("Approvals")}>Review changes<ArrowRight size={15} /></button></div>}
                     {editorMode === "motion" ? <MotionPreview project={project} catalog={imports[project.id]?.catalog}
+                      onMetadata={(url, metadata) => setMedia(current => {
+                        const attached = current[project.id];
+                        if (!attached || attached.url !== url || !attached.permitted || !attached.reviewed ||
+                            (attached.duration === metadata.duration && attached.width === metadata.width &&
+                              attached.height === metadata.height)) return current;
+                        return { ...current, [project.id]: { ...attached, ...metadata } };
+                      })}
                       media={clip} demoImage={project.demo ? "/taskroom.png" : undefined} /> : editorMode === "frames" ? <FrameStoryboard project={project} onChange={change}
                       selectedSceneId={scene.id} onSelectScene={selectScene} disabled={storageBlocked}
                       reviewedScenes={project.storyboardReview?.scenes} /> : <>

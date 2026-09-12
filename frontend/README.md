@@ -135,6 +135,11 @@ numeric claim verification is implemented. Linked evidence and human/backend rev
 Playback starts paused, supports restart/seek and reduced motion, and refuses unknown/out-of-range
 footage bounds. Browser seeking waits for decoder readiness and is not a frame-accurate export gate.
 Caption edits and source changes reset preview playback. These modules own no media URLs or persistence.
+Valid browser duration/dimensions from Motion also update the matching authorized session clip in
+Footage and Review, without resetting transport. Stale/replaced media callbacks are ignored. Metadata
+stays out of draft storage and does not substitute for backend decode, privacy or frame-count gates.
+The motion browser suite checks real decoded red/blue fixture pixels, random seeking, out-of-range
+blocking, restart and privacy-consent revocation; the generated MP4 stays in ignored test-results/.
 
 Focused checks: `npm --prefix frontend test -- src/motion src/source-entry src/model.test.ts` and
 `npm --prefix frontend run test:browser -- motion.spec.ts`. Motion tests check random seeks, beat

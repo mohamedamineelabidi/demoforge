@@ -14,15 +14,16 @@ export type MotionPreviewProps = {
   catalog?: Catalog;
   media?: MotionMedia;
   demoImage?: string;
+  onMetadata?: (url: string, metadata: { duration: number; width: number; height: number }) => void;
 };
 
 export function MotionPreview(props: MotionPreviewProps) {
   const sessionKey = JSON.stringify([props.project.id, props.project.revision,
-    props.project.scenes, props.media, props.demoImage]);
+    props.project.scenes, props.media?.url, props.media?.permitted, props.media?.reviewed, props.demoImage]);
   return <MotionSession key={sessionKey} {...props} />;
 }
 
-function MotionSession({ project, catalog, media, demoImage }: MotionPreviewProps) {
+function MotionSession({ project, catalog, media, demoImage, onMetadata }: MotionPreviewProps) {
   const [playback, dispatch] = useReducer(playbackReducer, { frame: 0, playing: false });
   const [reducedMotion, setReducedMotion] = useState(false);
   const [duration, setDuration] = useState<number>();
@@ -138,8 +139,22 @@ function MotionSession({ project, catalog, media, demoImage }: MotionPreviewProp
           <video ref={videoRef} src={videoUrl} muted playsInline preload="metadata"
             aria-label={media?.name ?? "Local footage"}
             style={{ visibility: videoReady ? "visible" : "hidden", transform: `scale(${scale})` }}
-            onLoadedMetadata={event => setDuration(event.currentTarget.duration)}
-            onDurationChange={event => setDuration(event.currentTarget.duration)}
+            onLoadedMetadata={event => {
+              const video = event.currentTarget;
+              setDuration(video.duration);
+              if (Number.isFinite(video.duration) && video.duration > 0 &&
+                  video.videoWidth > 0 && video.videoHeight > 0)
+                onMetadata?.(videoUrl, { duration: video.duration,
+                  width: video.videoWidth, height: video.videoHeight });
+            }}
+            onDurationChange={event => {
+              const video = event.currentTarget;
+              setDuration(video.duration);
+              if (Number.isFinite(video.duration) && video.duration > 0 &&
+                  video.videoWidth > 0 && video.videoHeight > 0)
+                onMetadata?.(videoUrl, { duration: video.duration,
+                  width: video.videoWidth, height: video.videoHeight });
+            }}
             onError={() => setMediaFailed(true)} />
           {!videoReady && <p className="motion-preview__blocked" role="status">{sourceStatus}</p>}
         </>}

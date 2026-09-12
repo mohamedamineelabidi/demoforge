@@ -194,6 +194,15 @@ new IDs replace unstarted legacy tasks rather than silently reusing their meanin
 
 ## Editing experience
 
+- [x] **TASK-097**: Share motion-preview browser measurements with session footage.
+  - Valid duration/dimensions update only the matching authorized clip, without metadata-triggered
+    playback resets. No persistence, backend validation or export authority added.
+  - Verification: real local two-color MP4 browser regression RED (Footage showed Not measured),
+    then GREEN; decoded pixels, seeking, source-bound blocking, restart and consent revocation pass.
+    TypeScript, 175 Vitest tests, production build, 24 foreground Playwright tests and
+    `uv run pytest tests -q` (one skipped) exited 0; `uv run ruff check .` clean.
+    Frontend README updated; generated test media remains ignored. Backend tasks remain open.
+
 - [x] **TASK-096**: URL-first local source drafts and style-profile motion studies.
   - GitHub URL, optional brief/full SHA and no-footage creation from empty/populated libraries.
     Deterministic 30 fps preview, 900-frame default, beat seeks, hard cuts, 60-character caption edits,
