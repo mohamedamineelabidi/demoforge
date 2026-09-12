@@ -40,9 +40,23 @@ Do not install hosted infrastructure or start deck/logo work to complete this mi
 
 ## Ready next
 
-- [ ] **TASK-069**: Safe workspace and local state (see backlog below). This is the next coding task.
+- [ ] **TASK-070**: Explicit controller, approvals, resume/cancel (see backlog below). This is the next coding task.
 
 ## Completed local proof tasks
+
+- [x] **TASK-069**: Safe workspace and local state (FR-03, FR-11).
+  - Completed on: 2026-09-12. `demoforge/pack/workspace.py` (root outside OneDrive via
+    `DEMOFORGE_WORKSPACE`/LOCALAPPDATA, `runs/<id>/{raw,staging,curated,outputs}`, path and symlink
+    escape protection, atomic hashed publish, verify, quarantine purge, temp sweep) and
+    `demoforge/workflow/state.py` (SQLite WAL; runs/attempts/manifests/approvals/events, legal
+    transitions, one running attempt per stage, immutable approvals) plus `workflow/recovery.py`
+    (stale-attempt recovery after crash, snapshot export/import that never overwrites, terminal
+    `finalize_run` that purges quarantine and sets retention).
+  - Verification: `uv run pytest tests -q` 114 passed (1 skipped: symlink needs privilege on Windows);
+    `uv run ruff check .` clean. Negative tests: OneDrive root, unsafe run_id, `..`/absolute/symlink
+    escape, hash and size mismatch, duplicate run, illegal and terminal transitions, second running
+    attempt, failed attempt with outputs, foreign manifest, approval rewrite, unsupported snapshot
+    version, snapshot overwrite, finalize on non-terminal state.
 
 - [x] **TASK-068**: First typed contract slice and fixtures (FR-02, FR-04, FR-05).
   - Completed on: 2026-09-12. `demoforge/schemas/` = `_base` (StrictModel, Sha1/Sha256, UtcDatetime,
@@ -61,7 +75,7 @@ Do not install hosted infrastructure or start deck/logo work to complete this mi
 Every task requires the full pytest/Ruff gates plus the scoped acceptance below. Dependencies are explicit;
 new IDs replace unstarted legacy tasks rather than silently reusing their meanings.
 
-- [ ] **TASK-069**: Safe workspace and local state (depends 068; FR-03, FR-11).
+- [x] **TASK-069**: Safe workspace and local state (depends 068; FR-03, FR-11). Done, see above.
   - pack/ + workflow/state.py; configurable non-synced workspace root, SQLite runs/attempts/approvals,
     versioned manifests, atomic publication, path/symlink escape protection and quarantine retention.
   - Gate: tests/pack and tests/workflow validate crash-after-write recovery, DB authority, hash mismatch,
