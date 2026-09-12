@@ -1,0 +1,50 @@
+{
+  "video_id": "VwxpmC4zhqo",
+  "title": "Best Motion Graphics Product Launch Video for Banking App | ConversBank",
+  "channel": "Burnwe",
+  "url": "https://www.youtube.com/watch?v=VwxpmC4zhqo",
+  "duration_s": 44,
+  "fps": 30,
+  "source_fps": "25/1",
+  "resolution": "1280x720",
+  "has_audio_stream": true,
+  "scene_cuts_detected_thr_0_3": 7,
+  "avg_shot_duration_frames": 165,
+  "shots": [
+    {"shot": 1, "start_frame": 0, "end_frame": 287, "duration_frames": 287, "layout": "pale blue-white field, desaturated flat web-banking screens drifting behind centred text; then app icon on white card", "motion": "screens drift slowly, blur/defocus, icon scales in", "transition_in": "none", "text": "Banking has always looked the same / CONVERSE MOBILE", "highlight": "screens washed out to near-white to read as boring", "notes": "frames 0-287, cold open"},
+    {"shot": 2, "start_frame": 287, "end_frame": 419, "duration_frames": 132, "layout": "white/light grey, left headline, right upright phone mockup with light-mode app UI", "motion": "headline words slide in, phone rises", "transition_in": "cut", "text": "Armenia's first truly customizable banking app", "highlight": "phone card with soft shadow", "notes": "frames 287-419"},
+    {"shot": 3, "start_frame": 419, "end_frame": 558, "duration_frames": 139, "layout": "dark navy 3D space, many tilted phones in a grid, camera pushes into one screen", "motion": "3D camera dolly/orbit through phone array", "transition_in": "cut", "text": "My Products / Currency exchange", "highlight": "dark-mode phones catch a blue rim light", "notes": "frames 419-558"},
+    {"shot": 4, "start_frame": 558, "end_frame": 708, "duration_frames": 150, "layout": "white with pale blue-pink gradient, centred headline, flat home-screen fragments; then Configure Home Page list with toggles", "motion": "letters of author fill in, list rows slide, toggle dots move", "transition_in": "cut", "text": "You're the author of your App / Configure Home Page / Currency Exchange / Useful Materials", "highlight": "row toggle switch animation, white cards with soft shadow", "notes": "frames 558-708"},
+    {"shot": 5, "start_frame": 708, "end_frame": 809, "duration_frames": 101, "layout": "black with blue/purple liquid light streaks, tilted dark-mode phone, close-up on Configure Home Page list", "motion": "phone rotates in 3D, list rows and toggles animate", "transition_in": "cut", "text": "Configure Home Page / Customize home screen to fit your needs / Currency Exchange / Payments and Transactions / Useful Materials / Standard Mode", "highlight": "glossy dark phone, neon streak background", "notes": "frames 708-809"},
+    {"shot": 6, "start_frame": 809, "end_frame": 830, "duration_frames": 21, "layout": "white, chat bubbles with support agents, small phone, product cards", "motion": "cards pop in", "transition_in": "cut", "text": "and you! / My Vouchers / Transfer to friend", "highlight": "rounded cards", "notes": "21-frame flash"},
+    {"shot": 7, "start_frame": 830, "end_frame": 1123, "duration_frames": 293, "layout": "white/pale gradient; big centred phone with Payments and transfers card; floating bank cards in 3D; giant bold single words", "motion": "phone screen zoom, cards flip and hover, words fade/slide", "transition_in": "cut", "text": "Add new product / Payments and transfers / This is modern banking / Intuitive / Converse Bank / Converse Bank breaks the standards", "highlight": "red accent on standards, 3D card flip", "notes": "frames 830-1123, longest shot"},
+    {"shot": 8, "start_frame": 1123, "end_frame": 1320, "duration_frames": 197, "layout": "collage of UI screenshots with circular team portraits; App Store card mockup; logo end card on light grey", "motion": "collage tiles slide, Get button turns to loading spinner, logo scales", "transition_in": "cut", "text": "Download Converse Mobile today / Converse Mobile / The bank in your smartphone / Get / CONVERSEBANK / Your Bank. Your Rules.", "highlight": "App Store Get button press animation", "notes": "frames 1123-1320, end card"}
+  ],
+  "style": {
+    "layout": "phone-mockup product launch: centred phones (upright and tilted 3D), big centred headlines above or beside the device, UI fragments used as floating cards; one dark 3D phone-array sequence",
+    "background": "mostly white to pale blue-lavender gradient #F4F6FB -> #DDE3F5, with one dark navy #0B1022 3D sequence and one black field with blue/purple liquid light streaks",
+    "typography": "geometric sans (Gilroy/Montserrat-like), medium weight, sentence case, dark navy #1B2340 on light fields, white on dark; single giant words at roughly 1/6 frame height",
+    "palette_hex": ["#F4F6FB", "#DDE3F5", "#1B2340", "#2F5BFF", "#0B1022", "#E23D3D", "#FFFFFF", "#7A8BFF"],
+    "camera_motion": "slow drifts and pushes on flat screens; real 3D orbit/dolly through the phone array (frames 419-558); phone rotates in 3D on the dark streak background",
+    "transitions": "hard cuts (7 detected) plus soft cross-fades and blur-through inside shots; one 21-frame flash",
+    "ui_highlight": "UI shown as full phone screens or as isolated white cards with soft shadow; toggle switches animate to show customisation; no cursor, no spotlight, no zoom ring",
+    "text_animation": "headlines slide/fade word by word, letters fill in, red colour accent on one keyword, giant single-word beats",
+    "pacing_frames": "8 shots avg 165 frames, min 21, max 293; calm, roughly one idea every 4-5 s",
+    "cursor_or_hand": "none",
+    "real_ui_vs_motion": "real app screens composited into motion-designed phone mockups and 3D scenes; UI is static screenshots animated as layers, not screen recording",
+    "audio": "audio stream present (opus); edits land on soft beats",
+    "three_beat": "yes: problem (frames 0-287) -> product/customisation demo (frames 287-1123) -> outcome + CTA (frames 1123-1320)"
+  },
+  "verdict": [
+    "Classic app-launch structure: cold open on the problem, phone-mockup feature beats, App Store CTA and logo end card (sheet_1-3).",
+    "Light airy palette (white to pale blue gradient, navy text, blue accent) with two contrasting dark 3D sequences for energy.",
+    "UI is real but composited: screenshots inside phone mockups, feature rows extracted as white cards with shadows, toggles animated to show the customisable claim.",
+    "Pacing is moderate: 8 shots in 44 s, most holds 100-300 frames, one 21-frame flash; readable for a 30 s demo.",
+    "Useful lessons: isolate a UI row as a floating card to explain one feature, use a single giant word as a breather beat, end on a store-card CTA; avoid the heavy 3D phone arrays which need a 3D pipeline."
+  ],
+  "evidence": {
+    "contact_sheets": ["sheet_1.jpg", "sheet_2.jpg", "sheet_3.jpg"],
+    "sheet_step_s": 1.5,
+    "method": "ffmpeg select=gt(scene,0.3) + contact sheets fps=1/step tile 4x3 + visual inspection"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "video_id": "awUYikrGsKk",
+  "title": "Best AI SaaS Product Launch Video | Numtera",
+  "channel": "ObiN Studio",
+  "url": "https://www.youtube.com/watch?v=awUYikrGsKk",
+  "duration_s": 95,
+  "fps": 30,
+  "source_fps": "30/1",
+  "resolution": "1280x720",
+  "has_audio_stream": true,
+  "scene_cuts_detected_thr_0_3": 10,
+  "avg_shot_duration_frames": 260,
+  "shots": [
+    {"shot": 1, "start_frame": 0, "end_frame": 239, "duration_frames": 239, "layout": "white field, small centred typed headline; greyed-out support-tool windows float around the edges in soft focus", "motion": "typewriter with caret, windows drift and blur, windows pile up", "transition_in": "none", "text": "The same / The same issue, Different channels / The same issue / Same investigation", "highlight": "UI washed out to grey to read as the old way", "notes": "frames 0-239, problem beat"},
+    {"shot": 2, "start_frame": 239, "end_frame": 298, "duration_frames": 59, "layout": "white to light blue, one large word with motion blur", "motion": "word slides in with directional blur", "transition_in": "cut", "text": "Stop / Stop Managing tickets", "highlight": "blue keyword", "notes": "frames 239-298"},
+    {"shot": 3, "start_frame": 298, "end_frame": 877, "duration_frames": 579, "layout": "saturated blue radial field, giant centred word with app icon; sentence with blue-bold keyword; dashboard screenshot on tilted 3D plane with corner label", "motion": "word scales, icon pops, dashboard flies in with perspective and glow", "transition_in": "cut", "text": "Meet / Meet Numtera / The AI-powered self-learning support OS / For Complex Operations / Welcome to your Command Center", "highlight": "keyword weight/colour swap, glowing dashboard on blue", "notes": "frames 298-877, longest shot, product reveal"},
+    {"shot": 4, "start_frame": 877, "end_frame": 1189, "duration_frames": 312, "layout": "white/blue field, ticket detail window enlarged with AI reasoning lines; blur transition to dark blue with kinetic text", "motion": "window slides, list lines type in, heavy motion blur on words", "transition_in": "cut", "text": "Numtera analyzing the solved ticket... / Fetching details / it turns the solution into", "highlight": "zoom on ticket card, blur wipe", "notes": "frames 877-1189"},
+    {"shot": 5, "start_frame": 1189, "end_frame": 1339, "duration_frames": 150, "layout": "dark navy radial, bracket glyphs framing a phrase", "motion": "brackets open and close around the words", "transition_in": "cut", "text": "[ Reusable knowledge ]", "highlight": "bracket framing device", "notes": "frames 1189-1339"},
+    {"shot": 6, "start_frame": 1339, "end_frame": 1423, "duration_frames": 84, "layout": "dark navy, inbox UI screenshot centred with pale glow", "motion": "UI slides up, cursor hovers rows", "transition_in": "cut", "text": "Numtera / Inbox / Asset #B32-A: Uneven heating issue / Thermal interlock triggered", "highlight": "white glow behind UI", "notes": "frames 1339-1423"},
+    {"shot": 7, "start_frame": 1423, "end_frame": 1804, "duration_frames": 381, "layout": "dark to mid-blue radial, sequence of single big words and sentences", "motion": "words slide with motion blur, colour accents", "transition_in": "cut", "text": "Auto-resolved / And / when you know the outcome / You can define the response", "highlight": "keyword colour swap (light blue on navy)", "notes": "frames 1423-1804"},
+    {"shot": 8, "start_frame": 1804, "end_frame": 2353, "duration_frames": 549, "layout": "white/blue, workflow builder dialog enlarged; Your Workflows grid page; navy with spaced words", "motion": "dialog rises, black arrow cursor clicks Save Workflow, page tilts, letters spaced out", "transition_in": "cut", "text": "Add Step / Cancel / Save Workflow / Your Workflows / The system gets smarter", "highlight": "button click by arrow cursor, tracking-out text", "notes": "frames 1804-2353"},
+    {"shot": 9, "start_frame": 2353, "end_frame": 2494, "duration_frames": 141, "layout": "white with blue bottom glow, centred sentence", "motion": "words blur in", "transition_in": "cut", "text": "They close tickets", "highlight": "motion-blur text", "notes": "frames 2353-2494"},
+    {"shot": 10, "start_frame": 2494, "end_frame": 2595, "duration_frames": 101, "layout": "white with blue glow, blue sentence then app icon", "motion": "text swap, icon pops", "transition_in": "cut", "text": "We Eliminate them", "highlight": "blue text", "notes": "frames 2494-2595"},
+    {"shot": 11, "start_frame": 2595, "end_frame": 2858, "duration_frames": 263, "layout": "logo lockup on white; black with typed tagline", "motion": "logo holds, cut to black, typewriter with caret", "transition_in": "cut", "text": "Numtera / The self-learning support OS", "highlight": "typing caret", "notes": "frames 2595-2858, end card"}
+  ],
+  "style": {
+    "layout": "kinetic-type launch film with product screenshots on tilted 3D planes; centred headlines dominate, UI windows appear as enlarged cards or washed-out background props",
+    "background": "white #FFFFFF fading to a blue radial glow #4FA0FF at the bottom; saturated blue #1E6BFF and deep navy #04366B radial fields; one black #0A0A0A end card",
+    "typography": "Inter/SF-style grotesque, medium weight, sentence case, black #111111 on white and white on blue; keyword accent in blue #2F7BFF or bold weight; single words up to 1/4 frame height; bracket glyphs as framing device",
+    "palette_hex": ["#FFFFFF", "#4FA0FF", "#1E6BFF", "#04366B", "#111111", "#2F7BFF", "#0A0A0A", "#E8F1FF"],
+    "camera_motion": "dashboards fly in on a perspective plane with slight drift; kinetic text slides with directional motion blur; no zoom into live UI",
+    "transitions": "10 hard cuts plus many blur dissolves and light-leak wipes not counted by the detector; blue field to white field alternation",
+    "ui_highlight": "UI shown as whole windows enlarged on a glow, greyed-out when representing the problem; one arrow cursor click on Save Workflow; no spotlight or zoom ring",
+    "text_animation": "typewriter with caret at open and close, directional motion-blur slides, keyword colour/weight swap, tracking-out letters, brackets closing around a phrase",
+    "pacing_frames": "11 detected shots avg 260 frames, min 59, max 579; many 45-90 frame text beats inside the long shots",
+    "cursor_or_hand": "small black arrow cursor once (Save Workflow click); otherwise none",
+    "real_ui_vs_motion": "real product screenshots composited in motion design; no screen recording; UI partially blurred for mood",
+    "audio": "audio stream present (music plus voiceover-style pacing)",
+    "three_beat": "yes: problem (frames 0-298) -> product reveal and feature beats (frames 298-2353) -> payoff They close tickets / We Eliminate them + logo (frames 2353-2858)"
+  },
+  "verdict": [
+    "Kinetic-typography SaaS launch: big centred words with motion blur carry the story, screenshots on tilted planes provide proof (sheet_1, 3, 5).",
+    "Two-tone world: white with a blue bottom glow for calm beats, saturated/navy blue radial fields for emphasis, one black tagline end card.",
+    "Problem beat greys out competitor-style windows in the margins; solution beat lights the dashboard with a glow on saturated blue.",
+    "Slow detected cut rate (11 shots in 95 s) but dense internal text beats; heavy blur transitions make it feel faster than the counts suggest.",
+    "Useful lessons: bracket framing device, typed caret opener and closer, keyword colour swap inside a sentence, glowing dashboard on a tilted plane; the 95 s length and repeated word-only beats are too slow for a 30 s demo."
+  ],
+  "evidence": {
+    "contact_sheets": ["sheet_1.jpg", "sheet_2.jpg", "sheet_3.jpg", "sheet_4.jpg", "sheet_5.jpg", "sheet_6.jpg"],
+    "sheet_step_s": 1.5,
+    "method": "ffmpeg select=gt(scene,0.3) + contact sheets fps=1/step tile 4x3 + visual inspection (sheets 1, 3, 5 inspected)"
+  }
+}

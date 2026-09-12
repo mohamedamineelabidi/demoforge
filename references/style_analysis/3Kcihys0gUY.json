@@ -1,0 +1,51 @@
+{
+  "video_id": "3Kcihys0gUY",
+  "title": "Product Launch Video for Backboard.io — Redefining How AI Stores and Uses Memory",
+  "channel": "Beliv8 Motion - Top Quality Explainer Videos",
+  "url": "https://www.youtube.com/watch?v=3Kcihys0gUY",
+  "duration_s": 77,
+  "fps": 30,
+  "source_fps": "30/1",
+  "resolution": "1280x720",
+  "has_audio_stream": true,
+  "scene_cuts_detected_thr_0_3": 2,
+  "avg_shot_duration_frames": 773,
+  "shots": [
+    {"shot": 1, "start_frame": 0, "end_frame": 90, "duration_frames": 90, "layout": "white field with faint blue vignette, beliv8. watermark top-left, huge centred headline; ghosted repeated headline behind", "motion": "letters slide in with motion blur, blue keyword, ghost copies stack", "transition_in": "none", "text": "Your AI Forgets.", "highlight": "keyword colour swap black->blue, echo copies", "notes": "sub-beat 1a, frames 0-90"},
+    {"shot": 2, "start_frame": 90, "end_frame": 225, "duration_frames": 135, "layout": "Google-style search bar as isolated white pill card, bars multiply and scatter", "motion": "typing in search bar, cards duplicate and drift", "transition_in": "dissolve", "text": "What's I / Search / Google", "highlight": "UI abstracted to one rounded search pill", "notes": "sub-beat 1b"},
+    {"shot": 3, "start_frame": 225, "end_frame": 405, "duration_frames": 180, "layout": "centred sentence with blue keywords, clock illustration with blue glow ring, ghosted windows behind", "motion": "clock hands spin, windows fade", "transition_in": "dissolve", "text": "State gets Wiped / Memory is Brittle", "highlight": "icon illustration with glow ring", "notes": "sub-beat 1c"},
+    {"shot": 4, "start_frame": 405, "end_frame": 495, "duration_frames": 90, "layout": "headline top, scattered app icons linked by dashed lines", "motion": "icons pop, dashed connectors draw on", "transition_in": "dissolve", "text": "Fragmented Infra", "highlight": "dashed connector lines", "notes": "sub-beat 1d"},
+    {"shot": 5, "start_frame": 495, "end_frame": 585, "duration_frames": 90, "layout": "small line-icon flowchart with cloud icon and caption", "motion": "nodes connect, cloud glows blue", "transition_in": "dissolve", "text": "Storage / Prompt / Prompt / User / Company is locked in to one cloud vendor", "highlight": "line icons in white rounded tiles", "notes": "sub-beat 1e"},
+    {"shot": 6, "start_frame": 585, "end_frame": 1080, "duration_frames": 495, "layout": "huge centred headline with blue keyword; grid lines; blue capsule with numbers; waveform icon tile; rows of question pills sliding", "motion": "letters slide, concentric blue capsule pulses, pills scroll in three rows", "transition_in": "dissolve", "text": "Make Enterprise AI / Connect / 16,800+LLMs / 17,000+LLMs with portable / What's stopping your AI from evolving? / Is your AI Infrastructure...", "highlight": "concentric blue ellipses behind the stat, marquee of question pills", "notes": "sub-beat 1f, sheet_2 not inspected"},
+    {"shot": 7, "start_frame": 1080, "end_frame": 1445, "duration_frames": 365, "layout": "tilted 3D device plane; saturated blue field with Select Model dialog on tilted plane, provider checklist", "motion": "device tilts, dialog slides, dropdown expands, cursor picks a model", "transition_in": "dissolve", "text": "production-ready and Model-agnostic / Select Model / Search models or providers / gpt-4.1 mini / gpt-4.1 nano / Providers / Reset / Apply", "highlight": "dialog isolated on blue with glow, blue Apply button", "notes": "sub-beat 1g"},
+    {"shot": 8, "start_frame": 1445, "end_frame": 2086, "duration_frames": 641, "layout": "white, huge wordmark with blue suffix; sentence with blue keyword; large blue app icon tile with brain glyph; icon tiles linked by lines", "motion": "wordmark letters slide, icon scales, connector draws", "transition_in": "cut", "text": "Backboard.io / Backboard.io powers best-in-class RAG", "highlight": "blue keyword, glossy icon tile", "notes": "frames 1445-2086, longest shot, sheet_4 not inspected"},
+    {"shot": 9, "start_frame": 2086, "end_frame": 2320, "duration_frames": 234, "layout": "purple-white gradient end card, studio logo with tagline", "motion": "play triangle morphs into logo, letters type", "transition_in": "cut", "text": "beliv8. / Believe in Magic of Motion", "highlight": "none", "notes": "studio outro, not product"}
+  ],
+  "style": {
+    "layout": "explainer on a single white stage: huge centred headline, small isolated UI cards (search pill, dialog), line-icon diagrams; one 3D tilted dialog on blue; persistent studio watermark top-left",
+    "background": "white #FFFFFF with soft blue vignette #CFE3FF in corners; one saturated blue field #1F6BFF for the dialog beat; purple gradient #7B3FF2 -> white for the studio outro",
+    "typography": "Inter-like grotesque, medium weight, sentence case, near-black #1C1C1E with blue #2F7BFF keywords; headlines around 1/5 frame height with letter-slide motion blur; ghosted echo copies",
+    "palette_hex": ["#FFFFFF", "#CFE3FF", "#2F7BFF", "#1F6BFF", "#1C1C1E", "#7B3FF2", "#E9EEF6"],
+    "camera_motion": "none; elements slide, scale and dissolve on a static stage; one tilted 3D plane for the device and the dialog",
+    "transitions": "only 2 hard cuts detected; everything else is dissolve or slide-through on the same white field",
+    "ui_highlight": "UI reduced to one isolated card (search pill, Select Model dialog) with glow on blue; line-icon diagrams instead of screenshots; small cursor picks a model once",
+    "text_animation": "letter-by-letter slide with motion blur, blue keyword swap, ghosted repeated lines, stat counter inside a blue capsule, pill marquee",
+    "pacing_frames": "3 detected shots avg 773 frames; visual beats every 45-135 frames inside the continuous field",
+    "cursor_or_hand": "small arrow cursor once in the Select Model dialog; otherwise none",
+    "real_ui_vs_motion": "almost entirely motion design and icon illustration; only the Select Model dialog resembles real product UI",
+    "audio": "audio stream present (music and voiceover-style pacing)",
+    "three_beat": "yes: problem (frames 0-585) -> solution Make Enterprise AI / Connect / Model-agnostic (frames 585-1445) -> brand Backboard.io powers best-in-class RAG (frames 1445-2086), studio outro after"
+  },
+  "verdict": [
+    "Continuous white-stage explainer: no hard cuts for 48 s, all beats dissolve or slide on the same field (sheet_1, 3, 5).",
+    "Blue keyword inside black headlines is the single accent device; the only saturated blue field is reserved for the Select Model dialog.",
+    "UI is abstracted: search pill, dialog card and icon diagrams stand in for screenshots; not a walkthrough.",
+    "Pacing is steady, one idea per 1.5-3 s with no flashes; the film ends with a 234-frame studio outro that is not part of the product story.",
+    "Useful lessons: isolated dialog with glow on a blue field, stat capsule with concentric ellipses, question-pill marquee, ghosted echo headline; avoid the missing hard cuts, a 30 s demo needs clearer beat boundaries."
+  ],
+  "evidence": {
+    "contact_sheets": ["sheet_1.jpg", "sheet_2.jpg", "sheet_3.jpg", "sheet_4.jpg", "sheet_5.jpg"],
+    "sheet_step_s": 1.5,
+    "method": "ffmpeg select=gt(scene,0.3) + contact sheets fps=1/step tile 4x3 + visual inspection (sheets 1, 3, 5 inspected)"
+  }
+}

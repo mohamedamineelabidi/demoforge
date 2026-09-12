@@ -1,0 +1,58 @@
+{
+  "video_id": "4SCjXcBeW1E",
+  "title": "Introducing Google Vids",
+  "channel": "Google Workspace",
+  "url": "https://www.youtube.com/watch?v=4SCjXcBeW1E",
+  "duration_s": 87,
+  "fps": 30,
+  "source_fps": "30000/1001",
+  "resolution": "1280x720",
+  "has_audio_stream": true,
+  "scene_cuts_detected_thr_0_3": 21,
+  "avg_shot_duration_frames": 124,
+  "shots": [
+    {"shot": 1, "start_frame": 0, "end_frame": 404, "duration_frames": 404, "layout": "white field, centred kinetic headline with inline + New pill button; real Drive New dropdown; oversized typing prompt in glass rounded card", "motion": "words type in, pill scales up, dropdown slides, caret blinks", "transition_in": "fade from white", "text": "Meet your + New producer / File upload / Folder upload / Google Vids / Google Docs / Google Sheets / Help / Create a sales training video", "highlight": "UI element enlarged and isolated; hand cursor clicks Google Vids", "notes": "frames 0-404"},
+    {"shot": 2, "start_frame": 404, "end_frame": 769, "duration_frames": 365, "layout": "pale blue-pink gradient, prompt pill with Docs/Slides/Sheets chips flying in; blue Creating... pill; generated outline list card", "motion": "icons fly into pill, pill fills blue, list rows slide, card tilts 3D", "transition_in": "cut", "text": "sales training video / sales training video using portable solar charger launch / Creating... / Competitive landscape / Solar pocket power messaging / Demo: How solar pocket power works / Marketing plan and launch timelines", "highlight": "prompt pill hero card, blue fill state, drag-handle rows", "notes": "frames 404-769, generation beat"},
+    {"shot": 3, "start_frame": 769, "end_frame": 783, "duration_frames": 14, "layout": "white, typing headline", "motion": "caret typing", "transition_in": "cut", "text": "Let's ch", "highlight": "none", "notes": "14-frame flash"},
+    {"shot": 4, "start_frame": 783, "end_frame": 917, "duration_frames": 134, "layout": "white centred sentence with blue keyword; keyword zooms into blurred style picker dialog", "motion": "word style scales and blurs into dialog, hand cursor hovers", "transition_in": "cut", "text": "Let's choose a style / Pocket Solar Power", "highlight": "keyword colour swap grey->blue, zoom-through into UI", "notes": "frames 783-917"},
+    {"shot": 5, "start_frame": 917, "end_frame": 1186, "duration_frames": 269, "layout": "pale blue gradient, single slide template card centred, pager dots", "motion": "cards swap left/right, hand cursor clicks next", "transition_in": "cut", "text": "Pocket Solar Power / SALES TRAINING / Sales Training", "highlight": "slide template as isolated card with soft shadow", "notes": "frames 917-1186"},
+    {"shot": 6, "start_frame": 1186, "end_frame": 1276, "duration_frames": 90, "layout": "white, typing headline then blue word", "motion": "typing, word slides", "transition_in": "cut", "text": "Let's write a script / script", "highlight": "keyword blue", "notes": "frames 1186-1276"},
+    {"shot": 7, "start_frame": 1276, "end_frame": 1395, "duration_frames": 119, "layout": "Script side-panel card on white; giant blue script text filling frame", "motion": "panel slides, blue text streams in with block cursor", "transition_in": "cut", "text": "Script / Never let a dead battery ruin your wilderness adventure / our new portable solar charger harnesses", "highlight": "generated text typed at large scale", "notes": "frames 1276-1395"},
+    {"shot": 8, "start_frame": 1395, "end_frame": 1432, "duration_frames": 37, "layout": "white, typing headline", "motion": "typing", "transition_in": "cut", "text": "Now, let's give it a voice", "highlight": "none", "notes": ""},
+    {"shot": 9, "start_frame": 1432, "end_frame": 1512, "duration_frames": 80, "layout": "giant blue gradient word; pastel gradient blob pattern", "motion": "word scales, blobs pulse like a waveform", "transition_in": "cut", "text": "voice", "highlight": "abstract audio visualiser blobs", "notes": "frames 1432-1512"},
+    {"shot": 10, "start_frame": 1512, "end_frame": 1806, "duration_frames": 294, "layout": "Select a voice dialog isolated on white; blue field with white waveform bars; teal slide with stock video and pink comment pins", "motion": "hand cursor clicks Voice 2, checkbox ticks, waveform pulses, footage plays inside slide", "transition_in": "cut", "text": "Voice 2 US, calm / Select a voice / Voice 1 US, energetic / Voice 3 British, friendly / Voice 4 British, calm / Pocket Solar Power", "highlight": "list row check state, oversized card zoom, coloured collaborator pins", "notes": "frames 1512-1806, longest shot"},
+    {"shot": 11, "start_frame": 1806, "end_frame": 1926, "duration_frames": 120, "layout": "white, comment thread cards with avatars stacked; blue avatar pill; sidebar icons right", "motion": "comments slide in one after another", "transition_in": "cut", "text": "Sloane Allen 12:15 PM March 20 Any input? / Everett Anderson Are these the latest solar panels? / Kai Walker @Fionna Bennett WDYT? / Regina Anderson I'll record a little intro this afternoon", "highlight": "collaboration thread as isolated cards", "notes": "frames 1806-1926"},
+    {"shot": 12, "start_frame": 1926, "end_frame": 2155, "duration_frames": 229, "layout": "six ~30-frame beats: teal slide with presenter webcam inset, editor timeline, Play/Share toolbar, giant Play button pill", "motion": "fast cuts every 30 frames, hand cursor presses Play", "transition_in": "cut", "text": "Pocket Solar Power / Sales Training / Play / Share", "highlight": "button isolated and enlarged with blue outline ring", "notes": "cuts at 1926, 1957, 1982, 2012, 2042, 2072"},
+    {"shot": 13, "start_frame": 2155, "end_frame": 2209, "duration_frames": 54, "layout": "white, centred text", "motion": "fade", "transition_in": "cut", "text": "video creation app", "highlight": "none", "notes": ""},
+    {"shot": 14, "start_frame": 2209, "end_frame": 2251, "duration_frames": 42, "layout": "white, blue text", "motion": "slide", "transition_in": "cut", "text": "event recaps", "highlight": "keyword blue", "notes": ""},
+    {"shot": 15, "start_frame": 2251, "end_frame": 2479, "duration_frames": 228, "layout": "blue gradient field with white text; white with Vids logo; Workspace icon grid", "motion": "words swap, icons pop in one by one", "transition_in": "cut", "text": "campaign reviews / Google Vids / Google Workspace", "highlight": "icon grid", "notes": "frames 2251-2479"},
+    {"shot": 16, "start_frame": 2479, "end_frame": 2602, "duration_frames": 123, "layout": "white end card, Google Workspace wordmark", "motion": "fade to black", "transition_in": "cut", "text": "Google Workspace", "highlight": "none", "notes": "end card"}
+  ],
+  "style": {
+    "layout": "UI-explainer: real product UI elements (buttons, menus, dialogs, panels) cut out and enlarged in the centre of a clean field, alternating with typed headlines; full editor only in short flashes",
+    "background": "white #FFFFFF and very pale blue-pink gradients #EAF1FF -> #F6E9F4; one saturated Google blue #1A73E8 field and one blue gradient for emphasis",
+    "typography": "Google Sans / Product Sans, regular weight, sentence case, dark grey #3C4043 with blue #1A73E8 keyword accents; headlines around 1/8 frame height; typing caret used as a device",
+    "palette_hex": ["#FFFFFF", "#EAF1FF", "#1A73E8", "#4285F4", "#3C4043", "#34A853", "#FBBC04", "#EA4335", "#A142F4", "#0F5F5F"],
+    "camera_motion": "none on footage; zoom-through on keywords into dialogs, card tilts in 3D, slow scale on hero pills",
+    "transitions": "hard cuts (20) plus zoom-through from typed word into UI, blur dissolve; a rapid six-beat run at 30-frame intervals (frames 1926-2155)",
+    "ui_highlight": "isolate and enlarge one control (New button, voice row, Play button) with a soft shadow or blue outline ring; oversized hand cursor with click; rest of the UI hidden",
+    "text_animation": "typewriter with blinking caret, keyword colour swap grey->blue, keyword scales up and becomes the next scene, generated text streams in at giant size",
+    "pacing_frames": "21 shots avg 124 frames, min 14, max 365; slow typed headline beats alternate with fast 30-frame UI flashes",
+    "cursor_or_hand": "yes, oversized white hand pointer with click animation on every interaction",
+    "real_ui_vs_motion": "real Google Vids UI fragments re-composed as motion design; stock footage and presenter webcam inside slides; no raw screen recording",
+    "audio": "audio stream present (voiceover-style pacing, music)",
+    "three_beat": "yes: intent typed as prompt (frames 0-404) -> generation and editing steps (frames 404-2155) -> result played back and use-case list + logo (frames 2155-2602)"
+  },
+  "verdict": [
+    "The clearest isolate-one-control reference: each step shows a single enlarged UI element (pill, menu row, dialog, Play button) on a white field with an oversized hand cursor (sheet_1-5).",
+    "Typed headline with blinking caret and blue keyword introduces every step; the keyword itself zooms into the UI it names.",
+    "Pastel white-blue palette with Google brand accents; UI always sits on white or a light gradient, full editor appears only for a few 30-frame flashes.",
+    "Pacing mixes 90-400-frame explanatory holds with a rapid six-beat run of 30-frame cuts; total 21 shots in 87 s.",
+    "Useful lessons for 30 s demos: prompt-pill hero card, chips flying into the prompt, generated text streaming at large size, blue outline ring on the clicked button; the typed-caret device is cheap to reproduce in HTML overlays."
+  ],
+  "evidence": {
+    "contact_sheets": ["sheet_1.jpg", "sheet_2.jpg", "sheet_3.jpg", "sheet_4.jpg", "sheet_5.jpg"],
+    "sheet_step_s": 1.5,
+    "method": "ffmpeg select=gt(scene,0.3) + contact sheets fps=1/step tile 4x3 + visual inspection (sheets 1, 2, 3, 5 inspected)"
+  }
+}
