@@ -1,5 +1,13 @@
 # Skill: video-as-code
 
+Initial implemented slice (2026-09-12): video/import_media.py, storyboard.py, assemble.py and review.py,
+with workflow/pipeline.py adapters. docs/LOCAL_PIPELINE.md is the executable command guide. The detailed
+motion procedure below remains a target, not a claim that masks/typewriter/audio parity are implemented.
+Real tests need FFmpeg/ffprobe and installed Chrome plus Playwright 1.63.0 in the external rig:
+`npm install --prefix "$LOCALAPPDATA/Temp/demoforge-rig" --save-exact playwright@1.63.0`.
+Use the PowerShell `$env:LOCALAPPDATA` spelling on this host. Synthetic decisions in tests are not
+human approvals. Tests/video and tests/workflow/test_pipeline.py run media tools in the foreground.
+
 Use for TASK-073/075..081 video implementation. Approved StoryboardRevision is the source of truth;
 edit.json is a derived render input, never an independent editable authority. Tests and measurements
 complement full human viewing; they cannot replace privacy, truthfulness or motion review.

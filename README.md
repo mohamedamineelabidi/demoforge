@@ -7,9 +7,11 @@ scenario -> footage checks -> editable storyboard -> render -> technical QA and 
 The first local milestone uses supplied footage, a 30-second 16:9 video and reusable brand assets.
 Controlled capture, a browser editor and hosting follow. Decks, docs and logo generation are deferred.
 
-Status: the version CLI, copy lint and typed contract slice exist. A local browser draft editor is
-available under frontend/: project library, scene editing, session-only footage and review views.
-It does not yet connect to the Python controller, render video or approve/export artifacts.
+Status: bounded GitHub text ingestion and an initial supplied-footage CLI pipeline are implemented.
+The CLI supports grounded proposals, exact-revision approvals, normalization, silent HTML/FFmpeg
+rendering and offline evidence/review export. Synthetic real-tool tests pass; broader release gates
+remain open. The browser draft editor remains separate from the backend controller and export.
+See [local pipeline](docs/LOCAL_PIPELINE.md) for commands and limitations.
 See [TASKS.md](TASKS.md) for the next task and [PRD.md](PRD.md) for requirements.
 
 ## Local frontend
@@ -26,8 +28,9 @@ asset provenance, browser-storage behavior and the backend integration boundary.
 
 ## Quick start
 
-Prerequisites now: Python 3.11+, [uv](https://docs.astral.sh/uv/) and Git. Later media tasks add a pinned
-supported Node LTS, matching Playwright/Chromium and FFmpeg/ffprobe. No cloud account is required now.
+Prerequisites: Python 3.11+, [uv](https://docs.astral.sh/uv/) and Git. Media tests require Node LTS,
+Playwright 1.63.0 in the external rig, installed Chrome and FFmpeg/ffprobe. Binary version enforcement
+remains a release gate. No cloud account is required for tests or supplied proposal JSON.
 
 ```bash
 git clone https://github.com/mohamedamineelabidi/demoforge.git
@@ -45,20 +48,26 @@ uv run python -m demoforge --help
 uv run pytest tests -q          # test suite (hard gate before any task is marked done)
 uv run ruff check .             # lint
 uv run python -m demoforge version
-# ingest/run/approve/resume commands are planned, not implemented.
+uv run python -m demoforge ingest https://github.com/owner/repo
+uv run python -m demoforge run --help
+uv run python -m demoforge propose --help
+uv run python -m demoforge status RUN_ID
+uv run python -m demoforge resume RUN_ID
 ```
 
 ## Production knowledge and next step
 
 We are building a tool that turns repository evidence and authorized footage into a truthful, editable
 release-demo video, not a generator that invents product screens. The current repository implements
-the foundation CLI, copy lint, typed contracts and a separate local browser draft editor. Hermes owns
-the next Python workspace/controller steps; full frontend integration remains **TASK-083**.
+an initial CLI vertical slice, copy lint, typed contracts and a separate local browser draft editor.
+Full frontend integration remains **TASK-083**. Original backend tasks retain open acceptance items;
+see TASKS.md and docs/LOCAL_PIPELINE.md.
 
 The [motion production knowledge base](docs/MOTION_PRODUCTION.md) stores the supplied film references,
 adapted camera/typography/state-flow techniques and a concrete first visual-test brief: record an actual
 controlled fixture's starting state, filter action and visible result, then produce three scenes totaling
-900 frames at 30 fps. Build the fixture and pipeline through TASK-071/073/075..078; no test video exists yet.
+900 frames at 30 fps. Synthetic encoder-pattern videos now pass the real render/controller tests;
+a real product workflow demonstration and full human review remain open.
 The films are unreviewed inspiration, not copied assets or a guarantee of professional output quality.
 Keep the local HTML/FFmpeg path first; the supplied Remotion/3D examples do not override TASK-082.
 

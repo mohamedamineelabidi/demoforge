@@ -2,6 +2,12 @@
 
 Use when generating product profile, narrative pack, captions, slide copy or docs prose.
 
+Initial implementation: enrich/proposals.py has FakeLLM and OpenAIAdapter; video/storyboard.py has
+the strict three-caption Proposal. `propose ... --model MODEL --live` requires OPENAI_API_KEY from
+the local environment. Never request secrets in chat. No live call is required by tests. Current
+grounding accepts exact source excerpts only, not paraphrases; one repair, no tools, no SDK retries.
+See docs/LOCAL_PIPELINE.md for input limits and unimplemented narrative/brief acceptance work.
+
 ## Prompt shape (system)
 ```
 You are writing about a real software project. Use only the provided facts, assets and brand system.

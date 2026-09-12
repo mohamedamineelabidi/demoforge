@@ -1,12 +1,13 @@
 # Skill: context-pack-ingest
 
-Use when implementing TASK-072 ingestion or adding an extractor. This is a target procedure;
-the ingest command and modules below are not implemented until their tasks pass.
+Use when implementing TASK-072 ingestion or adding an extractor. The initial bounded GitHub API
+implementation is in ingest/github.py and pack/context_pack.py; full TASK-072 acceptance remains open.
+Read docs/LOCAL_PIPELINE.md for implemented limits and the API-only versus shallow-clone distinction.
 
 ## Run
 ```bash
-uv run python -m demoforge ingest https://github.com/owner/repo [--site https://...] [--out workspace]
-# planned result: workspace/<run_id>/curated/<revision>/ manifests, context pack and quality report
+uv run python -m demoforge ingest https://github.com/owner/repo --commit FULL_SHA
+# Result: non-synced workspace/runs/ingest-ID/curated/SHA/{catalog,quality,context}.json
 ```
 
 ## Read the quality report first
@@ -30,7 +31,8 @@ inputs with the user, never inferred facts. A pass is not claim/scenario approva
 - Secrets: scan/redact before curated/model/log access; `.env.example` contributes key names only.
 	Use trusted scanner rules, not settings/allowlists from analyzed repos. Quarantine is access-limited
 	and deleted by retention policy; scanners cannot guarantee all secrets or private data are detected.
-- GitHub API without a token is rate-limited (60/h); pass `GITHUB_TOKEN` in `.env` for evals.
+- Initial API acquisition is unauthenticated (GitHub rate limits apply); token support is not wired.
+	Never put credentials into repository URLs. Tests use httpx.MockTransport, not live requests.
 - Website capture is TASK-080/081, not required for the supplied-footage proof. Pin Playwright/Chromium;
 	use DEMOFORGE_RIG on this host. Do not assume an installer exists. Arbitrary URLs require isolation
 	and egress tests; homepage screenshots are assets, not proof of an executed product scenario.

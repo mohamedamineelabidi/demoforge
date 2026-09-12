@@ -40,7 +40,28 @@ Do not install hosted infrastructure or start deck/logo work to complete this mi
 
 ## Ready next
 
-- [ ] **TASK-072** and **TASK-073** (see backlog below) are the next coding tasks.
+- [ ] Complete the remaining **TASK-072..078** acceptance gates. Initial working CLI slice is recorded
+  below; none of those full task definitions is marked complete by the initial integration.
+
+## Initial Backend Integration
+
+- [x] **TASK-098**: Initial CLI source-to-supplied-footage pipeline across TASK-072..078.
+  - Implemented: bounded fixed-host GitHub API acquisition, local redaction, sanitized context/catalog;
+    media permission/decode/hash checks and silent normalization; neutral brand tokens; exact-excerpt
+    FakeLLM/OpenAI proposals; source-bound storyboard and four exact approval pauses; foreground
+    HTML/FFmpeg render, offline source review, manifest-backed portable export and SQLite CLI commands.
+  - Public read-only ingestion: realestate-rag at a9fa0fa285c0ecae0224ca15240ba95640f7d2a8,
+    17 evidence entries, ask_user for footage/approvals. No repo execution or live model call.
+  - Verified on 2026-09-12: focused RED/GREEN tests; `uv run pytest tests -q` 226 passed, 1 skipped;
+    `uv run ruff check .` clean. Frontend regression: 175 unit tests and production build passed.
+    Real synthetic render/controller: 900 frames, 30.0 seconds, 1920x1080, 30 fps, silent; full decode.
+    Export SHA-256: 882d790026c105900ceeb370e70ac97a60f16ce35540a6eec76c88355df4b930.
+    Peak: not applicable (no audio). Synthetic test decisions are not human approvals. Contact-sheet
+    framing was inspected; no customer-video human review is claimed. Scoped commit/push and remote
+    hash verification are required for publication.
+  - Remaining original-task requirements are explicit in docs/LOCAL_PIPELINE.md: clone/policy decision,
+    quarantine/ACLs, richer extraction, asset import, live evaluation, deterministic motion/masking,
+    tool pinning/resources, crash-safe retry, caption-only edits, real product review and frontend API.
 
 ## Completed local proof tasks
 

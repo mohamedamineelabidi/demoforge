@@ -1,7 +1,10 @@
 # Skill: workflow-execution
 
 Use when implementing the explicit controller, stage interfaces, approvals, retries, resumability or
-hosted dispatch. Replaces the retired swarm-roles recipe. This is a target procedure, not existing code.
+hosted dispatch. Replaces the retired swarm-roles recipe. Controller/state are implemented; the initial
+supplied-footage adapters live in workflow/pipeline.py. Read docs/LOCAL_PIPELINE.md for executable CLI
+commands and remaining crash/cancellation/edit acceptance gaps. Only one local operator/process should
+drive a run. Never treat the initial integration as full TASK-078 release acceptance.
 
 ## Local procedure
 
