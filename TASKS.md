@@ -40,9 +40,25 @@ Do not install hosted infrastructure or start deck/logo work to complete this mi
 
 ## Ready next
 
-- [ ] **TASK-070**: Explicit controller, approvals, resume/cancel (see backlog below). This is the next coding task.
+- [ ] **TASK-072** and **TASK-073** (see backlog below) are the next coding tasks; TASK-071 is in progress (subagent).
 
 ## Completed local proof tasks
+
+- [x] **TASK-070**: Explicit controller, approvals, resume/cancel (FR-05, FR-11).
+  - Completed on: 2026-09-12. `demoforge/workflow/stages.py` (Stage protocol, StageRequest/Context/
+    Outcome, TransientError vs ContentError) and `workflow/controller.py` (ordered stages over the
+    SQLite store; skips stages with a live manifest; approval subjects persist a checkpoint and
+    raise `ApprovalRequired` then exit; approvals bind to type+id+revision+sha256, rejection fails
+    the run; cancellation checked before every stage; three-attempt transient budget, one content
+    repair with a hint; output hashes verified before a manifest is published; manifests record
+    upstream manifest ids and hashes; `invalidate_from(stage)` supersedes downstream attempts so a
+    caption edit re-runs storyboard/render/review only). State store gained options, superseded
+    attempts, `reopen_run`, `active_attempt_count`.
+  - Verification: `uv run pytest tests -q` 127 passed, 1 skipped; `uv run ruff check .` clean.
+    Fake stages cover: pause at each approval, no re-run on resume without approval, stale hash,
+    rejection, fresh-process resume, terminal resume refused, cancel between stages purges raw,
+    2 transient then success, 3 transient fail, one repair, second content error fails,
+    invalidation reruns only downstream, unknown stage rejected.
 
 - [x] **TASK-069**: Safe workspace and local state (FR-03, FR-11).
   - Completed on: 2026-09-12. `demoforge/pack/workspace.py` (root outside OneDrive via
@@ -80,7 +96,7 @@ new IDs replace unstarted legacy tasks rather than silently reusing their meanin
     versioned manifests, atomic publication, path/symlink escape protection and quarantine retention.
   - Gate: tests/pack and tests/workflow validate crash-after-write recovery, DB authority, hash mismatch,
     snapshot export/import and cleanup on success/failure/cancellation. Do not place SQLite in OneDrive.
-- [ ] **TASK-070**: Explicit controller, approvals, resume/cancel (depends 069; FR-05, FR-11).
+- [x] **TASK-070**: Explicit controller, approvals, resume/cancel (depends 069; FR-05, FR-11). Done, see above.
   - workflow/ stage request/context/result interface; persist checkpoint and exit while awaiting approval.
   - Gate: tests/workflow covers transition legality, duplicate execution, stale approvals, cancellation,
     stage invalidation, transient three-attempt budget and one content-repair budget using Fake stages.

@@ -115,7 +115,8 @@ CREATE TABLE IF NOT EXISTS runs (
     checkpoint TEXT,
     input_manifest_id TEXT,
     cancellation_requested INTEGER NOT NULL DEFAULT 0,
-    retention_deadline TEXT
+    retention_deadline TEXT,
+    options TEXT
 );
 CREATE TABLE IF NOT EXISTS attempts (
     attempt_id TEXT PRIMARY KEY,
@@ -128,6 +129,7 @@ CREATE TABLE IF NOT EXISTS attempts (
     finished_at TEXT,
     manifest_id TEXT,
     error TEXT,
+    superseded INTEGER NOT NULL DEFAULT 0,
     UNIQUE (run_id, stage_id, number)
 );
 CREATE UNIQUE INDEX IF NOT EXISTS one_running_attempt
@@ -281,6 +283,39 @@ class StateStore:
             )
             self._event(run_id, "cancellation_requested", None, None, None)
 
+    def reopen_run(self, run_id: str, state: RunState, *, current_stage: str) -> RunRecord:
+        """Jump a non-terminal run back to an earlier stage state after invalidation.
+
+        Bypasses the forward-transition table on purpose: invalidation is the one legal backward
+        move, and it is recorded as its own event.
+        """
+        run = self.get_run(run_id)
+        if run.state in ("failed", "cancelled"):
+            raise IllegalTransitionError(f"run {run_id} is terminal ({run.state})")
+        # ``complete`` may be reopened: editing a caption on a finished video is the main use
+        # case for invalidation. Failed/cancelled runs need a new run instead.
+        with self._tx():
+            self._conn.execute(
+                "UPDATE runs SET state = ?, current_stage = ?, checkpoint = NULL, updated_at = ?"
+                " WHERE run_id = ?",
+                (state, current_stage, _iso(self._clock.now()), run_id),
+            )
+            self._event(run_id, "reopened", current_stage, None, {"from": run.state, "to": state})
+        return self.get_run(run_id)
+
+    def set_options(self, run_id: str, options: dict[str, Any]) -> None:
+        self.get_run(run_id)
+        with self._tx():
+            self._conn.execute(
+                "UPDATE runs SET options = ? WHERE run_id = ?", (json.dumps(options), run_id)
+            )
+
+    def get_options(self, run_id: str) -> dict[str, Any]:
+        row = self._conn.execute("SELECT options FROM runs WHERE run_id = ?", (run_id,)).fetchone()
+        if row is None:
+            raise UnknownRunError(run_id)
+        return json.loads(row[0]) if row[0] else {}
+
     # -- attempts -------------------------------------------------------------------------------
 
     def begin_attempt(self, run_id: str, stage_id: str, *, idempotency_key: str) -> AttemptRecord:
@@ -375,6 +410,28 @@ class StateStore:
         ).fetchone()
         return int(count)
 
+    def active_attempt_count(self, run_id: str, stage_id: str) -> int:
+        """Attempts that still count against the stage's budget (not superseded)."""
+        (count,) = self._conn.execute(
+            "SELECT COUNT(*) FROM attempts WHERE run_id = ? AND stage_id = ? AND superseded = 0",
+            (run_id, stage_id),
+        ).fetchone()
+        return int(count)
+
+    def supersede_stage(self, run_id: str, stage_id: str) -> int:
+        """Retire every attempt of a stage; their manifests stop being 'latest' and budgets reset.
+
+        History is kept: rows are flagged, never deleted.
+        """
+        with self._tx():
+            cur = self._conn.execute(
+                "UPDATE attempts SET superseded = 1 WHERE run_id = ? AND stage_id = ?"
+                " AND superseded = 0 AND state != 'running'",
+                (run_id, stage_id),
+            )
+            self._event(run_id, "stage_superseded", stage_id, None, {"attempts": cur.rowcount})
+        return cur.rowcount
+
     # -- manifests ------------------------------------------------------------------------------
 
     def get_manifest(self, manifest_id: str) -> ArtifactManifest:
@@ -388,7 +445,7 @@ class StateStore:
     def latest_manifest(self, run_id: str, stage_id: str) -> ArtifactManifest | None:
         row = self._conn.execute(
             "SELECT m.body FROM manifests m JOIN attempts a ON a.manifest_id = m.manifest_id"
-            " WHERE m.run_id = ? AND m.stage_id = ? AND a.state = 'complete'"
+            " WHERE m.run_id = ? AND m.stage_id = ? AND a.state = 'complete' AND a.superseded = 0"
             " ORDER BY a.number DESC LIMIT 1",
             (run_id, stage_id),
         ).fetchone()
