@@ -12,14 +12,18 @@ Do not promise investor-grade decks or superiority over competitors without evid
 
 ## 2. Inputs and outputs
 
-Required inputs: a public GitHub URL pinned to a revision, a feature/audience brief, and an authorized
-recording or demo environment. A repository alone is not proof that a feature runs.
+DemoForge has two modes (ADR-0005). **Teaser mode** needs only a public GitHub URL pinned to a
+revision, plus an optional brief; it produces a motion-design teaser built from repository text and
+images, labelled as such, never a recording. **Demo mode** additionally needs an authorized recording
+or demo environment. A repository alone is not proof that a feature runs, so Teaser mode may only
+state what the repository documents.
 Existing logos, licensed fonts, colors and screenshots are optional. Reuse supplied brand assets;
 when absent, use neutral design tokens, not an invented identity.
 
-The first local milestone accepts supplied footage and exports a 30-second, 16:9 MP4, a versioned
-scene specification, an evidence report and an offline review page. The product target expands to
-30-60 seconds and a browser scene editor. Controlled capture follows the supplied-footage milestone.
+The first local milestone is the Teaser mode: 30-second, 16:9 MP4 in the reference style
+(`references/style_analysis/style_profile.json`), a versioned scene specification, an evidence
+report and an offline review page. Demo mode with supplied footage follows. The product target
+expands to 30-60 seconds and a browser scene editor.
 No automatic publication: export requires technical QA and human approval of the exact revision.
 
 ## 3. Product flow
