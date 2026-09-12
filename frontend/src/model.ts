@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { approvalSchema } from "./approvals/schema";
+import type { Approval } from "./approvals/schema";
 
 const sceneSchema = z.object({
   id: z.string().min(1),
@@ -8,6 +10,8 @@ const sceneSchema = z.object({
   trimIn: z.number().int().min(0).max(108000),
   zoom: z.number().min(1).max(1.5),
   claimId: z.string(),
+  highlight: z.enum(["none", "zoom", "box", "spotlight"]).default("none"),
+  footageClipRef: z.string().max(500).default(""),
 });
 const scenesSchema = z
   .array(sceneSchema)
@@ -30,6 +34,11 @@ const projectSchema = snapshotSchema.extend({
   updatedAt: z.string().datetime(),
   past: z.array(snapshotSchema).max(50),
   future: z.array(snapshotSchema).max(50),
+  approvalDrafts: z.array(approvalSchema).max(500).default([]),
+  storyboardReview: snapshotSchema.extend({
+    revision: z.number().int().positive(),
+    approvalId: z.string().min(1),
+  }).nullable().default(null),
 });
 export type Scene = z.infer<typeof sceneSchema>;
 export type Project = z.infer<typeof projectSchema>;
@@ -85,13 +94,35 @@ function snapshot(project: Project) {
   return { scenes: project.scenes, accent: project.accent };
 }
 
+export function recordApproval(project: Project, input: Approval): Project {
+  const approval = approvalSchema.parse(input);
+  if (approval.run_id !== `local:${project.id}`) throw new Error("Decision belongs to another local run.");
+  const existing = project.approvalDrafts.find(item => item.approval_id === approval.approval_id);
+  if (existing) {
+    if (JSON.stringify(existing) !== JSON.stringify(approval)) throw new Error("Local decisions are immutable.");
+    return project;
+  }
+  if (approval.subject_type === "storyboard" &&
+      (approval.subject_revision !== project.revision || approval.subject_id !== `local:${project.id}:storyboard`)) {
+    throw new Error("Storyboard decision is stale or belongs to another subject.");
+  }
+  return projectSchema.parse({
+    ...project,
+    updatedAt: new Date().toISOString(),
+    approvalDrafts: [...project.approvalDrafts, approval],
+    storyboardReview: approval.subject_type === "storyboard" && approval.decision === "approved"
+      ? { ...snapshot(project), revision: project.revision, approvalId: approval.approval_id }
+      : project.storyboardReview,
+  });
+}
+
 export function updateProject(
   project: Project,
   patch: Partial<
     Pick<Project, "name" | "brief" | "repository" | "accent" | "scenes">
   >,
 ): Project {
-  return projectSchema.parse({
+  const updated = projectSchema.parse({
     ...project,
     ...patch,
     revision: project.revision + 1,
@@ -99,6 +130,10 @@ export function updateProject(
     past: [...project.past, snapshot(project)].slice(-50),
     future: [],
   });
+  const unchanged = updated.name === project.name &&
+    updated.brief === project.brief && updated.repository === project.repository &&
+    JSON.stringify(snapshot(updated)) === JSON.stringify(snapshot(project));
+  return unchanged ? project : updated;
 }
 
 export function editScene(

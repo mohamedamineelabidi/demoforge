@@ -194,6 +194,21 @@ new IDs replace unstarted legacy tasks rather than silently reusing their meanin
 
 ## Editing experience
 
+- [x] **TASK-095**: Parallel frontend F1/F2/F3 review, frame editor and mock run status.
+  - Completed on: 2026-09-12 with three isolated frontend subagents and parent integration.
+    Claims -> Storyboard -> Final output review; strict local Approval schema, immutable history,
+    actual snapshot/file SHA-256, required rejection note and explicit local operator identity.
+    Frame-based editing, shared caption lint, highlight/clip references and re-approval baseline;
+    read-only typed mock state rail with 3 transient attempts / 1 repair bounds. Entry flow preserved.
+  - User brief labels F1/F2 as frontend halves of TASK-078/080; those backend tasks remain open
+    with their original CLI/capture meanings. API/controller binding remains TASK-083. No dependencies,
+    backend files or style-reference files changed. No real server approval/render/export claimed.
+  - Verification: tests-first RED/GREEN; frontend `npx tsc --noEmit`, `npx vitest run` (116 passed),
+    `npm run build`, `npx playwright test` (20 passed). Desktop/mobile screenshots inspected; axe,
+    single caption editor, frame continuity, stale approvals, required notes, clipboard, local storage,
+    real supplied MP4 hash/preview and blocked export verified. `uv run pytest tests -q` exited 0
+    (one skipped); `uv run ruff check .` clean. Local-only limits/procedure in frontend/README.md.
+
 - [x] **TASK-092**: Parallel local frontend and visual project-library redesign, explicitly requested
   on 2026-09-12 while Hermes owns Python work. ADR-0004 authorizes React/TypeScript/Vite now.
   - Scope: frontend/ browser drafts, scene editing, session footage, evidence/review views, responsive

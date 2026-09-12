@@ -40,8 +40,8 @@ import {
   moveScene,
   parseProjects,
   redo,
+  recordApproval,
   STORAGE_KEY,
-  timecode,
   timeline,
   undo,
   updateProject,
@@ -51,9 +51,15 @@ import { EntryFlow, EntryLanding } from "./entry/EntryFlow";
 import type { EntryResult } from "./entry/EntryFlow";
 import { CatalogPanel, ReportPanel } from "./evidence/ArtifactPanels";
 import type { ImportedArtifacts } from "./evidence/imports";
+import { ApprovalReview } from "./approvals/ApprovalReview";
+import { FrameStoryboard } from "./storyboard/FrameStoryboard";
+import { captionErrors, compareStoryboard } from "./storyboard/model";
+import { RunStatusPanel } from "./run/RunStatusPanel";
+import { mockRunStatus } from "./mocks/run";
+import "./workspace-review.css";
 import "./entry/entry.css";
 
-type View = "Projects" | "New" | "Storyboard" | "Evidence" | "Footage" | "Review";
+type View = "Projects" | "New" | "Storyboard" | "Evidence" | "Footage" | "Review" | "Approvals";
 type Media = {
   url: string;
   name: string;
@@ -69,6 +75,7 @@ const navigation = [
   { name: "Evidence", icon: Link2 },
   { name: "Footage", icon: Film },
   { name: "Review", icon: ShieldCheck },
+  { name: "Approvals", icon: CheckCheck },
 ] as const;
 
 function IconButton({
@@ -216,6 +223,7 @@ function Workspace() {
   const [drawer, setDrawer] = useState(false);
   const [logsOpen, setLogsOpen] = useState(false);
   const [pane, setPane] = useState("scenes");
+  const [editorMode, setEditorMode] = useState<"canvas" | "frames">("canvas");
   const [message, setMessage] = useState("");
   const [media, setMedia] = useState<Record<string, Media>>({});
   const [imports, setImports] = useState<Record<string, ImportedArtifacts>>({});
@@ -310,6 +318,10 @@ function Workspace() {
   }
   function patchScene(patch: Partial<Scene>) {
     if (!project || !scene) return;
+    if (patch.caption !== undefined && captionErrors(patch.caption).length) {
+      setMessage(captionErrors(patch.caption).join(" "));
+      return;
+    }
     try {
       change(editScene(project, scene.id, patch));
     } catch {
@@ -710,7 +722,7 @@ function Workspace() {
                       <Badge>Draft r{project.revision}</Badge>
                       <span>16:9</span>
                       <span>30 fps</span>
-                      <span>{(totalFrames / 30).toFixed(1)} seconds</span>
+                      <span>{totalFrames} frames</span>
                     </div>
                   </div>
                   <div className="heading-actions">
@@ -754,6 +766,10 @@ function Workspace() {
                     Browser draft
                   </span>
                 </div>
+                <details className="workspace-run-panel">
+                  <summary><Terminal size={16} />Run status<span>Mock / not connected</span><ChevronRight size={16} /></summary>
+                  <RunStatusPanel run={mockRunStatus} />
+                </details>
                 {view === "Storyboard" && (
                   <>
                     <div className="editor-toolbar">
@@ -765,6 +781,10 @@ function Workspace() {
                         </span>
                       </div>
                       <div>
+                        <div className="editor-modes" role="group" aria-label="Storyboard editor mode">
+                          <button aria-pressed={editorMode === "canvas"} onClick={() => setEditorMode("canvas")}><Monitor size={15} />Canvas</button>
+                          <button aria-pressed={editorMode === "frames"} onClick={() => setEditorMode("frames")}><Layers size={15} />Frames</button>
+                        </div>
                         <IconButton
                           label="Undo scene edit"
                           disabled={!project.past.length || storageBlocked}
@@ -785,6 +805,12 @@ function Workspace() {
                         </span>
                       </div>
                     </div>
+                    {project.storyboardReview && (editorMode === "canvas" || !compareStoryboard(project.scenes, project.storyboardReview.scenes).changed) && (project.storyboardReview.revision !== project.revision ||
+                      compareStoryboard(project.scenes, project.storyboardReview.scenes).changed) &&
+                      <div className="storyboard-reapproval" role="status"><CircleAlert size={17} /><span>Storyboard changed, re-approval required</span><button onClick={() => navigate("Approvals")}>Review changes<ArrowRight size={15} /></button></div>}
+                    {editorMode === "frames" ? <FrameStoryboard project={project} onChange={change}
+                      selectedSceneId={scene.id} onSelectScene={selectScene} disabled={storageBlocked}
+                      reviewedScenes={project.storyboardReview?.scenes} /> : <>
                     <div className="pane-selector">
                       <button
                         className={pane === "scenes" ? "active" : ""}
@@ -831,12 +857,12 @@ function Workspace() {
                                     {String(index + 1).padStart(2, "0")}
                                   </span>
                                   <small>
-                                    {(item.frames / 30).toFixed(1)}s
+                                    {item.frames} f
                                   </small>
                                 </div>
                                 <strong>{item.title}</strong>
                                 <small>
-                                  {timecode(item.start)} - {timecode(item.end)}
+                                  {item.start} - {item.end} f
                                 </small>
                               </button>
                               <div className="scene-bottom">
@@ -1022,9 +1048,9 @@ function Workspace() {
                               </>
                             </IconButton>
                             <span className="mono">
-                              {timecode(frame)}{" "}
+                              {frame} f{" "}
                               <span className="muted">
-                                / {timecode(totalFrames)}
+                                / {totalFrames} f
                               </span>
                             </span>
                           </div>
@@ -1045,11 +1071,11 @@ function Workspace() {
                           />
                         </label>
                         <div className="timeline-ruler">
-                          <span>00:00</span>
+                          <span>0 f</span>
                           <span>
-                            {timecode(Math.round(totalFrames / 2)).slice(0, 5)}
+                            {Math.round(totalFrames / 2)} f
                           </span>
-                          <span>{timecode(totalFrames).slice(0, 5)}</span>
+                          <span>{totalFrames} f</span>
                         </div>
                         <div className="timeline-tracks">
                           {sequence.map((item, index) => (
@@ -1224,6 +1250,15 @@ function Workspace() {
                         </div>
                         <div className="inspector-section">
                           <h2>Evidence</h2>
+                          {imports[project.id]?.catalog && <label>Claim reference
+                            <select aria-label="Scene claim reference" value={scene.claimId} disabled={storageBlocked}
+                              onChange={event => patchScene({ claimId: event.target.value })}>
+                              <option value="">No claim linked</option>
+                              {scene.claimId && !imports[project.id]?.catalog?.claims.some(claim => claim.claim_id === scene.claimId) &&
+                                <option value={scene.claimId}>Unresolved: {scene.claimId}</option>}
+                              {imports[project.id]?.catalog?.claims.map(claim => <option key={claim.claim_id} value={claim.claim_id}>{claim.claim_id}</option>)}
+                            </select>
+                          </label>}
                           <button
                             className="evidence-link"
                             onClick={() => navigate("Evidence")}
@@ -1240,8 +1275,17 @@ function Workspace() {
                         </div>
                       </aside>
                     </div>
+                    </>}
                   </>
                 )}
+                {view === "Approvals" && <ApprovalReview project={project} catalog={imports[project.id]?.catalog}
+                  drafts={project.approvalDrafts} disabled={storageBlocked} onDecision={approval => {
+                    const next = recordApproval(project, approval);
+                    if (!persist(projects.map(item => item.id === project.id ? next : item))) {
+                      throw new Error("Local decision could not be saved.");
+                    }
+                    setMessage("Not sent, local draft");
+                  }} />}
                 {view === "Evidence" && (
                   <section className="detail-page">
                     <div className="section-heading">

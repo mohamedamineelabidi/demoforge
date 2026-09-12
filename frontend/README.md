@@ -31,6 +31,12 @@ traces and is ignored. The first browser test refreshes the permitted taskroom.p
 - Honest evidence/footage/review views, browser-only checks and JSON draft download.
 - Session-only EvidenceCatalog and QualityReport JSON imports with strict version-1 validation,
   claim/source inspection, reported check status and exact catalog subject/revision comparison.
+- Canvas and Frames editor modes: contiguous half-open frame ranges at 30 fps, a 900-frame target,
+  shared entry-copy lint, highlight choices and explicit clip/claim references. References and highlight
+  selections are draft metadata, not footage acquisition or implemented render effects.
+- Ordered Claims, Storyboard and Final output local approval review with copyable hashes, explicit
+  operator labels and mandatory rejection notes. Exact snapshot matches distinguish current/stale records.
+- Read-only, explicitly mocked run-status rail with alternative terminal outcomes and bounded attempts.
 - Demo data is explicitly labeled. The sample app really filters tasks; its still is not a recording
   or proof about customer software. Offline bundled fonts retain license notices under public/.
 
@@ -43,6 +49,40 @@ map them to the versioned backend contracts and use server-authoritative revisio
 Unknown frame counts/hashes remain unknown. Browser media metadata is not an ffprobe/decode gate.
 Saved drafts contain user text in localStorage; use trusted local data, not secrets. Closing/reloading
 loses attached media, while draft text remains until the user deletes it. This is not hosted security.
+
+## Local review workflow
+
+Open a project, import a sanitized catalog in Evidence, then use Approvals to record local decisions.
+The strict schema in src/approvals/schema.ts uses the requested claims/storyboard/output subset of the
+backend contract; scenario approvals remain outside this UI. UTC timestamps, positive revisions,
+lowercase SHA-256 and required nullable notes are validated. A rejection requires a nonblank note.
+Never post these local subjects directly to the backend: local IDs and canonically serialized snapshot
+hashes are not backend artifact IDs or file hashes. Final-output hashing uses the actual supplied bytes.
+
+Up to 500 immutable approval drafts persist within the existing project storage and draft JSON export.
+Recording a decision does not change its subject revision or scene edit history. A local storyboard
+approval saves a scene/accent baseline; edits retain the prior decision and request re-approval. Undo
+does not recreate a previously approved revision. Claims imports are still session-only and must be
+reattached after reload before new decisions. Deleting a project removes its local review history.
+Operator labels and review notes persist as user text; do not put secrets in them.
+
+Final MP4 review accepts a nonempty local file up to 128 MiB, with authorization/privacy confirmation
+before selection and full-review confirmation before a local decision. File bytes and blob URLs are
+session-only; removal, view/project changes and unmount clear the output. Browser playback and operator
+confirmation are not integrity or export gates. Export video remains disabled after all local decisions.
+
+Frames mode derives starts from durations, shifts later scenes on an end-frame edit, warns when the
+total differs from 900 and never silently stretches the sequence. Caption editing shares lintBrief
+with onboarding. Changes compare against the saved local baseline, not an invented server approval.
+The status panel reads src/mocks/run.ts, not a controller. Its created label is a local mock value;
+backend pending must be mapped explicitly by a future adapter. Completed stages are explicit mock data,
+not inferred from enum order. Transient attempts are 0..3 and repairs 0..1, both read-only.
+
+Commit gates from frontend/: `npx tsc --noEmit`, `npx vitest run`, `npm run build`,
+`npx playwright test`. Run terminal commands sequentially on this shared Windows shell. The integrated
+review-flow.spec.ts exercises keyboard editing, rejection notes, clipboard hashes, stale decisions,
+storage, mock status and actual MP4-byte hashing at desktop/mobile sizes. Sibling form keys must use
+distinct prefixes even when their initial values are both empty strings.
 
 ## Evidence and quality imports
 
