@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Taskroom - Demo data</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app" data-testid="app">
+    <header class="header">
+      <h1>Taskroom</h1>
+      <span class="badge" data-testid="demo-label">Demo data</span>
+    </header>
+
+    <nav class="filters" aria-label="Task filters">
+      <button type="button" class="filter is-active" data-filter="all" data-testid="filter-all" aria-pressed="true">All</button>
+      <button type="button" class="filter" data-filter="active" data-testid="filter-active" aria-pressed="false">Active</button>
+      <button type="button" class="filter" data-filter="completed" data-testid="filter-completed" aria-pressed="false">Completed</button>
+    </nav>
+
+    <p class="count" data-testid="task-count" aria-live="polite"></p>
+
+    <ul class="tasks" data-testid="task-list"></ul>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

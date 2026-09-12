@@ -1,0 +1,25 @@
+{
+  "case_id": "taskroom_completed_filter",
+  "kind": "authorized_recording",
+  "description": "Operator records the seeded taskroom fixture: click the Completed filter and show the 3 completed tasks.",
+  "inputs": {
+    "fixture_dir": "fixtures/taskroom",
+    "entry": "index.html",
+    "action": {
+      "click_testid": "filter-completed"
+    },
+    "expected_visible": {
+      "task-item": 3,
+      "task-count": "3 completed tasks"
+    }
+  },
+  "expected_claims": [
+    "Filter completed tasks"
+  ],
+  "expected_gate": "pass",
+  "permission": {
+    "actor_id": "operator:fixture",
+    "attested_at": "2026-09-12T08:00:00Z",
+    "scope": "record fixtures/taskroom locally for engineering tests"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "missing_evidence",
+  "kind": "missing_evidence",
+  "description": "A claim is proposed without any evidence reference; it must become a question, not copy.",
+  "inputs": {
+    "claim_text": "Syncs tasks across devices instantly",
+    "evidence_ids": []
+  },
+  "expected_claims": [],
+  "expected_gate": "ask_user",
+  "permission": null
+}

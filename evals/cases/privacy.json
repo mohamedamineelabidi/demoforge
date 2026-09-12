@@ -1,0 +1,26 @@
+{
+  "case_id": "privacy",
+  "kind": "privacy",
+  "description": "Footage description contains an email address region that must be masked or the run blocked.",
+  "inputs": {
+    "footage_description": "screen recording of a task list",
+    "sensitive_regions": [
+      {
+        "kind": "email_address",
+        "frames": [
+          120,
+          300
+        ],
+        "bbox": [
+          640,
+          80,
+          960,
+          110
+        ]
+      }
+    ]
+  },
+  "expected_claims": [],
+  "expected_gate": "ask_user",
+  "permission": null
+}

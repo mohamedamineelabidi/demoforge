@@ -1,0 +1,12 @@
+{
+  "case_id": "invalid_media",
+  "kind": "invalid_media",
+  "description": "Supplied footage is a 0-byte .mp4 and must be rejected before any processing.",
+  "inputs": {
+    "media_path": "evals/media/empty.mp4",
+    "declared_format": "mp4"
+  },
+  "expected_claims": [],
+  "expected_gate": "fail",
+  "permission": null
+}
