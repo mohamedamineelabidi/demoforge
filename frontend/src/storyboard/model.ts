@@ -1,9 +1,10 @@
 import { lintBrief } from "../entry/schemas";
+import { MOTION_CAPTION_MAX } from "../motion/motion";
 import { editScene, timeline, type Project, type Scene } from "../model";
 
 export const STORYBOARD_FPS = 30;
 export const STORYBOARD_TARGET_FRAMES = 900;
-export const CAPTION_MAX_LENGTH = 160;
+export const CAPTION_MAX_LENGTH = MOTION_CAPTION_MAX;
 export const CLIP_REFERENCE_MAX_LENGTH = 500;
 
 export function timeline30fps(scenes: Scene[]) {

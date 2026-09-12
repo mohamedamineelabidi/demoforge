@@ -10,6 +10,7 @@
 .storyboard-reapproval button { margin-left: auto; font-size: 12px; color: var(--action); }
 .project-workspace .approval-review { padding: 24px; }
 .frame-storyboard { padding: 8px 24px 20px; }
+.motion-preview { padding: 12px 24px 24px; }
 .editor-toolbar.editor-toolbar { height: auto; min-height: 56px; padding-block: 12px; }
 @media(max-width: 760px) {
   .view-tabs { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); padding-inline: 0; gap: 0; }
@@ -22,4 +23,6 @@
   .workspace-run-panel > summary span { max-width: 130px; }
   .project-workspace .approval-review { padding: 16px; }
   .frame-storyboard { padding-inline: 16px; }
+  .motion-preview { padding-inline: 16px; }
+  .library-heading { flex-wrap: wrap; gap: 12px; }
 }

@@ -13,6 +13,8 @@ import {
   recordApproval,
 } from "./model";
 import { createApproval } from "./approvals/schema";
+import styleProfile from "../../references/style_analysis/style_profile.json";
+import { MOTION_CAPTION_MAX, MOTION_MAX_SCALE } from "./motion/motion";
 import { lintBrief, MARKETING_WORDS } from "./entry/schemas";
 import { FrameStoryboard } from "./storyboard/FrameStoryboard";
 import {
@@ -137,7 +139,7 @@ describe("local storyboard drafts", () => {
 
   it("validates highlight and bounds a plain clip reference without interpreting it", () => {
     const project = createProject("Demo");
-    for (const highlight of ["none", "zoom", "box", "spotlight"] as const) {
+    for (const highlight of ["none", "zoom", "box", "spotlight", "caret"] as const) {
       const edited = editScene(project, project.scenes[0].id, {
         highlight, footageClipRef: "https://example.invalid/clip.mp4", zoom: 1.5,
       });
@@ -168,6 +170,19 @@ describe("local storyboard drafts", () => {
 });
 
 describe("frame storyboard helpers", () => {
+  it("matches the shared style profile while preserving legacy captions", () => {
+    const project = createProject("Style profile");
+    const sequence = timeline30fps(project.scenes);
+    expect(sequence.fps).toBe(styleProfile.fps);
+    expect(sequence.totalFrames).toBe(styleProfile.target_duration_frames);
+    expect(sequence.scenes.map(scene => [scene.start_frame, scene.end_frame])).toEqual(styleProfile.beats.map(beat => beat.frames));
+    expect(MOTION_CAPTION_MAX).toBe(styleProfile.captions.max_chars);
+    expect(MOTION_MAX_SCALE).toBe(styleProfile.transitions.push_in_max_scale);
+    expect(captionErrors("x".repeat(60))).toEqual([]);
+    expect(captionErrors("x".repeat(61))).not.toEqual([]);
+    project.scenes[0].caption = "x".repeat(160);
+    expect(parseProjects(JSON.stringify({ version: 1, projects: [project] }))[0].scenes[0].caption).toHaveLength(160);
+  });
   it("exposes half-open frame ranges and an honest 900-frame target", () => {
     const project = createProject("Demo");
     expect(timeline30fps(project.scenes)).toMatchObject({

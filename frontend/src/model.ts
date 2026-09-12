@@ -10,7 +10,7 @@ const sceneSchema = z.object({
   trimIn: z.number().int().min(0).max(108000),
   zoom: z.number().min(1).max(1.5),
   claimId: z.string(),
-  highlight: z.enum(["none", "zoom", "box", "spotlight"]).default("none"),
+  highlight: z.enum(["none", "zoom", "box", "spotlight", "caret"]).default("none"),
   footageClipRef: z.string().max(500).default(""),
 });
 const scenesSchema = z

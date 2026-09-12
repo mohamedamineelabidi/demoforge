@@ -227,6 +227,7 @@ export function FrameStoryboard({
                   highlight: event.target.value as Scene["highlight"],
                 }))}>
                 <option value="none">None</option><option value="zoom">Zoom</option>
+                <option value="caret">Caret annotation</option>
                 <option value="box">Box</option><option value="spotlight">Spotlight</option>
               </select>
             </label>

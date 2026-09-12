@@ -194,6 +194,20 @@ new IDs replace unstarted legacy tasks rather than silently reusing their meanin
 
 ## Editing experience
 
+- [x] **TASK-096**: URL-first local source drafts and style-profile motion studies.
+  - GitHub URL, optional brief/full SHA and no-footage creation from empty/populated libraries.
+    Deterministic 30 fps preview, 900-frame default, beat seeks, hard cuts, 60-character caption edits,
+    capped 1.12 push-in, reduced motion and guarded local media. Legacy captions remain stored.
+    Caret highlight is metadata only; no invented UI or automatic control placement.
+  - Verification: tests-first RED/GREEN; TypeScript, 175 Vitest tests, production build and 23
+    foreground Playwright tests pass. Desktop/320px screenshots inspected; axe, aspect ratio,
+    overflow, transport, caption limits, storage and no external requests checked. Source form tested
+    with realestate-rag URL/full SHA, not ingestion. `uv run pytest tests -q` exited 0 (one skipped);
+    `uv run ruff check .` clean. Procedure/limits documented in frontend/README.md.
+  - Local source draft/motion study only: no repository execution, ingestion, LLM call, rendered MP4,
+    API approval or export. Backend TASK-072/073/074/075/076/077/083 remain separate. README-linked
+    realestate-rag demo recording identified, not downloaded, authorized or privacy-reviewed.
+
 - [x] **TASK-095**: Parallel frontend F1/F2/F3 review, frame editor and mock run status.
   - Completed on: 2026-09-12 with three isolated frontend subagents and parent integration.
     Claims -> Storyboard -> Final output review; strict local Approval schema, immutable history,

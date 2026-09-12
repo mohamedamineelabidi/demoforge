@@ -53,13 +53,15 @@ import { CatalogPanel, ReportPanel } from "./evidence/ArtifactPanels";
 import type { ImportedArtifacts } from "./evidence/imports";
 import { ApprovalReview } from "./approvals/ApprovalReview";
 import { FrameStoryboard } from "./storyboard/FrameStoryboard";
-import { captionErrors, compareStoryboard } from "./storyboard/model";
+import { CAPTION_MAX_LENGTH, captionErrors, compareStoryboard } from "./storyboard/model";
+import { RepositoryEntry } from "./source-entry/RepositoryEntry";
+import { MotionPreview } from "./motion/MotionPreview";
 import { RunStatusPanel } from "./run/RunStatusPanel";
 import { mockRunStatus } from "./mocks/run";
 import "./workspace-review.css";
 import "./entry/entry.css";
 
-type View = "Projects" | "New" | "Storyboard" | "Evidence" | "Footage" | "Review" | "Approvals";
+type View = "Projects" | "New" | "Source" | "Storyboard" | "Evidence" | "Footage" | "Review" | "Approvals";
 type Media = {
   url: string;
   name: string;
@@ -223,7 +225,7 @@ function Workspace() {
   const [drawer, setDrawer] = useState(false);
   const [logsOpen, setLogsOpen] = useState(false);
   const [pane, setPane] = useState("scenes");
-  const [editorMode, setEditorMode] = useState<"canvas" | "frames">("canvas");
+  const [editorMode, setEditorMode] = useState<"canvas" | "frames" | "motion">("canvas");
   const [message, setMessage] = useState("");
   const [media, setMedia] = useState<Record<string, Media>>({});
   const [imports, setImports] = useState<Record<string, ImportedArtifacts>>({});
@@ -561,7 +563,16 @@ function Workspace() {
           </div>
         )}
         <main id="workspace">
-          {view === "New" ? (
+          {view === "Source" ? <RepositoryEntry disabled={storageBlocked} onCancel={() => navigate("Projects")}
+            onCreate={input => {
+              const base = createProject(input.name);
+              const draft = { ...base, repository: input.repository, brief: input.brief };
+              if (!persist([...projects, draft])) return false;
+              openProject(draft);
+              setEditorMode("motion");
+              setMessage("Source draft created. Repository ingestion and generation have not run.");
+              return true;
+            }} /> : view === "New" ? (
             <EntryFlow
               disabled={storageBlocked}
               onCancel={() => navigate("Projects")}
@@ -571,6 +582,7 @@ function Workspace() {
             <section className="projects-page">
               <EntryLanding disabled={storageBlocked} onStart={startEntry} />
               <div className="entry-landing-secondary">
+                <button className="secondary" disabled={storageBlocked} onClick={() => navigate("Source")}><Link2 size={16} />Start from repository</button>
                 <button className="secondary" disabled={storageBlocked} onClick={loadDemo} aria-label="Open demo data">
                   <FolderOpen size={16} />
                   Open demo data
@@ -613,7 +625,7 @@ function Workspace() {
                   <span className="demo-feature-content"><Badge>Demo data</Badge><strong>One action.<br />A clearer story.</strong><span className="demo-feature-action">Open sample project <ArrowRight size={16} /></span></span>
                 </button>
               </div>
-              <div className="library-heading"><h2>Project library <span>{projects.length.toString().padStart(2, "0")}</span></h2><span>Local drafts</span></div>
+              <div className="library-heading"><h2>Project library <span>{projects.length.toString().padStart(2, "0")}</span></h2><button className="secondary" disabled={storageBlocked} onClick={() => navigate("Source")}><Link2 size={16} />Start from repository</button></div>
               <div className="project-toolbar">
                 <label className="search-field">
                   <Search size={17} />
@@ -784,6 +796,7 @@ function Workspace() {
                         <div className="editor-modes" role="group" aria-label="Storyboard editor mode">
                           <button aria-pressed={editorMode === "canvas"} onClick={() => setEditorMode("canvas")}><Monitor size={15} />Canvas</button>
                           <button aria-pressed={editorMode === "frames"} onClick={() => setEditorMode("frames")}><Layers size={15} />Frames</button>
+                          <button aria-pressed={editorMode === "motion"} onClick={() => setEditorMode("motion")}><Play size={15} />Motion</button>
                         </div>
                         <IconButton
                           label="Undo scene edit"
@@ -808,7 +821,8 @@ function Workspace() {
                     {project.storyboardReview && (editorMode === "canvas" || !compareStoryboard(project.scenes, project.storyboardReview.scenes).changed) && (project.storyboardReview.revision !== project.revision ||
                       compareStoryboard(project.scenes, project.storyboardReview.scenes).changed) &&
                       <div className="storyboard-reapproval" role="status"><CircleAlert size={17} /><span>Storyboard changed, re-approval required</span><button onClick={() => navigate("Approvals")}>Review changes<ArrowRight size={15} /></button></div>}
-                    {editorMode === "frames" ? <FrameStoryboard project={project} onChange={change}
+                    {editorMode === "motion" ? <MotionPreview project={project} catalog={imports[project.id]?.catalog}
+                      media={clip} demoImage={project.demo ? "/taskroom.png" : undefined} /> : editorMode === "frames" ? <FrameStoryboard project={project} onChange={change}
                       selectedSceneId={scene.id} onSelectScene={selectScene} disabled={storageBlocked}
                       reviewedScenes={project.storyboardReview?.scenes} /> : <>
                     <div className="pane-selector">
@@ -1132,7 +1146,7 @@ function Workspace() {
                             <textarea
                               key={`${scene.id}-caption-${project.revision}`}
                               defaultValue={scene.caption}
-                              maxLength={160}
+                              maxLength={CAPTION_MAX_LENGTH}
                               rows={3}
                               disabled={storageBlocked}
                               onBlur={(event) => {
@@ -1142,7 +1156,7 @@ function Workspace() {
                             />
                           </label>
                           <div className="field-note">
-                            {scene.caption.length}/160
+                            {scene.caption.length}/{CAPTION_MAX_LENGTH}
                             <span>
                               {scene.claimId
                                 ? "Demo claim attached"

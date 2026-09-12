@@ -115,6 +115,37 @@ not change draft revisions, attach claim IDs to scenes, or update repository ref
 
 ## Visual reference and checks
 
+### URL-first drafts and motion studies
+
+Start from repository is available on the empty landing and populated project library. It accepts
+a GitHub URL, optional brief and optional full SHA without requiring footage. This only creates a
+local source draft: it does not fetch, ingest, execute or infer features from the repository. Existing
+footage-first entry remains available. Motion mode offers a deterministic, frame-sampled study using
+literal local labels, or authorized/privacy-reviewed local footage. The owned Taskroom image is labeled
+as a demo still. No UI is redrawn and no remote assets are loaded. No LLM request or MP4 export is made.
+
+The defaults follow references/style_analysis/style_profile.json at commit 48d334c: 30 fps, 900 frames,
+beats [0,180), [180,660), [660,900), one character revealed per frame, 60-character caption edits,
+hard cuts, push-in capped at 1.12, and cubic-bezier(0.22,1,0.36,1). Legacy 160-character captions remain
+in storage; the study warns when its 60-character display cap is exceeded. Caret annotation is an
+editable highlight choice only: placement and actual annotations await footage/control coordinates.
+Existing box/spotlight choices are retained for compatibility, not rendered as dark masks. No automated
+numeric claim verification is implemented. Linked evidence and human/backend review are still required.
+
+Playback starts paused, supports restart/seek and reduced motion, and refuses unknown/out-of-range
+footage bounds. Browser seeking waits for decoder readiness and is not a frame-accurate export gate.
+Caption edits and source changes reset preview playback. These modules own no media URLs or persistence.
+
+Focused checks: `npm --prefix frontend test -- src/motion src/source-entry src/model.test.ts` and
+`npm --prefix frontend run test:browser -- motion.spec.ts`. Motion tests check random seeks, beat
+boundaries, easing, scale/caption limits and media guards. Browser tests use the real public input URL
+https://github.com/mohamedamineelabidi/realestate-rag pinned to
+a9fa0fa285c0ecae0224ca15240ba95640f7d2a8; this verifies form/draft behavior, not repository ingestion.
+Independent read-only inspection found its README links a Google Drive demo at
+https://drive.google.com/file/d/15vbux_4qsIx73d2STNASoTCr5KoiHR3Q/view.
+That recording has not been downloaded, authorized for reuse or privacy-reviewed in this frontend task.
+TASK-072/073 remain Hermes's lane; LLM proposals, real rendering and the API adapter remain later gates.
+
 2026-09-12 revision: the user's Magnific/SchoolAI screenshots inform the slim rail, visual library and
 canvas-first editor. The finance reference informs restrained green accents, not its landing-page layout.
 Mobbin's https://mobbin.com/browse/web/apps redirected to its public discovery page during inspection;
