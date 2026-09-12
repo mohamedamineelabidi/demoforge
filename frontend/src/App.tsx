@@ -47,8 +47,11 @@ import {
   updateProject,
 } from "./model";
 import type { Project, Scene } from "./model";
+import { EntryFlow, EntryLanding } from "./entry/EntryFlow";
+import type { EntryResult } from "./entry/EntryFlow";
+import "./entry/entry.css";
 
-type View = "Projects" | "Storyboard" | "Evidence" | "Footage" | "Review";
+type View = "Projects" | "New" | "Storyboard" | "Evidence" | "Footage" | "Review";
 type Media = {
   url: string;
   name: string;
@@ -218,6 +221,7 @@ function Workspace() {
   const [mediaReady, setMediaReady] = useState(false);
   const [conflict, setConflict] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [firstRun, setFirstRun] = useState(false);
   const dialog = useRef<HTMLDialogElement>(null);
   const video = useRef<HTMLVideoElement>(null);
   const mediaRef = useRef(media);
@@ -336,6 +340,40 @@ function Workspace() {
     setView(next);
     setDrawer(false);
     setPlaying(false);
+  }
+  function startEntry() {
+    setMessage("");
+    setFirstRun(false);
+    navigate("New");
+  }
+  function completeEntry(result: EntryResult) {
+    const base = createProject(result.brief.name);
+    const next = updateProject(base, {
+      repository: result.repository.commit
+        ? `${result.repository.url}@${result.repository.commit}`
+        : result.repository.url,
+      brief: `${result.brief.changed}\n\nFor: ${result.brief.audience}`,
+    });
+    const draft = { ...next, revision: 1, past: [] };
+    if (!persist([...projects, draft])) return false;
+    setMedia((previous) => ({
+      ...previous,
+      [draft.id]: {
+        url: result.footage.url,
+        name: result.footage.file.name,
+        size: result.footage.file.size,
+        permitted: true,
+        reviewed: false,
+        duration: result.footage.meta.duration ?? undefined,
+        width: result.footage.meta.width ?? undefined,
+        height: result.footage.meta.height ?? undefined,
+      },
+    }));
+    openProject(draft);
+    setMessage(
+      "Draft created in this browser. Footage stays on this device until you review it.",
+    );
+    return true;
   }
   function attach(file?: File) {
     if (!file || !project) return;
@@ -507,7 +545,31 @@ function Workspace() {
           </div>
         )}
         <main id="workspace">
-          {view === "Projects" ? (
+          {view === "New" ? (
+            <EntryFlow
+              disabled={storageBlocked}
+              onCancel={() => navigate("Projects")}
+              onComplete={completeEntry}
+            />
+          ) : view === "Projects" && projects.length === 0 && !firstRun ? (
+            <section className="projects-page">
+              <EntryLanding disabled={storageBlocked} onStart={startEntry} />
+              <div className="entry-landing-secondary">
+                <button className="secondary" disabled={storageBlocked} onClick={loadDemo} aria-label="Open demo data">
+                  <FolderOpen size={16} />
+                  Open demo data
+                </button>
+                <span className="muted">See a finished storyboard built from fixture data, not a customer recording.</span>
+              </div>
+              <div className="workspace-footer">
+                <ShieldCheck size={16} />
+                Drafts stay in this browser.
+                <button className="text-button" onClick={() => setFirstRun(true)}>
+                  Open the project library
+                </button>
+              </div>
+            </section>
+          ) : view === "Projects" ? (
             <section className="projects-page">
               <div className="page-heading">
                 <div>
@@ -518,16 +580,16 @@ function Workspace() {
                 <button
                   className="primary"
                   disabled={storageBlocked}
-                  onClick={() => setCreating(true)}
+                  onClick={startEntry}
                 >
                   <Plus size={17} />
                   New project
                 </button>
               </div>
               <div className="studio-start">
-                <button className="new-draft-tile" disabled={storageBlocked} onClick={() => setCreating(true)}>
+                <button className="new-draft-tile" disabled={storageBlocked} onClick={startEntry}>
                   <span className="creation-symbol"><Plus size={26} strokeWidth={1.5} /></span>
-                  <span><strong>New release demo</strong><small>Blank storyboard / 16:9 / 30 fps</small></span>
+                  <span><strong>New release demo</strong><small>Repository, brief and footage / 16:9 / 30 fps</small></span>
                   <ArrowRight size={18} />
                 </button>
                 <button className="demo-feature" disabled={storageBlocked} onClick={loadDemo} aria-label="Open demo data">
@@ -594,7 +656,7 @@ function Workspace() {
                     <button
                       className="primary"
                       disabled={storageBlocked}
-                      onClick={() => setCreating(true)}
+                      onClick={startEntry}
                     >
                       <Plus size={17} />
                       Create a project

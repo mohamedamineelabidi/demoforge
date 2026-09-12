@@ -1,0 +1,441 @@
+/* DemoForge entry flow: landing, stepper, three inputs, review.
+   Colours come only from the app tokens defined in style.css / studio.css. */
+
+.entry-landing {
+  max-width: 640px;
+  margin: 48px auto 32px;
+  padding: 0 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+.entry-brand-icon {
+  display: inline-flex;
+  width: 48px;
+  height: 48px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--action);
+}
+.entry-landing h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  line-height: 1.3;
+  font-weight: 500;
+}
+.entry-landing-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+.entry-cta {
+  height: 40px;
+  font-size: 0.9375rem;
+  gap: 8px;
+}
+
+.entry-landing-secondary {
+  max-width: 640px;
+  margin: 0 auto 40px;
+  padding: 18px 4px 0;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: 0.8125rem;
+}
+.entry-landing-secondary .secondary {
+  height: 36px;
+  gap: 8px;
+}
+
+.entry-flow {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 8px 0 40px;
+}
+.entry-flow-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+.entry-flow-head h1 {
+  margin: 4px 0 0;
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+.entry-flow-head h1:focus-visible {
+  outline: 2px solid var(--action);
+  outline-offset: 4px;
+}
+.entry-stepper {
+  list-style: none;
+  margin: 0 0 24px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+.entry-step {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 2px solid var(--border);
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+.entry-step.current {
+  border-top-color: var(--action);
+  color: var(--action);
+}
+.entry-step.done {
+  border-top-color: var(--accent);
+  color: var(--secondary);
+}
+.entry-step-mark {
+  display: inline-flex;
+  width: 22px;
+  height: 22px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  font-size: 0.75rem;
+}
+.entry-step.current .entry-step-mark {
+  background: var(--action);
+  color: var(--surface);
+}
+.entry-step-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.entry-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.entry-intro {
+  margin: 0;
+  color: var(--secondary);
+  line-height: 1.5;
+}
+.entry-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.entry-field-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+.entry-field label {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+.entry-field input:not([type="checkbox"]),
+.entry-field textarea {
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1px solid var(--muted);
+  border-radius: 6px;
+  background: var(--surface);
+  color: inherit;
+}
+.entry-field textarea {
+  resize: vertical;
+  line-height: 1.5;
+}
+.entry-field.has-error input,
+.entry-field.has-error textarea,
+.entry-drop.has-error {
+  border-color: var(--amber);
+}
+.entry-hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+.entry-error {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--amber);
+  font-size: 0.8125rem;
+}
+.entry-counter {
+  font-family: "Geist Mono", Consolas, monospace;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.entry-counter.over {
+  color: var(--amber);
+}
+.entry-parsed {
+  margin: -8px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8125rem;
+  color: var(--green);
+  min-height: 20px;
+}
+.entry-lint {
+  margin: -6px 0 0;
+  padding: 10px 12px;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-left: 2px solid var(--amber);
+  background: var(--inset);
+  color: var(--secondary);
+  font-size: 0.8125rem;
+}
+.entry-lint li {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+}
+.entry-lint svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--amber);
+}
+
+.entry-drop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 150px;
+  padding: 22px;
+  border: 1px dashed var(--muted);
+  border-radius: 8px;
+  background: var(--inset);
+  color: var(--secondary);
+  text-align: center;
+}
+.entry-drop.dragging {
+  border-style: solid;
+  border-color: var(--action);
+  background: var(--surface);
+}
+.entry-drop p {
+  margin: 0;
+  font-size: 0.875rem;
+}
+.entry-file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.entry-picker {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  border: 1px solid var(--muted);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+.entry-file-input:focus-visible + .entry-picker,
+.entry-drop:has(.entry-file-input:focus-visible) .entry-picker {
+  outline: 2px solid var(--action);
+  outline-offset: 3px;
+}
+.entry-file {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 14px;
+  width: 100%;
+  text-align: left;
+  align-items: start;
+}
+.entry-file-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.entry-file-body strong {
+  overflow-wrap: anywhere;
+  font-weight: 500;
+}
+.entry-meta {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+.entry-meta div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.entry-meta dt {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.entry-meta dd {
+  margin: 0;
+  font-family: "Geist Mono", Consolas, monospace;
+  font-size: 0.8125rem;
+}
+.entry-probe {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+.entry-check label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.entry-check input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin: 1px 0 0;
+  flex-shrink: 0;
+  accent-color: var(--action);
+}
+
+.entry-review {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--border);
+}
+.entry-review > div {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 8px 20px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+}
+.entry-review dt {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  color: var(--secondary);
+  height: 24px;
+}
+.entry-review dd {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.entry-review small {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+.entry-review .text-button {
+  align-self: flex-start;
+  height: 28px;
+  padding: 0;
+  margin-top: 4px;
+  border: 0;
+  background: transparent;
+}
+.entry-status {
+  margin: 0;
+  padding: 12px 14px;
+  border-left: 2px solid var(--accent);
+  background: var(--inset);
+  color: var(--secondary);
+  font-size: 0.875rem;
+}
+.entry-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding-top: 8px;
+  flex-wrap: wrap;
+}
+.entry-actions > .primary {
+  margin-left: auto;
+}
+.entry-actions-note {
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+.entry-flow .primary,
+.entry-flow .secondary {
+  height: 38px;
+  gap: 8px;
+}
+
+@media (max-width: 600px) {
+  .entry-landing {
+    margin: 24px auto 16px;
+  }
+  .entry-landing h1 {
+    font-size: 1.25rem;
+  }
+  .entry-stepper {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px;
+  }
+  .entry-step-label span,
+  .entry-step-label {
+    font-size: 0.75rem;
+  }
+  .entry-step-label svg {
+    display: none;
+  }
+  .entry-file {
+    grid-template-columns: auto 1fr;
+  }
+  .entry-file > .secondary {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+  .entry-review > div {
+    grid-template-columns: 1fr;
+  }
+  .entry-actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+  .entry-actions > .primary,
+  .entry-actions > .secondary {
+    margin-left: 0;
+    width: 100%;
+    justify-content: center;
+  }
+  .entry-actions-note {
+    text-align: center;
+  }
+}

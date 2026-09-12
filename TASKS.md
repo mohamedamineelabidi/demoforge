@@ -40,9 +40,23 @@ Do not install hosted infrastructure or start deck/logo work to complete this mi
 
 ## Ready next
 
-- [ ] **TASK-072** and **TASK-073** (see backlog below) are the next coding tasks; TASK-071 is in progress (subagent).
+- [ ] **TASK-072** and **TASK-073** (see backlog below) are the next coding tasks.
 
 ## Completed local proof tasks
+
+- [x] **TASK-071**: Fixture app and evaluation fixtures (FR-08).
+  - Completed on: 2026-09-12. `fixtures/taskroom/` (static, dependency-free task list: 8 seeded
+    tasks, 3 completed, All/Active/Completed filter, data-testids, visible count), `demoforge/
+    fixtures/server.py` (loopback-only ThreadingHTTPServer, no path escape), `demoforge/evals/
+    schema.py` (EvalCase kinds, EvalMetrics with None for unknowns, never 0), `evals/cases/` (5
+    cases: authorized recording, invalid media, missing evidence, prompt injection, privacy).
+  - Verification: `uv run pytest tests -q` 148 passed, 1 skipped; ruff clean.
+- [x] **TASK-093**: Frontend entry flow (landing, 3-step project creation, footage attestation).
+  - Completed on: 2026-09-12. `frontend/src/entry/` (Zod schemas for repo URL/brief/footage, inline
+    copy lint for em-dashes and marketing words, browser-read video metadata, mandatory
+    authorization attestation, honest 'nothing sent yet' review, draft added to library).
+  - Verification: `npx tsc --noEmit` ok, vitest 16 passed, `npm run build` ok, Playwright
+    `e2e/entry.spec.ts` 2 passed incl. 375 px + axe.
 
 - [x] **TASK-070**: Explicit controller, approvals, resume/cancel (FR-05, FR-11).
   - Completed on: 2026-09-12. `demoforge/workflow/stages.py` (Stage protocol, StageRequest/Context/
