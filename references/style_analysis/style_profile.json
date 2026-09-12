@@ -1,0 +1,118 @@
+{
+  "schema_version": "1.0",
+  "derived_from": [
+    "-uHLJY66PDM",
+    "3Kcihys0gUY",
+    "4SCjXcBeW1E",
+    "66XwG1CLHuU",
+    "awUYikrGsKk",
+    "AxX0BHrEFJw",
+    "Hbj6WMhVByQ",
+    "k3d_xeVxEOE",
+    "SgmuplXU2iY",
+    "VwxpmC4zhqo",
+    "ylEyGoNF3VU",
+    "z9Zt8-PdZ4g",
+    "ZK-rNEhJIDs",
+    "linkedin_posts.md"
+  ],
+  "fps": 30,
+  "target_duration_frames": 900,
+  "aspect": "16:9",
+  "shot_duration_frames": {
+    "min": 60,
+    "typical": 150,
+    "max": 300
+  },
+  "beats": [
+    {
+      "name": "start_state",
+      "frames": [
+        0,
+        180
+      ],
+      "caption": "what the user sees before acting"
+    },
+    {
+      "name": "action",
+      "frames": [
+        180,
+        660
+      ],
+      "caption": "one real user action, cursor visible"
+    },
+    {
+      "name": "result",
+      "frames": [
+        660,
+        900
+      ],
+      "caption": "the observable result, held"
+    }
+  ],
+  "transitions": {
+    "between_beats": "hard_cut_or_background_swap",
+    "within_beat": "none_or_slow_push_in",
+    "push_in_max_scale": 1.12,
+    "banned": [
+      "flash_cut_under_30_frames",
+      "wipe",
+      "3d_flip"
+    ]
+  },
+  "framing": {
+    "footage_container": "rounded_card",
+    "corner_radius_px": 16,
+    "shadow": "soft, 0 24px 64px rgba(0,0,0,0.18)",
+    "field": "flat_or_soft_gradient_from_brand_kit",
+    "footage_scale_of_frame": 0.82
+  },
+  "captions": {
+    "position": "below_card_or_top_left_margin",
+    "style": "sentence_case",
+    "reveal": "typewriter",
+    "reveal_frames_per_char": 1,
+    "max_chars": 60,
+    "font": "brand_kit_sans_or_system_ui",
+    "size_ratio_of_frame_height": 0.045,
+    "lint": [
+      "no_em_dash",
+      "banned_phrases",
+      "no_unverified_numbers"
+    ]
+  },
+  "highlight": {
+    "primary": "annotation_caret_word_next_to_control",
+    "secondary": "soft_zoom_on_control",
+    "mask_style": "blur_or_surface_card_never_black",
+    "cursor": "keep_native_cursor_visible"
+  },
+  "colour": {
+    "accents_per_shot": 1,
+    "cyan_reserved_for": "ai_states_when_brand_kit_says_so",
+    "field_families": [
+      "paper_white",
+      "near_black",
+      "brand_accent"
+    ]
+  },
+  "easing": {
+    "default": "cubic-bezier(0.22, 1, 0.36, 1)",
+    "durations_frames": {
+      "fast": 8,
+      "normal": 14,
+      "slow": 24
+    }
+  },
+  "end_card": {
+    "frames": 90,
+    "content": [
+      "product_name",
+      "one_sentence_claim_with_evidence_id"
+    ]
+  },
+  "audio": {
+    "music": "optional_royalty_free_only",
+    "voiceover": "optional_tts_from_approved_captions"
+  }
+}
