@@ -19,6 +19,13 @@ clear DEMOFORGE_TEASER_OUTPUT for isolated outputs. Build frontend then run
 `npm --prefix frontend run test:teaser` for the real browser/render/export fixture on port 8018.
 Test decisions are synthetic; never approve the user's repository artifacts without their review.
 
+Template v2 preserves exact scene text while animating a labelled document illustration. Preparation
+prioritizes root README purpose/features and retains qualifications. Reference-like styling is not
+proof of parity with the films. A user being unavailable is not an approval: publish a storyboard
+preview for review, retain the exact spec hash, and leave the repository-specific render gate open.
+Real-media tests use synthetic source/decisions. Report their frame/decode/hash results separately
+from an actual customer artifact. Keep durable review samples outside temporary pytest directories.
+
 1. Read TASKS.md, .agents/architecture.md and docs/DATA_CONTRACTS.md for the active stage and inputs.
 2. Write a focused test for the transition and failure path before logic. Use a fake clock/LLM/stage.
 3. Validate StageRequest and immutable input manifests; check evidence, permissions and approvals.

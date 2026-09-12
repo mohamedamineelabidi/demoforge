@@ -50,6 +50,12 @@ record **Combined source and storyboard approval**, then explicitly start render
 30-second video, record **Final output approval**, then export. These are two named checkpoints,
 not the supplied-footage pipeline's four checkpoints. Approvals bind to exact artifact SHA-256 values.
 
+The connected view shows Repository, Storyboard, Render and Review/download steps. Source quotations
+and exact revision/hash details remain inspectable without filling the page. A delayed request has no
+invented percentage. Retry after a terminal run creates a new request; uncertain network retries keep
+the same key. Template v2 uses animated typography and a labelled document illustration, not product
+screenshots. README selection prioritizes product purpose and features over sample document lists.
+
 From the repository root:
 
 ```bash

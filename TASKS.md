@@ -6,8 +6,9 @@ Tasks describe planned behavior, not implemented commands or modules. Never mark
 
 ## Current focus
 
-Local video-first proof: public repository + feature brief + authorized supplied footage -> approved
-claims/scenario -> three-scene storyboard -> 30-second 16:9 export with evidence and QA.
+Local teaser-first proof (ADR-0005): public repository -> documented source excerpts -> approved
+storyboard -> 30-second animated teaser -> full human review and approved export. Supplied-footage
+demonstrations remain a separate workflow. Presentation and documentation generation are deferred.
 Do not install hosted infrastructure or start deck/logo work to complete this milestone.
 
 ## Planning update completed
@@ -44,6 +45,30 @@ Do not install hosted infrastructure or start deck/logo work to complete this mi
   below; none of those full task definitions is marked complete by the initial integration.
 
 ## Initial Backend Integration
+
+- [x] **TASK-100**: Improve reference-inspired teaser composition, source selection and usability.
+  - Three scoped agents improved scene composition, deterministic README selection and connected UI.
+    Root README purpose/features outrank sample document lists. Whole bold/table excerpts retain
+    exact source text; qualifications, unsafe instructions and unsupported fragments remain rejected.
+  - Template v2: product-name opening, editorial feature typography, animated labelled document
+    illustration, green accent and dark end card. Frame-indexed easing/reduced-motion preview and
+    static final hold checked; no copied reference assets, invented UI or runtime claims.
+  - UI: four-step status, collapsed source/revision details, truthful delayed-request state and fresh
+    retry IDs after terminal runs; uncertain network retries preserve idempotency. Approvals stay explicit.
+  - Verified 2026-09-12: 356 Python tests passed, 1 skipped with real-media opt-in; Ruff clean;
+    186 frontend unit tests, production build and all 9 connected browser tests passed. Browser gate
+    includes actual synthetic MP4 rendering/download, 320px accessibility, retry and approval sequencing.
+  - Synthetic sample: 900 frames, 30 seconds, 1920x1080, 30 fps, silent, full decode and motion-pair MD5
+    checks; SHA-256 9adaa37ade322da1b964fb0c4c732ece68ac29dadc0d7962a08e60b49bd2a6e5.
+    Render took 46.0 seconds on this host. Audio peak not applicable. Synthetic decisions are test-only.
+  - Actual realestate-rag storyboard prepared from saved commit a9fa0fa285c0ecae0224ca15240ba95640f7d2a8,
+    not claimed current HEAD. Opening: RAG Real Estate Document Assistant. Feature: Every answer includes
+    references to original documents. Exact storyboard SHA-256:
+    48233975d932bce44821b2b423eaf28f4927d01b3f59dfec2b88e012fab6408b.
+    Offline HTML feature composition inspected. User unavailable for exact approval; no approval fabricated.
+- [ ] **TASK-101**: Obtain exact realestate-rag storyboard approval, render the repository-specific MP4,
+  then obtain full human output review before final export. Presentation/docs generation are not part
+  of this gate. The synthetic test video is not a substitute for the requested repository video.
 
 - [x] **TASK-099**: Connect a public-repository teaser workflow to the local browser application.
   - Three delegated lanes: source preparation/schema, offline motion renderer, and loopback API/browser

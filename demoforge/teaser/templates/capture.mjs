@@ -10,7 +10,7 @@ const browser = await chromium.launch({ channel: "chrome", headless: true });
 try {
   const context = await browser.newContext({
     viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 1,
-    offline: true, serviceWorkers: "block", reducedMotion: "reduce",
+    offline: true, serviceWorkers: "block", reducedMotion: "no-preference",
   });
   const documentUrl = pathToFileURL(html).href;
   await context.route("**/*", route => route.request().url() === documentUrl

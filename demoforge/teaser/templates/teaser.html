@@ -7,56 +7,91 @@
 <title>Motion-design teaser preview</title>
 <style>
 * { box-sizing: border-box; letter-spacing: 0; }
-html, body { margin: 0; background: #e9e9e7; }
-body { font-family: 'Segoe UI', Helvetica, sans-serif; }
+html, body { margin: 0; background: #eef0ee; }
+body { font-family: 'Trebuchet MS', 'Segoe UI', sans-serif; }
 #viewport { width: 100%; overflow: hidden; }
 #canvas { position: relative; width: 1920px; height: 1080px; transform-origin: top left;
-  background: #f4f4f1; color: #171817; --accent: #236841; }
-#canvas.dark { background: #161816; color: #f4f4f1; --accent: #a9d788; }
-header { position: absolute; top: 64px; left: 104px; right: 104px; display: flex;
-  align-items: flex-start; justify-content: space-between; gap: 48px; font-size: 24px; }
+  background: #f7f8f5; color: #202620; --accent: #286348; --paper: #ffffff; }
+#canvas.end { background: #202620; color: #f7f8f5; --accent: #c4e795; }
+header { position: absolute; top: 54px; left: 96px; right: 96px; display: flex;
+  align-items: flex-start; justify-content: space-between; gap: 48px; font-size: 22px; }
 #label { flex-shrink: 0; }
-#identity { max-width: 640px; overflow-wrap: anywhere; text-align: right; }
-#rule { position: absolute; left: 104px; top: 144px; width: 1712px; height: 3px;
-  background: currentColor; opacity: .22; }
-#content { position: absolute; left: 152px; top: 250px; width: 1568px; height: 610px; }
-#marker { width: 72px; height: 8px; background: var(--accent); margin-bottom: 34px;
-  transform-origin: left; }
-#headline-mask { width: 100%; height: 330px; overflow: hidden; }
-h1 { margin: 0; height: 100%; font-size: 152px; line-height: 1.08; font-weight: 600;
+#identity { max-width: 680px; overflow-wrap: anywhere; text-align: right; }
+#rule { position: absolute; left: 96px; right: 96px; top: 146px; height: 1px;
+  background: currentColor; opacity: .3; }
+#content { position: absolute; left: 96px; top: 202px; width: 1728px; height: 626px; }
+#eyebrow { margin: 0 0 26px; font: 20px/1.4 Consolas, monospace; color: var(--accent); }
+#headline-mask { width: 100%; height: 320px; overflow: hidden; }
+h1 { margin: 0; height: 100%; font-size: 164px; line-height: 1.03; font-weight: 600;
   overflow-wrap: anywhere; white-space: pre-wrap; }
-#caption { margin: 30px 0 0; font-size: 54px; line-height: 1.25; max-width: 1380px;
-  height: 168px; white-space: pre-wrap; overflow-wrap: anywhere; }
-#unrevealed { visibility: hidden; }
-#canvas.feature #headline-mask { height: 440px; }
-#canvas.feature h1 { font-size: 114px; }
+#caption { margin: 34px 0 0; font-size: 50px; line-height: 1.22; width: 1120px;
+  height: 192px; white-space: pre-wrap; overflow-wrap: anywhere; }
+#marker { position: absolute; bottom: 0; right: 0; width: 440px; height: 14px;
+  background: var(--accent); transform-origin: left; }
+#canvas.title #caption { padding-left: 28px; border-left: 3px solid var(--accent); }
+#canvas.feature #content { width: 960px; top: 238px; height: 568px; }
+#canvas.feature #headline-mask { height: 474px; }
+#canvas.feature h1 { font-family: Georgia, 'Times New Roman', serif;
+  font-size: 92px; line-height: 1.12; font-weight: 400; }
 #canvas.feature #caption { display: none; }
-#canvas.center #content { text-align: center; }
-#canvas.center #marker { margin-left: auto; margin-right: auto; transform-origin: center; }
-#canvas.center #caption { margin-left: auto; margin-right: auto; }
-footer { position: absolute; left: 104px; right: 104px; bottom: 54px; border-top: 1px solid;
-  padding-top: 22px; display: grid; grid-template-columns: 3fr 2fr; gap: 12px 64px;
-  font-family: Consolas, 'Courier New', monospace; font-size: 16px; line-height: 1.4; }
+#canvas.feature #marker { left: 0; width: 160px; height: 5px; }
+#canvas.end #content { top: 240px; }
+#canvas.end h1 { font-size: 146px; }
+#canvas.end #caption { color: #c4e795; width: 1460px; }
+#canvas.end #marker { width: 1728px; height: 3px; }
+#illustration { position: absolute; left: 1176px; top: 220px; width: 600px;
+  height: 600px; display: none; }
+#canvas.feature #illustration { display: block; }
+#document-field { position: absolute; inset: 0 0 62px; overflow: visible; }
+.document { position: absolute; width: 310px; height: 382px; top: 76px; left: 142px;
+  border: 2px solid #60816d; transform-origin: 50% 80%; }
+#document-back { background: #e4ebdf; }
+#document-middle { background: #eff3e9; }
+#document-focus { background: var(--paper); border-color: #286348;
+  box-shadow: 0 18px 32px #20262012; }
+#document-focus::before { content: ''; position: absolute; right: -2px; top: -2px;
+  width: 68px; height: 68px; background: linear-gradient(45deg, #e4ebdf 49%, #286348 50%,
+  #286348 51%, #f7f8f5 52%); }
+#quotation { position: absolute; top: 30px; left: 30px; color: #286348;
+  font: 220px/1 Georgia, serif; }
+#document-anchor { position: absolute; left: 30px; bottom: 30px; width: 246px;
+  border-top: 2px solid #286348; padding-top: 14px; color: #286348;
+  font: 16px/1.25 Consolas, monospace; overflow-wrap: anywhere; }
+#connection { position: absolute; left: -62px; right: 58px; bottom: 48px;
+  border-bottom: 2px solid #286348; height: 42px; border-right: 2px solid #286348;
+  transform-origin: right; }
+#illustration-label { position: absolute; bottom: 0; left: 0; width: 100%;
+  margin: 0; font: 18px/1.4 Consolas, monospace; text-align: center; color: #43664e; }
+footer { position: absolute; left: 96px; right: 96px; bottom: 48px; border-top: 1px solid;
+  padding-top: 20px; display: grid; grid-template-columns: 3fr 2fr; gap: 10px 64px;
+  font-family: Consolas, 'Courier New', monospace; font-size: 18px; line-height: 1.4; }
 footer p { margin: 0; overflow-wrap: anywhere; }
 #revision { text-align: right; }
-#source { grid-column: 1 / -1; font-size: 14px; }
+#source { grid-column: 1 / -1; font-size: 16px; }
 @media (max-width: 799px) {
-  #viewport { min-height: 1000px; }
-  #canvas { width: 100%; height: 1000px; transform: none !important; }
-  header { top: 24px; left: 24px; right: 24px; font-size: 12px; gap: 14px; flex-direction: column; }
+  #canvas { width: 100%; height: 1200px; transform: none !important; }
+  header { top: 24px; left: 24px; right: 24px; font-size: 12px; gap: 12px; flex-direction: column; }
   #identity { text-align: left; max-width: 100%; }
-  #rule { top: 98px; left: 24px; width: calc(100% - 48px); }
-  #content { top: 150px; left: 24px; width: calc(100% - 48px); height: 390px; }
-  #marker { width: 40px; height: 5px; margin-bottom: 24px; }
-  #headline-mask { height: 170px; }
-  h1 { font-size: 48px; }
-  #caption { font-size: 25px; height: 150px; margin-top: 22px; }
-  #canvas.feature #headline-mask { height: 320px; }
-  #canvas.feature h1 { font-size: 42px; }
-  footer { left: 24px; right: 24px; top: 580px; bottom: auto; font-size: 12px;
-    display: flex; flex-direction: column; gap: 6px; padding-top: 16px; }
+  #rule { top: 114px; left: 24px; right: 24px; }
+  #content, #canvas.feature #content, #canvas.end #content { top: 154px; left: 24px;
+    width: calc(100% - 48px); height: 458px; }
+  #eyebrow { font-size: 13px; margin-bottom: 22px; }
+  #headline-mask { height: 196px; }
+  h1, #canvas.end h1 { font-size: 48px; line-height: 1.08; }
+  #caption, #canvas.end #caption { width: 100%; font-size: 25px; height: 180px; margin-top: 24px; }
+  #canvas.title #caption { padding-left: 16px; }
+  #marker, #canvas.end #marker { width: 100%; height: 4px; }
+  #canvas.feature #headline-mask { height: 284px; }
+  #canvas.feature h1 { font-size: 38px; }
+  #canvas.feature #content { height: 340px; }
+  #illustration { left: calc(50% - 140px); top: 528px; width: 280px; height: 250px; }
+  #document-field { width: 600px; height: 538px; transform: scale(.43); transform-origin: top left;
+    left: 11px; }
+  #illustration-label { font-size: 12px; }
+  footer { left: 24px; right: 24px; top: 816px; bottom: auto; font-size: 12px;
+    display: flex; flex-direction: column; gap: 8px; padding-top: 16px; }
   #revision { text-align: left; }
-  #source { font-size: 11px; }
+  #source { font-size: 12px; }
 }
 </style>
 </head>
@@ -66,10 +101,22 @@ footer p { margin: 0; overflow-wrap: anywhere; }
     <header><span id="label">Motion-design teaser / Not a recording</span><span id="identity"></span></header>
     <div id="rule" aria-hidden="true"></div>
     <section id="content" aria-label="Documented repository text">
+      <p id="eyebrow"></p>
       <div id="marker" aria-hidden="true"></div>
       <div id="headline-mask"><h1 id="headline"></h1></div>
-      <p id="caption"><span id="revealed" aria-hidden="true"></span><span id="unrevealed" aria-hidden="true"></span></p>
+      <p id="caption"></p>
     </section>
+    <aside id="illustration" aria-label="Conceptual document illustration, not application UI">
+      <div id="document-field" aria-hidden="true">
+        <div id="document-back" class="document" data-document></div>
+        <div id="document-middle" class="document" data-document></div>
+        <div id="document-focus" class="document" data-document>
+          <span id="quotation">&#8220;</span><span id="document-anchor"></span>
+        </div>
+        <div id="connection"></div>
+      </div>
+      <p id="illustration-label">Document illustration</p>
+    </aside>
     <footer><p id="evidence"></p><p id="revision"></p><p id="source"></p></footer>
   </article>
 </main>

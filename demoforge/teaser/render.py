@@ -72,7 +72,8 @@ def _inspect_generated(source: Path) -> dict:
         "-protocol_whitelist", "file", "-threads", "1", "-i", absolute,
         "-map", "0:v:0", "-f", "null", "-",
     ], 180)
-    samples = [12, 60, 192, 210, 372, 390, 522, 540, 672, 690, 810]
+    motion_pairs = [(12, 60), (192, 240), (372, 420), (522, 600), (672, 750)]
+    samples = [frame for pair in motion_pairs for frame in pair] + [810, 899]
     selection = "+".join(f"eq(n,{frame})" for frame in samples)
     raw = _run([
         "ffmpeg", "-v", "error", "-protocol_whitelist", "file", "-threads", "1",
@@ -81,7 +82,10 @@ def _inspect_generated(source: Path) -> dict:
     ], 180).decode("ascii")
     hashes = [line.rsplit(",", 1)[1].strip() for line in raw.splitlines()
               if line and not line.startswith("#")]
-    if len(hashes) != len(samples) or len(set(hashes)) != len(samples):
+    if len(hashes) != len(samples):
+        raise MediaError("expected motion samples were missing")
+    by_frame = dict(zip(samples, hashes, strict=True))
+    if any(by_frame[start] == by_frame[end] for start, end in motion_pairs):
         raise MediaError("expected motion samples did not differ")
     with source.open("rb") as handle:
         result["sha256"] = hashlib.file_digest(handle, "sha256").hexdigest()
@@ -137,7 +141,7 @@ def render_teaser(spec: "TeaserSpec", target: Path) -> dict:
         ], 300)
         result = _inspect_generated(final)
         result.update({
-            "origin": "generated_typography", "template_version": "1",
+            "origin": "generated_typography", "template_version": "2",
             "catalog_sha256": spec.catalog_sha256, "commit_sha": spec.commit_sha,
             "spec_revision": spec.revision, "captured_frames": capture["captured_frames"],
             "browser_version": capture["browser_version"], "playwright_version": "1.63.0",
