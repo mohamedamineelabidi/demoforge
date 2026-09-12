@@ -1,0 +1,27 @@
+# runtime data lake (per-run raw/staging/curated/outputs)
+workspace/
+# python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+dist/
+build/
+*.egg-info/
+# node (Playwright rig lives OUTSIDE the repo, see AGENTS.md)
+node_modules/
+# secrets
+.env
+.env.*
+!.env.example
+# heavy media never committed
+*.mp4
+*.mov
+*.wav
+*.webm
+# editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
