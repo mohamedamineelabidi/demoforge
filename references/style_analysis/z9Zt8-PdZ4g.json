@@ -1,0 +1,174 @@
+{
+  "video_id": "z9Zt8-PdZ4g",
+  "title": "AI SaaS Product Launch Video Ad | Lovio",
+  "channel": "Zelios - Animated Video Production",
+  "url": "https://www.youtube.com/watch?v=z9Zt8-PdZ4g",
+  "duration_s": 73,
+  "fps": 30,
+  "source_fps": "25/1",
+  "resolution": "1280x720",
+  "has_audio_stream": true,
+  "scene_cuts_detected_thr_0_3": 9,
+  "avg_shot_duration_frames": 219,
+  "shots": [
+    {
+      "shot": 1,
+      "start_frame": 0,
+      "end_frame": 89,
+      "duration_frames": 89,
+      "layout": "full-bleed off-white, centred kinetic headline mixing sans and italic serif",
+      "motion": "words fade/slide in, serif italic keyword",
+      "transition_in": "none",
+      "text": "You don't start with a product",
+      "highlight": "italic serif word in blue",
+      "notes": "frames 0-89"
+    },
+    {
+      "shot": 2,
+      "start_frame": 89,
+      "end_frame": 220,
+      "duration_frames": 131,
+      "layout": "photo of green car on forest road, then generated landing-page mockups stacked over it (dark green theme)",
+      "motion": "UI cards scale in over photo, lime tags",
+      "transition_in": "cut",
+      "text": "Discover how we are changing the world of automobiles",
+      "highlight": "lime green #B9F542 pill keyword inside mockup",
+      "notes": "frames 89-220"
+    },
+    {
+      "shot": 3,
+      "start_frame": 220,
+      "end_frame": 342,
+      "duration_frames": 122,
+      "layout": "white, dark side panel chat mockup + tweet card; then blue flower logo on grid",
+      "motion": "cards slide, logo blooms",
+      "transition_in": "cut",
+      "text": "",
+      "highlight": "",
+      "notes": "frames 220-342"
+    },
+    {
+      "shot": 4,
+      "start_frame": 342,
+      "end_frame": 612,
+      "duration_frames": 270,
+      "layout": "sky/cloud footage full-bleed, centred wordmark and kinetic tagline with icon replacing letters",
+      "motion": "text blur-in, logo icon slots into word",
+      "transition_in": "cut",
+      "text": "lovio / for momentum / Build something lovio",
+      "highlight": "logo glyph inside word",
+      "notes": "frames 342-612"
+    },
+    {
+      "shot": 5,
+      "start_frame": 612,
+      "end_frame": 952,
+      "duration_frames": 340,
+      "layout": "monitor mockup on a rock in the clouds showing prompt UI; then dark blue glow: prompt card with image chips being dragged",
+      "motion": "camera pushes from monitor to card, cursor drags image into prompt, text types 'Build a CRM system optimized for...'",
+      "transition_in": "cut",
+      "text": "Build a CRM system optimized for B2B workflows / Public",
+      "highlight": "cursor drag, floating prompt card with glow border",
+      "notes": "frames 612-952, action beat"
+    },
+    {
+      "shot": 6,
+      "start_frame": 952,
+      "end_frame": 1004,
+      "duration_frames": 53,
+      "layout": "dark blue, blurred streaming code text",
+      "motion": "code lines stream/blur",
+      "transition_in": "cut",
+      "text": "import ... from",
+      "highlight": "",
+      "notes": "frames 952-1004 generation moment"
+    },
+    {
+      "shot": 7,
+      "start_frame": 1004,
+      "end_frame": 1060,
+      "duration_frames": 55,
+      "layout": "generated Wind Power dashboard appears on monitor/tablet/phone mockups on rock",
+      "motion": "device sweep, dashboard glows in",
+      "transition_in": "cut",
+      "text": "Wind Power Generation",
+      "highlight": "device mockups with glow",
+      "notes": "frames 1004-1060"
+    },
+    {
+      "shot": 8,
+      "start_frame": 1060,
+      "end_frame": 1636,
+      "duration_frames": 576,
+      "layout": "white: 3D capsule icon, tagline 'Lovio generates', code snippet, then skeleton -> full page blur reveal, then fan of many generated pages",
+      "motion": "skeleton bars morph into page, page un-blurs, pages fan out in 3D",
+      "transition_in": "cut",
+      "text": "Lovio generates / Lovio @/components / Wind Power Generation / Control your systems",
+      "highlight": "blur-to-sharp reveal, skeleton loader",
+      "notes": "frames 1060-1636, longest shot"
+    },
+    {
+      "shot": 9,
+      "start_frame": 1636,
+      "end_frame": 1836,
+      "duration_frames": 200,
+      "layout": "landing page mockup with product card zoomed; cursor edits text block inline with property panel",
+      "motion": "zoom into section, cursor selects text, panel edits, card swaps",
+      "transition_in": "cut",
+      "text": "Smart cleaning, simplified / Learn More / Essentials",
+      "highlight": "blue selection box around edited block, right-side properties panel",
+      "notes": "frames 1636-1836, editing beat"
+    },
+    {
+      "shot": 10,
+      "start_frame": 1836,
+      "end_frame": 2190,
+      "duration_frames": 354,
+      "layout": "laptop mockup on dark desk, kinetic tagline, Share pill button, blue flower logo, wordmark end card",
+      "motion": "text with italic serif, share button slides, flower rotates",
+      "transition_in": "cut",
+      "text": "working app ready to / Share / lovio",
+      "highlight": "Share pill",
+      "notes": "frames 1836-2190"
+    }
+  ],
+  "style": {
+    "layout": "device mockups (monitor on rock, tablet, phone, laptop) plus floating UI cards; mixes photo/CGI backgrounds",
+    "background": "off-white #F3F4F6, sky footage, deep blue glow #0B1E6B -> #3A5BFF, dark navy #0A0F1E end card",
+    "typography": "sans + italic serif accent word (blue), centred; UI text small; headlines in mockups large serif",
+    "palette_hex": [
+      "#F3F4F6",
+      "#0B1E6B",
+      "#3A5BFF",
+      "#0A0F1E",
+      "#B9F542",
+      "#FFFFFF"
+    ],
+    "camera_motion": "cinematic pushes into device screen, 3D fan of pages, zoom into edited section (frames 1636-1836)",
+    "transitions": "hard cuts between chapters (9 detected), blur-to-sharp reveals inside",
+    "ui_highlight": "blue selection box around edited element + side panel, glow border on prompt card, skeleton->content reveal, blur-others",
+    "text_animation": "blur-in words, italic serif keyword, typewriter in prompt",
+    "pacing_frames": "10 shots avg 219 frames, min 53, max 576; slow cinematic",
+    "cursor_or_hand": "arrow cursor present in prompt drag and inline edit",
+    "real_ui_vs_motion": "motion-designed CGI, UI recreated in mockups",
+    "audio": "audio stream present",
+    "three_beat": "yes: type prompt + drop image (start, 612-952) -> code streams (action, 952-1004) -> generated dashboard on devices (result, 1004-1060); repeated with inline edit beat 1636-1836"
+  },
+  "verdict": [
+    "Cinematic AI-builder ad: prompt -> streaming code -> generated app on device mockups (frames 612-1060).",
+    "Dark blue glow palette for the 'generation' chapter, off-white for explanation, sky footage for brand moments.",
+    "Editing shown with a blue selection box and property panel while the rest stays sharp (frames 1636-1836).",
+    "Skeleton loader morphing into the real page and blur-to-sharp reveal are the signature transitions (frames 1060-1300).",
+    "Slow pacing: avg 219 frames per shot, too slow for 30 s but the 3-beat prompt/generate/result grammar is reusable."
+  ],
+  "evidence": {
+    "contact_sheets": [
+      "sheet_1.jpg",
+      "sheet_2.jpg",
+      "sheet_3.jpg",
+      "sheet_4.jpg"
+    ],
+    "sheet_step_s": 1.52,
+    "method": "ffmpeg select=gt(scene,0.3) + contact sheets fps=1/step tile 4x3 + visual inspection"
+  }
+}

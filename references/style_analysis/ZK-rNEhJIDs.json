@@ -1,0 +1,126 @@
+{
+  "video_id": "ZK-rNEhJIDs",
+  "title": "Product Demo Video | SaaS Explainer Video | Infinity",
+  "channel": "What a Story - The Video Partner for SaaS & AI",
+  "url": "https://www.youtube.com/watch?v=ZK-rNEhJIDs",
+  "duration_s": 19,
+  "fps": 30,
+  "source_fps": "30/1",
+  "resolution": "1280x720",
+  "has_audio_stream": true,
+  "scene_cuts_detected_thr_0_3": "0 hard cuts detected; shots set manually from contact sheets (soft transitions)",
+  "avg_shot_duration_frames": 95,
+  "shots": [
+    {
+      "shot": 1,
+      "start_frame": 0,
+      "end_frame": 95,
+      "duration_frames": 95,
+      "layout": "full-bleed light lavender gradient, floating icon bubbles (Slack, Drive, Trello, Calendar) around centred headline",
+      "motion": "icons drift/float, headline reveals word by word with blur",
+      "transition_in": "none",
+      "text": "Forget switching between multiple tools!",
+      "highlight": "green checkmarks pop on icons",
+      "notes": "frames 0-95, purple/cyan gradient blobs top corners"
+    },
+    {
+      "shot": 2,
+      "start_frame": 95,
+      "end_frame": 165,
+      "duration_frames": 70,
+      "layout": "stock footage of person at desk + monitor with UI comped onto screen",
+      "motion": "UI window scales out of monitor, label 'Productivity' with toggle",
+      "transition_in": "soft dissolve/slide",
+      "text": "Productivity",
+      "highlight": "avatar chips (team members) fly in around window",
+      "notes": "frames 95-165, only real-footage segment"
+    },
+    {
+      "shot": 3,
+      "start_frame": 165,
+      "end_frame": 260,
+      "duration_frames": 95,
+      "layout": "floating browser-window mockup of Calendar View, 3D tilt on blurred lavender background",
+      "motion": "window slides in from left while previous slides out, gentle perspective tilt",
+      "transition_in": "horizontal slide",
+      "text": "Calendar View",
+      "highlight": "colour-coded event chips; feature icon pills below with animated cursor pointer",
+      "notes": "frames 165-260"
+    },
+    {
+      "shot": 4,
+      "start_frame": 260,
+      "end_frame": 380,
+      "duration_frames": 120,
+      "layout": "browser mockups Columns View (yellow header) -> Gantt View (purple header)",
+      "motion": "horizontal carousel slide between windows, ghosted windows visible at edges",
+      "transition_in": "horizontal slide",
+      "text": "Columns View / Gantt View",
+      "highlight": "coloured header bar per view, hand-cursor icon taps view pill under window",
+      "notes": "frames 260-380"
+    },
+    {
+      "shot": 5,
+      "start_frame": 380,
+      "end_frame": 450,
+      "duration_frames": 70,
+      "layout": "browser mockups List View (green) -> Table View (red)",
+      "motion": "same carousel slide",
+      "transition_in": "horizontal slide",
+      "text": "List View / Table View",
+      "highlight": "row chips, colour header",
+      "notes": "frames 380-450"
+    },
+    {
+      "shot": 6,
+      "start_frame": 450,
+      "end_frame": 570,
+      "duration_frames": 120,
+      "layout": "end card: logo + URL + purple CTA button on lavender with large gradient blobs",
+      "motion": "logo wipes in, blobs drift, cursor pointer clicks CTA",
+      "transition_in": "slide up",
+      "text": "INFINITY www.startinfinity.com Get Lifetime Membership",
+      "highlight": "cursor hovering CTA button",
+      "notes": "frames 450-570"
+    }
+  ],
+  "style": {
+    "layout": "floating browser-window mockups (white chrome, coloured header bar per view) with slight 3D tilt, carousel of views; one short live-action comp",
+    "background": "light lavender #E9E6FA with soft purple #A26BFF, magenta #E64BB0 and cyan #46D4F5 gradient blobs, blurred",
+    "typography": "bold sans-serif headline centred, sentence case; view names inside UI chrome; URL and CTA regular weight",
+    "palette_hex": [
+      "#E9E6FA",
+      "#A26BFF",
+      "#E64BB0",
+      "#46D4F5",
+      "#FFFFFF",
+      "#F5C518",
+      "#4CAF50",
+      "#E5484D"
+    ],
+    "camera_motion": "constant lateral slide (carousel), slight parallax of ghost windows; no zoom into controls",
+    "transitions": "horizontal slides and dissolves; no hard cuts detected (scene>0.3 = 0)",
+    "ui_highlight": "colour-coded header per view, pill icons under window with animated pointer, avatar chips flying in",
+    "text_animation": "word-by-word blur reveal for headline; view name static in chrome",
+    "pacing_frames": "6 manual shots: 95/70/95/120/70/120, avg 95",
+    "cursor_or_hand": "stylised pointer/hand icon taps pills and CTA",
+    "real_ui_vs_motion": "recreated UI mockups (motion design), plus one stock footage comp",
+    "audio": "audio stream present",
+    "three_beat": "partial: problem headline (start) -> tour of views (action) -> CTA (result); no single click->result beat"
+  },
+  "verdict": [
+    "Classic 2022 SaaS explainer: floating tilted browser windows sliding as a carousel on a lavender blob gradient (sheet_1 frames 165-450).",
+    "No hard cuts at all; everything is slide/dissolve, so scene detection returns 0 (ffmpeg scene>0.3).",
+    "Each view is identified by a coloured header bar plus pill icons with an animated pointer, not by zooming.",
+    "Includes a stock-footage person-at-desk comp (frames 95-165), a pattern DemoForge should avoid.",
+    "Ends on logo + URL + CTA button card with cursor hover (frames 450-570)."
+  ],
+  "evidence": {
+    "contact_sheets": [
+      "sheet_1.jpg",
+      "sheet_2.jpg"
+    ],
+    "sheet_step_s": 0.79,
+    "method": "ffmpeg select=gt(scene,0.3) + contact sheets fps=1/step tile 4x3 + visual inspection"
+  }
+}

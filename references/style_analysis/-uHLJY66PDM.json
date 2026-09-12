@@ -1,0 +1,178 @@
+{
+  "video_id": "-uHLJY66PDM",
+  "title": "B2B Corporate Video Ad Example for SaaS Companies | LangEase",
+  "channel": "Zelios - Animated Video Production",
+  "url": "https://www.youtube.com/watch?v=-uHLJY66PDM",
+  "duration_s": 32,
+  "fps": 30,
+  "source_fps": "30/1",
+  "resolution": "1280x720",
+  "has_audio_stream": true,
+  "scene_cuts_detected_thr_0_3": "3 hard cuts detected; shots set manually from contact sheets (soft transitions)",
+  "avg_shot_duration_frames": 96,
+  "shots": [
+    {
+      "shot": 1,
+      "start_frame": 0,
+      "end_frame": 60,
+      "duration_frames": 60,
+      "layout": "stock footage man in chair, centred caption overlay",
+      "motion": "caption fades in, logo pops next to word",
+      "transition_in": "none",
+      "text": "You can use LangEase",
+      "highlight": "caption white, logo icon",
+      "notes": "frames 0-60"
+    },
+    {
+      "shot": 2,
+      "start_frame": 60,
+      "end_frame": 150,
+      "duration_frames": 90,
+      "layout": "web app Library mockup tilted in 3D on light blue gradient, video cards",
+      "motion": "window slides in with perspective, cards populate one by one, flag badge + sparkle icon float",
+      "transition_in": "cut",
+      "text": "Library",
+      "highlight": "flag badges on thumbnails, floating icon",
+      "notes": "frames 60-150"
+    },
+    {
+      "shot": 3,
+      "start_frame": 150,
+      "end_frame": 260,
+      "duration_frames": 110,
+      "layout": "full-bleed light blue gradient, centred typewriter headline",
+      "motion": "typewriter with caret, keyword blue",
+      "transition_in": "cut",
+      "text": "I'll Show You How In Under 30 Seconds",
+      "highlight": "blue keyword '30 Seconds', large ghost text behind",
+      "notes": "frames 150-260"
+    },
+    {
+      "shot": 4,
+      "start_frame": 260,
+      "end_frame": 330,
+      "duration_frames": 70,
+      "layout": "office footage blurred, UI Library panel comped floating right of person",
+      "motion": "panel slides in over footage",
+      "transition_in": "cut",
+      "text": "Library / Videos / Files / Audio",
+      "highlight": "UI over blurred footage",
+      "notes": "frames 260-330"
+    },
+    {
+      "shot": 5,
+      "start_frame": 330,
+      "end_frame": 500,
+      "duration_frames": 170,
+      "layout": "floating app window (details + translation form) over blurred office footage",
+      "motion": "cursor moves through form, dropdown selects, text streams into translation pane",
+      "transition_in": "dissolve",
+      "text": "Configuration / Translation",
+      "highlight": "cursor hand, black tooltip pill, selected row",
+      "notes": "frames 330-500, longest UI beat"
+    },
+    {
+      "shot": 6,
+      "start_frame": 500,
+      "end_frame": 580,
+      "duration_frames": 80,
+      "layout": "full-bleed blue gradient with waveform texture, huge centred text",
+      "motion": "words pop, waveform pulses",
+      "transition_in": "cut",
+      "text": "Need subtitles / voiceover? / We've got that too",
+      "highlight": "white on blue, keyword coloured",
+      "notes": "frames 500-580"
+    },
+    {
+      "shot": 7,
+      "start_frame": 580,
+      "end_frame": 700,
+      "duration_frames": 120,
+      "layout": "phone/video player mockup, then person at laptop with floating window and circular blue icon badges",
+      "motion": "icon badges (translate, subtitle) pop along a path, window slides",
+      "transition_in": "cut",
+      "text": "",
+      "highlight": "blue circular feature badges",
+      "notes": "frames 580-700"
+    },
+    {
+      "shot": 8,
+      "start_frame": 700,
+      "end_frame": 800,
+      "duration_frames": 100,
+      "layout": "floating window with video preview and language dropdown, cursor selects language",
+      "motion": "dropdown list scrolls, badge pops under window",
+      "transition_in": "dissolve",
+      "text": "language list",
+      "highlight": "cursor + badge",
+      "notes": "frames 700-800"
+    },
+    {
+      "shot": 9,
+      "start_frame": 800,
+      "end_frame": 860,
+      "duration_frames": 60,
+      "layout": "split: vertical language list with flags left, greeting word right, sparkle icon centre",
+      "motion": "list scrolls vertically, greeting swaps (こんにちは / Olá / Bonjour / Привіт)",
+      "transition_in": "slide",
+      "text": "Japanese / Portuguese / French / Ukrainian",
+      "highlight": "selected row bold, others faded",
+      "notes": "frames 800-860"
+    },
+    {
+      "shot": 10,
+      "start_frame": 860,
+      "end_frame": 960,
+      "duration_frames": 100,
+      "layout": "logo end card, sparkle icon, wordmark, blue pill CTA, URL bottom",
+      "motion": "icon morph, wordmark types, CTA pops",
+      "transition_in": "fade",
+      "text": "LangEase / Try free / langease.ai",
+      "highlight": "blue pill button",
+      "notes": "frames 860-960"
+    }
+  ],
+  "style": {
+    "layout": "floating tilted web-app window mockups over blurred live footage or light blue gradient; captions full-bleed",
+    "background": "light blue-white gradient #EAF1FB -> #FFFFFF, blurred office footage, one saturated blue #1F4BFF field with waveform",
+    "typography": "medium sans, title case, centred; one keyword in blue #2F6BFF; white text on blue field",
+    "palette_hex": [
+      "#FFFFFF",
+      "#EAF1FB",
+      "#2F6BFF",
+      "#1F4BFF",
+      "#1B1B1F"
+    ],
+    "camera_motion": "slow drift/parallax of floating window; no hard zoom into control",
+    "transitions": "cuts between footage and graphics (3 detected), dissolves and slides inside UI sequences",
+    "ui_highlight": "cursor hand + black tooltip pill, blue circular feature badges, selected row emphasised while others fade, floating window over blurred background",
+    "text_animation": "typewriter with caret, word pop, language word swap",
+    "pacing_frames": "10 manual shots avg 96 frames; UI form beat 170 frames",
+    "cursor_or_hand": "stylised cursor hand visible in form/dropdown shots",
+    "real_ui_vs_motion": "recreated UI in motion design, composited on stock footage",
+    "audio": "audio stream present",
+    "three_beat": "yes: open library (start) -> configure translation via form (action) -> greeting in many languages (result), frames 260-860"
+  },
+  "verdict": [
+    "Same studio as SgmuplXU2iY: white/blue palette, floating tilted app windows, typewriter captions (sheet_1 frames 150-260).",
+    "Adds blurred stock footage under the UI window to add 'human' context without hiding the product (frames 260-500).",
+    "Feature emphasis via cursor + black tooltip pill + blue circular badges, not boxes or spotlights.",
+    "Only 3 hard cuts; UI sequences use dissolves/slides, avg shot ~96 frames.",
+    "Ends with logo, pill CTA 'Try free' and URL; result beat shows outcome (greetings in several languages) rather than a UI screen."
+  ],
+  "evidence": {
+    "contact_sheets": [
+      "sheet_01.jpg",
+      "sheet_02.jpg",
+      "sheet_03.jpg",
+      "sheet_04.jpg",
+      "sheet_05.jpg",
+      "sheet_06.jpg",
+      "sheet_1.jpg",
+      "sheet_2.jpg",
+      "sheet_3.jpg"
+    ],
+    "sheet_step_s": 0.89,
+    "method": "ffmpeg select=gt(scene,0.3) + contact sheets fps=1/step tile 4x3 + visual inspection"
+  }
+}

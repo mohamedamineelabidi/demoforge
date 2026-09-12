@@ -1,0 +1,173 @@
+{
+  "video_id": "SgmuplXU2iY",
+  "title": "Best SaaS Product Launch Ad Video | LangEase",
+  "channel": "Zelios - Animated Video Production",
+  "url": "https://www.youtube.com/watch?v=SgmuplXU2iY",
+  "duration_s": 33,
+  "fps": 30,
+  "source_fps": "30/1",
+  "resolution": "1280x720",
+  "has_audio_stream": true,
+  "scene_cuts_detected_thr_0_3": "0 hard cuts detected; shots set manually from contact sheets (soft transitions)",
+  "avg_shot_duration_frames": 99,
+  "shots": [
+    {
+      "shot": 1,
+      "start_frame": 0,
+      "end_frame": 110,
+      "duration_frames": 110,
+      "layout": "full-bleed near-white #F4F5FA, centred kinetic headline words",
+      "motion": "words fly in one at a time, alternating blue/black colour, scale+blur",
+      "transition_in": "none",
+      "text": "Turn Books / Audio / Any / Any language ... Instantly",
+      "highlight": "coloured keyword + 3D folder icon",
+      "notes": "frames 0-110"
+    },
+    {
+      "shot": 2,
+      "start_frame": 110,
+      "end_frame": 220,
+      "duration_frames": 110,
+      "layout": "isolated 3D folder icon on white card, cursor drags",
+      "motion": "cursor hand drags file into folder, card tilts",
+      "transition_in": "morph/fade",
+      "text": "Just drop",
+      "highlight": "cursor hand on folder, drop shadow glow",
+      "notes": "frames 110-220"
+    },
+    {
+      "shot": 3,
+      "start_frame": 220,
+      "end_frame": 320,
+      "duration_frames": 100,
+      "layout": "multiple phone mockups in 3D perspective, tilted, scrolling text pages",
+      "motion": "phones sweep through 3D space, camera orbit",
+      "transition_in": "fly-in",
+      "text": "Books. Audio. Video / All In One Platform",
+      "highlight": "labels between devices",
+      "notes": "frames 220-320"
+    },
+    {
+      "shot": 4,
+      "start_frame": 320,
+      "end_frame": 400,
+      "duration_frames": 80,
+      "layout": "blue liquid blob fills screen, then progress bar 79/100 -> 99/100",
+      "motion": "liquid morph transition into blue gradient progress bar",
+      "transition_in": "liquid blob wipe",
+      "text": "79/100 99/100",
+      "highlight": "gradient progress bar",
+      "notes": "frames 320-400"
+    },
+    {
+      "shot": 5,
+      "start_frame": 400,
+      "end_frame": 500,
+      "duration_frames": 100,
+      "layout": "'Done' with circular check, confetti; then row of video thumbnail cards",
+      "motion": "check draws in, confetti burst, cards slide horizontally",
+      "transition_in": "fade",
+      "text": "Done / History Lecture / Spain travel",
+      "highlight": "flag badges on cards",
+      "notes": "frames 400-500"
+    },
+    {
+      "shot": 6,
+      "start_frame": 500,
+      "end_frame": 580,
+      "duration_frames": 80,
+      "layout": "web app Library mockup (sidebar + grid) full width",
+      "motion": "window scales in, cursor hand hovers thumbnails, one card lifts out and zooms",
+      "transition_in": "scale-in",
+      "text": "LangEase Library / History Lecture",
+      "highlight": "card zoom-out of grid with cursor",
+      "notes": "frames 500-580"
+    },
+    {
+      "shot": 7,
+      "start_frame": 580,
+      "end_frame": 660,
+      "duration_frames": 80,
+      "layout": "scattered 3D thumbnail cards falling, label",
+      "motion": "cards tumble in 3D",
+      "transition_in": "cut-like scatter",
+      "text": "Multiple Languages",
+      "highlight": "flag badges",
+      "notes": "frames 580-660"
+    },
+    {
+      "shot": 8,
+      "start_frame": 660,
+      "end_frame": 720,
+      "duration_frames": 60,
+      "layout": "web app list view mockup tilted, cursor",
+      "motion": "window slides and tilts, cursor moves",
+      "transition_in": "slide",
+      "text": "Library list",
+      "highlight": "cursor hand",
+      "notes": "frames 660-720"
+    },
+    {
+      "shot": 9,
+      "start_frame": 720,
+      "end_frame": 780,
+      "duration_frames": 60,
+      "layout": "isolated list row with black 'Distribute To Youtube' button, cursor clicks -> blue button pops centre",
+      "motion": "row zooms to isolate button, button changes colour on click, sparkle icon flies",
+      "transition_in": "zoom",
+      "text": "Distribute To Youtube",
+      "highlight": "zoom on clicked control, button colour change",
+      "notes": "frames 720-780"
+    },
+    {
+      "shot": 10,
+      "start_frame": 780,
+      "end_frame": 990,
+      "duration_frames": 210,
+      "layout": "kinetic tagline then logo end card with URL bottom-centre",
+      "motion": "words pop in sequence, sparkle star comet, logo settles",
+      "transition_in": "fade",
+      "text": "Translate. Dub. Distribute. / LangEase / langease.ai",
+      "highlight": "coloured words",
+      "notes": "frames 780-990, long hold on logo"
+    }
+  ],
+  "style": {
+    "layout": "mix of kinetic typography, 3D phone/folder mockups, and flat web-app window mockups; heavy 3D perspective",
+    "background": "near-white #F4F5FA / #FFFFFF throughout, soft shadows; one full-screen blue #3B4BFF liquid blob",
+    "typography": "medium-weight geometric sans, title case, centred; keywords in blue #3B82F6, rest #1B1B1F",
+    "palette_hex": [
+      "#F4F5FA",
+      "#FFFFFF",
+      "#3B82F6",
+      "#3B4BFF",
+      "#7FB6FF",
+      "#1B1B1F"
+    ],
+    "camera_motion": "3D orbit/sweeps around devices; zoom-in isolation on clicked button (frames 720-780)",
+    "transitions": "morphs, liquid blob wipe, fly-ins, scale-ins; zero hard cuts detected",
+    "ui_highlight": "isolate + zoom on control, cursor hand, button colour change on click, card lift out of grid",
+    "text_animation": "kinetic word-by-word pop with scale/blur, colour alternation",
+    "pacing_frames": "10 manual shots avg 99 frames; kinetic words ~25 frames each",
+    "cursor_or_hand": "stylised hand cursor present in most UI shots",
+    "real_ui_vs_motion": "fully motion-designed; UI recreated, no screen recording",
+    "audio": "audio stream present",
+    "three_beat": "yes: drop file (start) -> progress 79->99 (action) -> Done + confetti + library (result), frames 110-500"
+  },
+  "verdict": [
+    "High-production motion-design ad: white canvas, blue accent, 3D devices and liquid morph transitions (sheet_1/2).",
+    "Clear 3-beat: drop file -> progress bar -> Done with confetti (frames 110-500).",
+    "Button click is shown by zooming the row to isolate the control and recolouring the button (frames 720-780).",
+    "No hard cuts; every transition is a morph, scale or fly-in, average shot ~99 frames.",
+    "Kinetic typography with one blue keyword per phrase carries the narration; cursor hand is stylised, not real."
+  ],
+  "evidence": {
+    "contact_sheets": [
+      "sheet_1.jpg",
+      "sheet_2.jpg",
+      "sheet_3.jpg"
+    ],
+    "sheet_step_s": 0.92,
+    "method": "ffmpeg select=gt(scene,0.3) + contact sheets fps=1/step tile 4x3 + visual inspection"
+  }
+}
