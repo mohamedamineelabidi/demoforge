@@ -1,7 +1,8 @@
 # Local Supplied-Footage Pipeline
 
-Initial CLI implementation, not a completed release gate for TASK-072 through TASK-078. The browser
-editor remains local-only. Runtime files belong outside OneDrive and must not be committed.
+Initial CLI implementation, not a completed release gate for TASK-072 through TASK-078. The existing
+draft editor remains local-only; a separate [connected teaser](../frontend/README.md#connected-source-teaser)
+now supports URL-to-video in the browser. Runtime files belong outside OneDrive and must not be committed.
 
 ## Environment
 

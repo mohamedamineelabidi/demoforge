@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "test": "vitest run",
     "test:browser": "playwright test",
+    "test:teaser": "playwright test --config playwright.teaser.config.ts",
     "preview": "vite preview --host 127.0.0.1"
   },
   "dependencies": {

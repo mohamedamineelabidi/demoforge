@@ -2,19 +2,34 @@
 
 Turn a shipped feature into a source-linked, editable release-demo video of the real product.
 
-Planned flow: repository + feature brief + authorized footage/demo -> evidence -> approved claims and
-scenario -> footage checks -> editable storyboard -> render -> technical QA and human review -> export.
-The first local milestone uses supplied footage, a 30-second 16:9 video and reusable brand assets.
-Controlled capture, a browser editor and hosting follow. Decks, docs and logo generation are deferred.
+Primary flow: public GitHub URL -> sanitized evidence -> source-linked teaser storyboard -> approval
+-> 30-second motion render -> full human review -> approved video and offline bundle. No recording
+or model API key is needed for this local typography-based mode. Supplied-footage demos remain a
+separate CLI workflow. Hosted services, image-based teaser scenes and connected editing remain open.
 
 Status: bounded GitHub text ingestion and an initial supplied-footage CLI pipeline are implemented.
 The CLI supports grounded proposals, exact-revision approvals, normalization, silent HTML/FFmpeg
 rendering and offline evidence/review export. Synthetic real-tool tests pass; broader release gates
-remain open. The browser draft editor remains separate from the backend controller and export.
+remain open. **Create source teaser** connects the browser to SQLite, rendering and approved downloads.
+The existing browser draft editor remains separate from backend revisions and export.
 See [local pipeline](docs/LOCAL_PIPELINE.md) for commands and limitations.
 See [TASKS.md](TASKS.md) for the next task and [PRD.md](PRD.md) for requirements.
 
 ## Local frontend
+
+For the connected application:
+
+```bash
+npm --prefix frontend run build
+uv run python -m demoforge serve --port 8000
+```
+
+Open http://127.0.0.1:8000 and select **Create source teaser**. Paste a public repository URL,
+review the three source quotations, approve the storyboard, render, then review and approve the
+video before exporting. See [connected workflow](frontend/README.md#connected-source-teaser).
+The local server processes one operation at a time; cancellation is available between stages.
+
+For frontend development (keep the backend on port 8000):
 
 ```bash
 npm --prefix frontend ci
@@ -59,8 +74,8 @@ uv run python -m demoforge resume RUN_ID
 
 We are building a tool that turns repository evidence and authorized footage into a truthful, editable
 release-demo video, not a generator that invents product screens. The current repository implements
-an initial CLI vertical slice, copy lint, typed contracts and a separate local browser draft editor.
-Full frontend integration remains **TASK-083**. Original backend tasks retain open acceptance items;
+an initial CLI vertical slice, copy lint, typed contracts, a connected source-teaser flow and a separate
+local browser draft editor. Broader editing integration remains **TASK-083**. Backend tasks retain open items;
 see TASKS.md and docs/LOCAL_PIPELINE.md.
 
 The [motion production knowledge base](docs/MOTION_PRODUCTION.md) stores the supplied film references,

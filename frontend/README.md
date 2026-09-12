@@ -40,12 +40,76 @@ traces and is ignored. The first browser test refreshes the permitted taskroom.p
 - Demo data is explicitly labeled. The sample app really filters tasks; its still is not a recording
   or proof about customer software. Offline bundled fonts retain license notices under public/.
 
-## Integration boundary
+## Connected source teaser
 
-No HTTP API adapter, authentication, repo ingestion, server-side persistence, authoritative approval,
-rendering or MP4 export is implemented by this frontend. Export video remains disabled. TanStack Query
-and renderer selection stay in TASK-083/082. Do not post these local DTOs directly to Python APIs;
-map them to the versioned backend contracts and use server-authoritative revisions and error states.
+The first-screen **Create source teaser** action and navigation entry open the connected local flow.
+It is separate from browser drafts and does not import their local approvals. No footage or model
+credentials are needed. A public GitHub URL is acquired through the bounded GitHubSource adapter,
+pinned to a commit, sanitized, and prepared into three source-linked scenes. Review the quotations,
+record **Combined source and storyboard approval**, then explicitly start rendering. Review the real
+30-second video, record **Final output approval**, then export. These are two named checkpoints,
+not the supplied-footage pipeline's four checkpoints. Approvals bind to exact artifact SHA-256 values.
+
+From the repository root:
+
+```bash
+npm --prefix frontend run build
+uv run python -m demoforge serve --port 8000
+```
+
+Open http://127.0.0.1:8000. The server serves the built frontend and API on loopback only. For frontend
+development, run `npm --prefix frontend run dev -- --port 5174`; Vite proxies `/api` to port 8000.
+Only exact local origins on the API port and Vite ports 5173/5174 are accepted. There is no host
+override, wildcard CORS, hosted authentication, queue, or remote render worker. Use one local server
+and operator per workspace. State and hashed artifacts live outside OneDrive under the existing
+workspace configuration; `DEMOFORGE_WORKSPACE` may select another non-synced local directory.
+
+The API processes each request in the foreground. Rendering requires the pinned external Playwright
+rig and FFmpeg. Cancel at a stage/approval boundary; an active render is not interrupted by the UI.
+Reload restores the selected run from its URL and SQLite. After a process interruption, restarting
+the server recovers interrupted teaser attempts; **Continue run** resumes them within controller
+retry budgets. Downloads are manifest-declared and integrity checked, never arbitrary file paths.
+The offline ZIP contains `video.mp4`, `evidence.json` and `review.html`; extract them together.
+Individual review HTML expects the separately downloaded `video.mp4` beside it.
+
+Endpoints:
+
+- `GET /api/health`, `GET /api/runs`, `GET /api/runs/{run_id}`.
+- `POST /api/runs`: `{repository_url, request_id}`; request ID is 32 lowercase hexadecimal digits.
+- `POST /api/runs/{run_id}/advance` and `/cancel`: empty JSON object.
+- `POST /api/runs/{run_id}/approve`: `{subject, actor, note, reviewed: true}`; subject is the exact
+  returned checkpoint. Approval does not itself start rendering/export.
+- `GET /api/runs/{run_id}/artifacts/preview`: verified MP4 preview with byte ranges.
+- `GET /api/runs/{run_id}/artifacts/{video|evidence|review|bundle}`: final-approved downloads only.
+
+POST requires JSON, a trusted Origin and Host, and at most 16 KiB. Source strings are rendered as
+text, not HTML or executable links. Preparation errors can require two short, distinct product
+excerpts in the README. Scene editing is not yet connected: cancel and create a new run after source
+changes. Documentation quotations are not proof of runtime behavior or human approval.
+
+GitHub acquisition is unauthenticated and shares the public API's 60-request hourly quota per IP.
+Each run can use multiple requests. When the quota is exhausted, acquisition stops with a visible
+failure; wait for the GitHub reset and create a new run. No token configuration is wired into this
+local API yet. Do not repeatedly resubmit while the quota is empty.
+
+Verification:
+
+```bash
+uv run python -m pytest tests/api tests/test_cli.py -q
+npm --prefix frontend test
+npm --prefix frontend run build
+npm --prefix frontend run test:teaser
+```
+
+The teaser browser suite starts a test-only loopback server on 8018, injecting a bounded README
+snapshot into acquisition while using the real preparation, renderer, SQLite and artifact service.
+It runs one foreground browser worker and renders actual media. Automated fixture decisions are not
+human approvals. The ordinary `test:browser` suite keeps its existing running-Vite requirement.
+
+## Browser draft boundary
+
+The existing draft editor remains browser-only; its Export video action remains disabled. Do not
+post its local DTOs directly to Python APIs. The connected teaser uses separate server subjects.
 Unknown frame counts/hashes remain unknown. Browser media metadata is not an ffprobe/decode gate.
 Saved drafts contain user text in localStorage; use trusted local data, not secrets. Closing/reloading
 loses attached media, while draft text remains until the user deletes it. This is not hosted security.

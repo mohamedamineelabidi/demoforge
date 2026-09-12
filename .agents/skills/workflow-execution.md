@@ -8,6 +8,17 @@ drive a run. Never treat the initial integration as full TASK-078 release accept
 
 ## Local procedure
 
+Connected teaser (ADR-0005/TASK-099): `npm --prefix frontend run build`, then
+`uv run python -m demoforge serve --port 8000`. Loopback API dispatches workflow/teaser_pipeline.py
+through the existing controller. SQLite and verified manifests remain authoritative. Combined
+source/storyboard and final-output approvals replace the four supplied-footage checkpoints in this
+mode only. Requests execute in the foreground; cancel between stages. Restart recovers interrupted
+teaser attempts. Never run two local servers against the same workspace. Browser drafts stay separate.
+Validate `uv run pytest tests/api tests/teaser -q`; set DEMOFORGE_TEASER_MEDIA=1 for real rendering and
+clear DEMOFORGE_TEASER_OUTPUT for isolated outputs. Build frontend then run
+`npm --prefix frontend run test:teaser` for the real browser/render/export fixture on port 8018.
+Test decisions are synthetic; never approve the user's repository artifacts without their review.
+
 1. Read TASKS.md, .agents/architecture.md and docs/DATA_CONTRACTS.md for the active stage and inputs.
 2. Write a focused test for the transition and failure path before logic. Use a fake clock/LLM/stage.
 3. Validate StageRequest and immutable input manifests; check evidence, permissions and approvals.

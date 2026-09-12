@@ -45,6 +45,28 @@ Do not install hosted infrastructure or start deck/logo work to complete this mi
 
 ## Initial Backend Integration
 
+- [x] **TASK-099**: Connect a public-repository teaser workflow to the local browser application.
+  - Three delegated lanes: source preparation/schema, offline motion renderer, and loopback API/browser
+    integration over the existing SQLite controller. No hosted dependencies or live model calls.
+  - URL -> source-linked scene review -> combined source/storyboard hash approval -> render/preview ->
+    final-output hash approval -> MP4/evidence/offline ZIP. Browser draft approvals remain separate.
+  - Verified 2026-09-12: full pytest 334 passed, 1 skipped with DEMOFORGE_TEASER_MEDIA=1; Ruff clean;
+    frontend 178 unit tests, production build, 24 existing browser checks and 3 connected teaser checks.
+    Connected test injects source fixture but uses real SQLite/preparation/render/download. Desktop
+    and mobile screenshots inspected; accessibility and decoded video pixel checks pass.
+  - Real renderer: 900 frames, 30.0 seconds, 1920x1080, 30 fps, silent; full decode and 11 distinct
+    sampled motion-frame MD5 values. SHA-256 d79fe9e71700a0098a363bd5bf342261351475412d26810b6f55e73d3bc60e75.
+    Measured 43.078 seconds on this host, not a performance guarantee. No audio peak applies.
+  - Realestate-rag source preparation checked at a9fa0fa285c0ecae0224ca15240ba95640f7d2a8;
+    generic media headings excluded after RED/GREEN regression. Synthetic decisions only cover tests;
+    no actual user approval fabricated. Full human creative-quality review remains open.
+    Later live API acquisition was blocked by GitHub's exhausted public quota (0/60 remaining);
+    corrected captions were verified against the earlier saved pinned catalog. No live user export claimed.
+  - Initial style: kinetic typography, masked/typewriter reveals, contrasting fields and end hold.
+    Not reference-film parity; no copied media or invented UI. Image import, connected caption edits,
+    richer narrative selection, mid-render cancellation and hosted multi-user execution remain open.
+    Run one local server/operator per workspace. Scoped publication and remote verification required.
+
 - [x] **TASK-098**: Initial CLI source-to-supplied-footage pipeline across TASK-072..078.
   - Implemented: bounded fixed-host GitHub API acquisition, local redaction, sanitized context/catalog;
     media permission/decode/hash checks and silent normalization; neutral brand tokens; exact-excerpt

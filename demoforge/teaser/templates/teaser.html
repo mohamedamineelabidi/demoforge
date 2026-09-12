@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-__SCRIPT_HASH__'; style-src 'unsafe-inline'; connect-src 'none'; img-src 'none'; media-src 'none'; font-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Motion-design teaser preview</title>
+<style>
+* { box-sizing: border-box; letter-spacing: 0; }
+html, body { margin: 0; background: #e9e9e7; }
+body { font-family: 'Segoe UI', Helvetica, sans-serif; }
+#viewport { width: 100%; overflow: hidden; }
+#canvas { position: relative; width: 1920px; height: 1080px; transform-origin: top left;
+  background: #f4f4f1; color: #171817; --accent: #236841; }
+#canvas.dark { background: #161816; color: #f4f4f1; --accent: #a9d788; }
+header { position: absolute; top: 64px; left: 104px; right: 104px; display: flex;
+  align-items: flex-start; justify-content: space-between; gap: 48px; font-size: 24px; }
+#label { flex-shrink: 0; }
+#identity { max-width: 640px; overflow-wrap: anywhere; text-align: right; }
+#rule { position: absolute; left: 104px; top: 144px; width: 1712px; height: 3px;
+  background: currentColor; opacity: .22; }
+#content { position: absolute; left: 152px; top: 250px; width: 1568px; height: 610px; }
+#marker { width: 72px; height: 8px; background: var(--accent); margin-bottom: 34px;
+  transform-origin: left; }
+#headline-mask { width: 100%; height: 330px; overflow: hidden; }
+h1 { margin: 0; height: 100%; font-size: 152px; line-height: 1.08; font-weight: 600;
+  overflow-wrap: anywhere; white-space: pre-wrap; }
+#caption { margin: 30px 0 0; font-size: 54px; line-height: 1.25; max-width: 1380px;
+  height: 168px; white-space: pre-wrap; overflow-wrap: anywhere; }
+#unrevealed { visibility: hidden; }
+#canvas.feature #headline-mask { height: 440px; }
+#canvas.feature h1 { font-size: 114px; }
+#canvas.feature #caption { display: none; }
+#canvas.center #content { text-align: center; }
+#canvas.center #marker { margin-left: auto; margin-right: auto; transform-origin: center; }
+#canvas.center #caption { margin-left: auto; margin-right: auto; }
+footer { position: absolute; left: 104px; right: 104px; bottom: 54px; border-top: 1px solid;
+  padding-top: 22px; display: grid; grid-template-columns: 3fr 2fr; gap: 12px 64px;
+  font-family: Consolas, 'Courier New', monospace; font-size: 16px; line-height: 1.4; }
+footer p { margin: 0; overflow-wrap: anywhere; }
+#revision { text-align: right; }
+#source { grid-column: 1 / -1; font-size: 14px; }
+@media (max-width: 799px) {
+  #viewport { min-height: 1000px; }
+  #canvas { width: 100%; height: 1000px; transform: none !important; }
+  header { top: 24px; left: 24px; right: 24px; font-size: 12px; gap: 14px; flex-direction: column; }
+  #identity { text-align: left; max-width: 100%; }
+  #rule { top: 98px; left: 24px; width: calc(100% - 48px); }
+  #content { top: 150px; left: 24px; width: calc(100% - 48px); height: 390px; }
+  #marker { width: 40px; height: 5px; margin-bottom: 24px; }
+  #headline-mask { height: 170px; }
+  h1 { font-size: 48px; }
+  #caption { font-size: 25px; height: 150px; margin-top: 22px; }
+  #canvas.feature #headline-mask { height: 320px; }
+  #canvas.feature h1 { font-size: 42px; }
+  footer { left: 24px; right: 24px; top: 580px; bottom: auto; font-size: 12px;
+    display: flex; flex-direction: column; gap: 6px; padding-top: 16px; }
+  #revision { text-align: left; }
+  #source { font-size: 11px; }
+}
+</style>
+</head>
+<body>
+<main id="viewport" aria-label="Source-linked motion-design teaser">
+  <article id="canvas">
+    <header><span id="label">Motion-design teaser / Not a recording</span><span id="identity"></span></header>
+    <div id="rule" aria-hidden="true"></div>
+    <section id="content" aria-label="Documented repository text">
+      <div id="marker" aria-hidden="true"></div>
+      <div id="headline-mask"><h1 id="headline"></h1></div>
+      <p id="caption"><span id="revealed" aria-hidden="true"></span><span id="unrevealed" aria-hidden="true"></span></p>
+    </section>
+    <footer><p id="evidence"></p><p id="revision"></p><p id="source"></p></footer>
+  </article>
+</main>
+<script>__SCRIPT__</script>
+</body>
+</html>

@@ -58,10 +58,11 @@ import { RepositoryEntry } from "./source-entry/RepositoryEntry";
 import { MotionPreview } from "./motion/MotionPreview";
 import { RunStatusPanel } from "./run/RunStatusPanel";
 import { mockRunStatus } from "./mocks/run";
+import { TeaserStudio } from "./teaser/TeaserStudio";
 import "./workspace-review.css";
 import "./entry/entry.css";
 
-type View = "Projects" | "New" | "Source" | "Storyboard" | "Evidence" | "Footage" | "Review" | "Approvals";
+type View = "Projects" | "New" | "Source" | "Teaser" | "Storyboard" | "Evidence" | "Footage" | "Review" | "Approvals";
 type Media = {
   url: string;
   name: string;
@@ -217,7 +218,7 @@ function Workspace() {
       return [];
     }
   });
-  const [view, setView] = useState<View>("Projects");
+  const [view, setView] = useState<View>(window.location.hash.startsWith("#teaser") ? "Teaser" : "Projects");
   const [activeId, setActiveId] = useState<string | null>(null);
   const [sceneId, setSceneId] = useState("");
   const [search, setSearch] = useState("");
@@ -495,6 +496,10 @@ function Workspace() {
             Projects<span>{projects.length}</span>
           </button>
           <p className="nav-label">PRODUCTION</p>
+          <button className={`nav-item ${view === "Teaser" ? "selected" : ""}`}
+            onClick={() => { window.history.replaceState(null, "", "#teaser"); navigate("Teaser"); }}>
+            <Clapperboard size={19} />Source teaser
+          </button>
           {navigation.map((item) => (
             <button
               key={item.name}
@@ -515,7 +520,7 @@ function Workspace() {
           <div className="connection">
             <span className="connection-dot" />
             <div>
-              Backend not connected<small>Browser drafts only</small>
+              Local workspace<small>Drafts and source teasers</small>
             </div>
           </div>
           <div className="profile">
@@ -563,7 +568,7 @@ function Workspace() {
           </div>
         )}
         <main id="workspace">
-          {view === "Source" ? <RepositoryEntry disabled={storageBlocked} onCancel={() => navigate("Projects")}
+          {view === "Teaser" ? <TeaserStudio onBack={() => { window.history.replaceState(null, "", window.location.pathname); navigate("Projects"); }} /> : view === "Source" ? <RepositoryEntry disabled={storageBlocked} onCancel={() => navigate("Projects")}
             onCreate={input => {
               const base = createProject(input.name);
               const draft = { ...base, repository: input.repository, brief: input.brief };
@@ -580,6 +585,7 @@ function Workspace() {
             />
           ) : view === "Projects" && projects.length === 0 && !firstRun ? (
             <section className="projects-page">
+              <button className="primary" onClick={() => navigate("Teaser")}><Clapperboard size={16} />Create source teaser</button>
               <EntryLanding disabled={storageBlocked} onStart={startEntry} />
               <div className="entry-landing-secondary">
                 <button className="secondary" disabled={storageBlocked} onClick={() => navigate("Source")}><Link2 size={16} />Start from repository</button>
@@ -625,6 +631,7 @@ function Workspace() {
                   <span className="demo-feature-content"><Badge>Demo data</Badge><strong>One action.<br />A clearer story.</strong><span className="demo-feature-action">Open sample project <ArrowRight size={16} /></span></span>
                 </button>
               </div>
+              <button className="primary" onClick={() => navigate("Teaser")}><Clapperboard size={16} />Create source teaser</button>
               <div className="library-heading"><h2>Project library <span>{projects.length.toString().padStart(2, "0")}</span></h2><button className="secondary" disabled={storageBlocked} onClick={() => navigate("Source")}><Link2 size={16} />Start from repository</button></div>
               <div className="project-toolbar">
                 <label className="search-field">

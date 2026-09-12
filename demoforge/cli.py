@@ -43,6 +43,21 @@ def version() -> None:
 
 
 @app.command()
+def serve(port: int = typer.Option(8000, min=1, max=65535)) -> None:
+    """Serve the local teaser API and built frontend on 127.0.0.1 only."""
+    from demoforge.api.server import serve_local
+
+    try:
+        serve_local(WorkspaceConfig.from_env(), port=port)
+    except OSError:
+        typer.echo("Could not bind the local server. Check the port and workspace permissions.",
+                   err=True)
+        raise typer.Exit(1) from None
+    except KeyboardInterrupt:
+        pass
+
+
+@app.command()
 def ingest(repository: str, commit: str | None = typer.Option(None, "--commit")) -> None:
     """Acquire a bounded GitHub text snapshot and publish sanitized evidence JSON."""
     try:

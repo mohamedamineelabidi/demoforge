@@ -4,6 +4,16 @@ from demoforge import __version__
 from demoforge.cli import app
 
 
+def test_serve_is_loopback_only(monkeypatch):
+    calls = []
+    monkeypatch.setattr("demoforge.api.server.serve_local", lambda config, port: calls.append(port))
+    result = CliRunner().invoke(app, ["serve", "--port", "8000"])
+    assert result.exit_code == 0, result.output
+    assert calls == [8000]
+    assert CliRunner().invoke(app, ["serve", "--host", "0.0.0.0"]).exit_code != 0
+    assert CliRunner().invoke(app, ["serve", "--port", "0"]).exit_code != 0
+
+
 def test_version_command_prints_version():
     result = CliRunner().invoke(app, ["version"])
     assert result.exit_code == 0
