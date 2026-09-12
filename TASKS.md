@@ -40,12 +40,21 @@ Do not install hosted infrastructure or start deck/logo work to complete this mi
 
 ## Ready next
 
-- [ ] **TASK-068**: First typed contract slice and fixtures (FR-02, FR-04, FR-05).
-  - Files: demoforge/schemas/, tests/schemas/, docs/DATA_CONTRACTS.md.
-  - Scope: Evidence, Claim, ArtifactRef/Manifest, Approval, QualityReport; no deck/logo/swarm schemas.
-  - Tests first: JSON round trips, hashes/ranges/enums, dangling evidence, missing required checks,
-    unsupported runtime-observed claims and stale approval matching. No network, model or media tools.
-  - Gate: `uv run pytest tests/schemas -q`, then full pytest and Ruff. This is the next coding task.
+- [ ] **TASK-069**: Safe workspace and local state (see backlog below). This is the next coding task.
+
+## Completed local proof tasks
+
+- [x] **TASK-068**: First typed contract slice and fixtures (FR-02, FR-04, FR-05).
+  - Completed on: 2026-09-12. `demoforge/schemas/` = `_base` (StrictModel, Sha1/Sha256, UtcDatetime,
+    RelativePath, CostValue), `evidence`, `claim` (+ Repository, FileRecord, EvidenceCatalog,
+    `validate_claim_support`), `artifact` (ArtifactRef, Cost, ArtifactManifest), `approval`
+    (+ `approval_matches`), `quality` (Check, QualityReport). No deck/logo/swarm schemas.
+  - Verification: RED (5 collection errors, module missing) then GREEN; `uv run pytest tests -q` 75 passed;
+    `uv run ruff check .` clean. Negative tests cover unknown fields, schema_version 2, bad hashes,
+    inverted line ranges, dangling evidence, runtime_observed without observation, user_attested without
+    attestation, path escape (abs/drive/`..`/URL), failed manifest with outputs, stale approval (revision
+    or hash), pass gate with failed/not_run required check, ask_user without questions, secret values in
+    measurements. Schema validity is not verified truth; I/O checks arrive with TASK-069/072.
 
 ## Local proof backlog
 

@@ -1,6 +1,6 @@
 # Data Contracts
 
-Status: v1 design for the video-first flow, accepted 2026-09-12; executable models are not yet built.
+Status: v1 design for the video-first flow, accepted 2026-09-12. Sections 1 to 4 and 6 are implemented in `demoforge/schemas/` (TASK-068, tests in `tests/schemas/`); the rest is design only.
 TASK-068 implements the first slice. This replaces the original unimplemented 13-pack draft; no stored
 production-data migration is required. Examples below are illustrative until schema tests implement them.
 The remaining contracts are implemented with their owning tasks, not all in one large schema task.
