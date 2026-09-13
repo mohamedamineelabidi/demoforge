@@ -18,6 +18,43 @@ fixture-video test. Reference films remain unreviewed until actually inspected; 
 timing attribution is verified by the supplied analysis. Preserve 30 fps pilot scope and TASK-082 gating.
 
 ## Toolchain
+### Owned-app walkthrough proof (ui-demo)
+
+The user-requested [ui-demo](ui-demo/SKILL.md) skill is installed from affaan-m/ecc;
+skills-lock.json records its source. Follow Discover -> Rehearse -> Record, with visible cursor,
+measured control positions, deliberate reading holds and no silently skipped selectors.
+
+`tests/video/walkthrough.mjs` is a reviewed test harness for the explicitly authorized
+`http://127.0.0.1:8001/` DemoForge instance only. It is not an arbitrary-URL recorder and does not
+change the production controller or its approval gates. It uses fresh contexts and built-in demo data,
+blocks non-GET/external requests, and substitutes an empty run list to avoid recording user run data.
+No approvals or server mutations are performed. The raw footage and review page disclose this scope.
+
+Run the app, then run this foreground gate with a NEW directory outside OneDrive:
+
+```powershell
+$env:DEMOFORGE_WALKTHROUGH = '1'
+$env:DEMOFORGE_WALKTHROUGH_OUTPUT = "$env:LOCALAPPDATA/demoforge/reviews/owned-ui-demo-NEW"
+uv run pytest tests/video/test_walkthrough.py -q
+Remove-Item Env:DEMOFORGE_WALKTHROUGH
+Remove-Item Env:DEMOFORGE_WALKTHROUGH_OUTPUT
+```
+
+The harness first discovers fields, then rehearses every action, then records eight clips.
+1280x800 capture intentionally differs from the skill's 1280x720 default to retain editor controls.
+Subtitles are added after capture in a separate footer so zoom cannot enlarge/crop them over app UI.
+The 60-second, 1920x1080 silent review draft has eight 225-frame shots, cuts, bounded 1.35x smoothstep
+zoom-in/out and a visible arrow tied to actual mouse events. Raw clips, editable shot metadata,
+source hashes, discovery/rehearsal records, measurements and offline review HTML remain local.
+This is a fixture proof, not Tella/FocuSee parity, a public export, or a general capture/editor feature.
+Human motion/privacy/creative review remains pending until the user watches the complete draft.
+
+Camera geometry is checked in the default unit gate. The opt-in media gate requires exactly
+1800 frames, 60 seconds, full decode, unchanged raw hashes and distinct intended motion samples.
+Use `-fps_mode passthrough` for sampled MD5 on this FFmpeg build; `-vsync` is unavailable.
+Playwright WebM rounding can lose the last 30 fps frame; at most 0.1 seconds of disclosed final-frame
+padding is applied before the exact 225-frame shot cap. Never conceal a failed action with padding.
+
 FFmpeg/ffprobe, Python/Pillow, pinned Node LTS + Playwright/Chromium (rig in
 `$LOCALAPPDATA/Temp/demoforge-rig`). Add NumPy only if the audio task needs it. No Remotion until
 TASK-082 benchmark/license selection. No media runtime is claimed installed by this recipe.

@@ -46,6 +46,29 @@ Do not install hosted infrastructure or start deck/logo work to complete this mi
 
 ## Initial Backend Integration
 
+- [x] **TASK-103**: Install requested ui-demo skill and produce an owned-app recording/edit test.
+  - User explicitly authorized recording DemoForge at http://127.0.0.1:8001/ on 2026-09-13.
+    Installed affaan-m/ecc ui-demo for Copilot with source lock. Applied Discover -> Rehearse -> Record.
+    Added test-only walkthrough harness and camera/scope regression; no production capture API added.
+  - Eight sections: project entry, canvas caption edit, frame caption save, evidence, footage,
+    approvals, review and source teaser entry. Fresh browser contexts, built-in demo data, no existing
+    localStorage reused. External/mutating requests blocked; source-teaser run list suppressed for privacy.
+    No production approvals or run submissions. Caption edits affect isolated demo drafts only.
+  - Review draft: real WebM footage, visible event-linked cursor, cuts, offline section captions,
+    measured focus targets and smooth bounded 1.35x zoom. Silent, no music or voiceover.
+    No Tella/FocuSee parity, arbitrary-app support or connected editor/export completion claimed.
+  - Verified 2026-09-13: focused tests RED -> GREEN; real recording gate 2 passed. Full pytest
+    356 passed, 3 opt-in tests skipped; Ruff clean. Eight raw SHA-256 values verified. Actual output:
+    1920x1080, 30 fps, 1800 frames, 60 seconds, no audio (peak N/A); full decode and 8 motion MD5 pairs
+    passed. Chromium played all 1800 frames to the end without media error. Encoded wide/focus samples
+    inspected. SHA-256 3d693ea467f817b366fe386f194ed91189457bbc2155bf1814c495061e5f2dc4.
+  - Local deliverables: reviews/owned-ui-demo-20260913-04 under the non-synced runtime root,
+    including walkthrough-review.mp4, review.html, edit.json, raw WebM clips and measurements.json.
+    Captured checkout revision 2846912f44be421ba73c004c8a88cb4c3db51282. No runtime assets committed.
+  - Full human privacy/motion/creative review remains pending; this completed test is not an approved
+    final export. Generalized recording needs separately authorized scenarios, isolation/egress controls,
+    backend integration and exact revision approvals. TASK-101 remains unrelated and open.
+
 - [x] **TASK-102**: Replace the rejected serif/document teaser with a provisional kinetic template.
   - Directly inspected public LinkedIn post media and sampled frames from ML Intern, OUI-1 and
     Qwen3-TTS/Nari Labs. Sandrine's public post exposed no playable video. Findings and limitations
