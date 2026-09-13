@@ -9,7 +9,10 @@ import {fileURLToPath, pathToFileURL} from 'node:url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const URL = 'http://127.0.0.1:8001/';
 const WIDTH = 1280;
-const HEIGHT = 800;
+const HEIGHT = 720;
+const CAMERA = {lead: 12, ramp: 60, amount: .2};
+const pointers = new WeakMap();
+const movementLogs = new WeakMap();
 const native = value => path.resolve(value).replaceAll('\\', '/');
 const sha256 = file => createHash('sha256').update(readFileSync(file)).digest('hex');
 const run = (command, args) => execFileSync(command, args, {
@@ -19,10 +22,53 @@ const run = (command, args) => execFileSync(command, args, {
 export function cameraAt(frame, frames, focus) {
   assert.ok(Number.isInteger(frame) && frame >= 0 && frame < frames);
   assert.ok(Number.isFinite(focus.x) && Number.isFinite(focus.y));
-  const ramp = Math.max(0, Math.min(1, (frame - 20) / 40, (frames - 21 - frame) / 40));
-  const zoom = 1 + .35 * ramp * ramp * (3 - 2 * ramp);
+  const ramp = Math.max(0, Math.min(1, (frame - CAMERA.lead) / CAMERA.ramp,
+    (frames - CAMERA.lead - 1 - frame) / CAMERA.ramp));
+  const zoom = 1 + CAMERA.amount * ramp * ramp * (3 - 2 * ramp);
   return {zoom, x: Math.max(0, Math.min(WIDTH - WIDTH / zoom, focus.x - WIDTH / zoom / 2)),
     y: Math.max(0, Math.min(HEIGHT - HEIGHT / zoom, focus.y - HEIGHT / zoom / 2))};
+}
+
+export function pointerPath(start, end) {
+  for (const point of [start, end]) {
+    assert.ok(Number.isFinite(point.x) && Number.isFinite(point.y));
+  }
+  return Array.from({length: 61}, (_, index) => {
+    const progress = index / 60;
+    const eased = progress * progress * (3 - 2 * progress);
+    return {x: start.x + (end.x - start.x) * eased,
+      y: start.y + (end.y - start.y) * eased, time: progress * 1000};
+  });
+}
+
+async function movePointer(page, focus, paced) {
+  const start = pointers.get(page) || {x: WIDTH / 2, y: HEIGHT / 2};
+  if (paced) {
+    const times = [];
+    const started = performance.now();
+    for (const point of pointerPath(start, focus)) {
+      await page.waitForTimeout(1000 / 60);
+      await page.mouse.move(point.x, point.y);
+      times.push(performance.now() - started);
+    }
+    const logs = movementLogs.get(page) || [];
+    logs.push({start, end: focus, event_count: times.length,
+      duration_ms: times.at(-1), max_gap_ms: Math.max(...times.slice(1).map(
+        (time, index) => time - times[index]))});
+    movementLogs.set(page, logs);
+  } else await page.mouse.move(focus.x, focus.y);
+  pointers.set(page, focus);
+}
+
+export function videoFilter(shot) {
+  const ramp = `max(0,min(1,min((on-${CAMERA.lead})/${CAMERA.ramp},`
+    + `(${shot.frames}-${CAMERA.lead + 1}-on)/${CAMERA.ramp})))`;
+  const zoom = `1+${CAMERA.amount}*(${ramp})*(${ramp})*(3-2*(${ramp}))`;
+  return `fps=30,tpad=stop_mode=clone:stop_duration=0.1,format=yuv444p,`
+    + `scale=3840:2160:flags=lanczos,zoompan=z='${zoom}':`
+    + `x='max(0,min(iw-iw/zoom,${shot.focus.x / WIDTH}*iw-iw/zoom/2))':`
+    + `y='max(0,min(ih-ih/zoom,${shot.focus.y / HEIGHT}*ih-ih/zoom/2))':`
+    + 'd=1:s=1920x1080:fps=30,format=yuv420p';
 }
 
 export function makeEdit() {
@@ -36,14 +82,17 @@ export function makeEdit() {
     ['review', 'Review', 'Draft checks are visible. Video export is disabled.'],
     ['teaser', 'Source teaser', 'Connected repository entry. No run is submitted.']
   ];
-  return {schema_version: 1, scope: 'owned-demoforge-fixture', url: URL,
+  return {schema_version: 2, style: 'edge-to-edge', scope: 'owned-demoforge-fixture', url: URL,
     human_approved: false, fps: 30, width: 1920, height: 1080,
     shots: entries.map(([id, title, caption], index) => ({id, title, caption,
       evidence_id: `observed-${index + 1}`, source: `${id}.webm`, source_in: 0,
-      frames: 225, focus: {x: 760, y: 420}}))};
+      frames: [180, 270, 330, 180, 180, 210, 210, 240][index],
+      focus: {x: 760, y: 420}}))};
 }
 
 export function validateEdit(edit) {
+  assert.equal(edit.schema_version, 2);
+  assert.equal(edit.style, 'edge-to-edge');
   assert.equal(edit.scope, 'owned-demoforge-fixture');
   assert.equal(edit.url, URL);
   assert.equal(edit.human_approved, false);
@@ -66,10 +115,12 @@ export function validateEdit(edit) {
 }
 
 async function cursor(page) {
+  pointers.set(page, {x: WIDTH / 2, y: HEIGHT / 2});
+  await page.mouse.move(WIDTH / 2, HEIGHT / 2);
   await page.evaluate(() => {
     const element = document.createElement('div');
     element.id = 'demo-cursor';
-    element.style.cssText = 'position:fixed;left:640px;top:400px;z-index:2147483647;'
+    element.style.cssText = 'position:fixed;left:640px;top:360px;z-index:2147483647;'
       + 'width:26px;height:30px;pointer-events:none;filter:drop-shadow(1px 2px 2px #0005)';
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.setAttribute('viewBox', '0 0 24 28');
@@ -94,11 +145,14 @@ async function cursor(page) {
 async function click(page, locator, label, paced) {
   await locator.waitFor({state: 'visible'});
   assert.ok(await locator.isEnabled(), `${label} is disabled`);
-  await locator.scrollIntoViewIfNeeded();
+  if (paced) {
+    await locator.evaluate(element => element.scrollIntoView({behavior: 'smooth', block: 'nearest'}));
+    await page.waitForTimeout(500);
+  } else await locator.scrollIntoViewIfNeeded();
   const box = await locator.boundingBox();
   assert.ok(box, `${label} has no geometry`);
   const focus = {x: box.x + box.width / 2, y: box.y + box.height / 2};
-  await page.mouse.move(focus.x, focus.y, {steps: paced ? 24 : 1});
+  await movePointer(page, focus, paced);
   if (paced) await page.waitForTimeout(350);
   await locator.click();
   console.log(`Verified control: ${label}`);
@@ -149,7 +203,7 @@ async function act(page, shot, paced) {
   if (shot.id === 'review') assert.ok(await button('Export video').isDisabled());
   const box = await heading.boundingBox();
   const focus = {x: Math.min(WIDTH, box.x + 400), y: Math.min(HEIGHT, box.y + 210)};
-  await page.mouse.move(focus.x, focus.y, {steps: paced ? 30 : 1});
+  await movePointer(page, focus, paced);
   return focus;
 }
 
@@ -180,48 +234,13 @@ function probe(file) {
     '-show_format', '-of', 'json', native(file)]));
 }
 
-async function overlays(browser, edit, folder) {
-  const context = await browser.newContext({viewport: {width: 1920, height: 1080}, offline: true});
-  const page = await context.newPage();
-  try {
-    for (const [index, shot] of edit.shots.entries()) {
-      await page.setContent(`<html><style>*{box-sizing:border-box;letter-spacing:0}
-        body{margin:0;color:#172d38;font-family:'Segoe UI',sans-serif;background:transparent}
-        header{position:absolute;left:240px;right:240px;top:25px;display:flex;
-          justify-content:space-between;align-items:center;font-size:22px}
-        h1{font-size:30px;margin:0;font-weight:650} footer{position:absolute;left:240px;
-          right:240px;top:1023px;display:flex;justify-content:space-between;font-size:19px}
-        #caption{max-width:1100px} #tag{color:#537078;font-size:17px}
-        #bar{position:absolute;left:240px;top:92px;width:${180 * (index + 1)}px;
-          height:3px;background:#217565}</style><header><h1></h1><span></span></header>
-        <div id="bar"></div><footer><div id="caption"></div><div id="tag">REVIEW DRAFT</div></footer>
-        </html>`);
-      await page.locator('h1').evaluate((el, text) => {el.textContent = text;},
-        `DemoForge / ${shot.title}`);
-      await page.locator('header span').evaluate((el, text) => {el.textContent = text;},
-        `${String(index + 1).padStart(2, '0')} / 08`);
-      await page.locator('#caption').evaluate((el, text) => {el.textContent = text;}, shot.caption);
-      await page.screenshot({path: path.join(folder, `${shot.id}-overlay.png`), omitBackground: true});
-    }
-  } finally { await context.close(); }
-}
-
-async function render(browser, edit, folder) {
+async function render(edit, folder) {
   validateEdit(edit);
-  await overlays(browser, edit, folder);
   for (const shot of edit.shots) {
     const source = path.join(folder, shot.source);
     assert.equal(sha256(source), shot.source_sha256, 'Raw recording changed');
-    const ramp = `max(0,min(1,min((on-20)/40,(${shot.frames}-21-on)/40)))`;
-    const zoom = `1+0.35*(${ramp})*(${ramp})*(3-2*(${ramp}))`;
-    const filters = `fps=30,tpad=stop_mode=clone:stop_duration=0.1,zoompan=z='${zoom}':`
-      + `x='max(0,min(iw-iw/zoom,${shot.focus.x}-iw/zoom/2))':`
-      + `y='max(0,min(ih-ih/zoom,${shot.focus.y}-ih/zoom/2))':`
-      + 'd=1:s=1440x900:fps=30,pad=1920:1080:240:105:color=0xe8eef0[base];'
-      + '[base][1:v]overlay=0:0:shortest=1,format=yuv420p[out]';
     run('ffmpeg', ['-v', 'error', '-ss', String(shot.source_in), '-i', native(source),
-      '-loop', '1', '-i', native(path.join(folder, `${shot.id}-overlay.png`)),
-      '-filter_complex_threads', '1', '-filter_complex', filters, '-map', '[out]',
+      '-filter_threads', '1', '-vf', videoFilter(shot),
       '-frames:v', String(shot.frames), '-an', '-c:v', 'libx264', '-threads', '2',
       '-preset', 'fast', '-crf', '18', '-map_metadata', '-1',
       native(path.join(folder, `${shot.id}-edit.mp4`))]);
@@ -242,8 +261,14 @@ async function render(browser, edit, folder) {
   assert.ok(!info.streams.some(stream => stream.codec_type === 'audio'));
   const decode = run('ffmpeg', ['-v', 'error', '-xerror', '-i', native(target), '-f', 'null', '-']);
   assert.equal(decode.trim(), '');
+  let sampleOffset = 0;
+  const sampleFrames = edit.shots.flatMap(shot => {
+    const pair = [sampleOffset + 20, sampleOffset + 90];
+    sampleOffset += shot.frames;
+    return pair;
+  });
   const md5 = run('ffmpeg', ['-v', 'error', '-i', native(target), '-vf',
-    "select='eq(mod(n,225),20)+eq(mod(n,225),90)'", '-fps_mode', 'passthrough',
+    `select='${sampleFrames.map(frame => `eq(n,${frame})`).join('+')}'`, '-fps_mode', 'passthrough',
     '-f', 'framemd5', '-']);
   const samples = md5.split('\n').filter(line => line && !line.startsWith('#'));
   assert.equal(samples.length, 16);
@@ -252,12 +277,23 @@ async function render(browser, edit, folder) {
   }
   writeFileSync(path.join(folder, 'motion-framemd5.txt'), md5);
   const measurements = {frame_count: 1800, duration_seconds: 60, width: 1920, height: 1080,
+    style: edit.style, pointer_timing: 'passed', working_resolution: '3840x2160',
+    maximum_zoom: 1.2, capture_fps: edit.shots.map(shot => shot.capture_fps),
     fps: 30, has_audio: false, full_decode: 'passed', motion_pairs: 'passed',
     human_review: 'pending', sha256: sha256(target), edit_sha256: sha256(path.join(folder, 'edit.json')),
     source_commit: edit.source_commit, shots: edit.shots};
   writeFileSync(path.join(folder, 'measurements.json'), JSON.stringify(measurements, null, 2));
+  const timestamp = frame => new Date(frame / 30 * 1000).toISOString().slice(11, 23);
+  let offset = 0;
+  const subtitles = edit.shots.map(shot => {
+    const start = offset;
+    offset += shot.frames;
+    return `${timestamp(start)} --> ${timestamp(offset)}\n${shot.title}: ${shot.caption}\n`;
+  });
+  writeFileSync(path.join(folder, 'captions.vtt'), `WEBVTT\n\n${subtitles.join('\n')}`);
   run('ffmpeg', ['-v', 'error', '-i', native(target), '-vf',
-    'fps=1/7.5,scale=640:-1,tile=2x4', '-frames:v', '1', native(path.join(folder, 'contact.jpg'))]);
+    `select='${sampleFrames.filter((_, index) => index % 2 === 1).map(frame => `eq(n,${frame})`).join('+')}',`
+      + 'scale=640:-1,tile=2x4', '-frames:v', '1', native(path.join(folder, 'contact.jpg'))]);
   writeFileSync(path.join(folder, 'review.html'), `<!doctype html><html lang="en"><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta http-equiv="Content-Security-Policy" content="default-src 'none'; media-src 'self'; style-src 'unsafe-inline'">
@@ -266,13 +302,15 @@ async function render(browser, edit, folder) {
     main{max-width:1200px;margin:auto}video{width:100%;aspect-ratio:16/9;background:#172d38}
     h1{font-size:24px}p{line-height:1.5}code{overflow-wrap:anywhere}</style><main>
     <h1>DemoForge / Recorded UI walkthrough</h1><p>Review draft. Real local app interactions with
-    built-in demo data. Edited timing, added cursor and bounded zoom. Silent. The source-teaser run
+    built-in demo data. Full-screen footage, paced cursor and bounded 1.20x zoom. Silent. The source-teaser run
     list was hidden for privacy; no run was submitted. Local approvals and export were not performed.</p>
-    <video controls preload="metadata" src="walkthrough-review.mp4"></video>
+    <video controls preload="metadata" src="walkthrough-review.mp4">
+    <track kind="subtitles" src="captions.vtt" srclang="en" label="Section notes"></video>
     <p>60 seconds / 1920 x 1080 / 30 fps / 1800 frames. Full human review is pending.</p>
     <p>Video SHA-256: <code>${measurements.sha256}</code></p>
     <p>The adjacent edit.json stores the shot order, raw clips, trims, camera targets and evidence IDs.
-    This test harness is not a general app recorder or a connected editing feature.</p></main></html>`);
+    This test harness is not a general app recorder or a connected editing feature.</p>
+    <ol>${edit.shots.map(shot => `<li>${shot.title}: ${shot.caption}</li>`).join('')}</ol></main></html>`);
   console.log(JSON.stringify(measurements, null, 2));
 }
 
@@ -290,7 +328,9 @@ async function main() {
   edit.authorization = 'User requested recording this owned local app in this conversation.';
   edit.disclosures = ['Built-in demo data', 'Local draft edits only',
     'Source teaser run list suppressed for privacy', 'No production approvals',
-    'Review draft, not final export', '1280x800 capture for full editor controls',
+    'Review draft, not final export', '1280x720 capture; edge-to-edge 16:9 edit',
+    'Timed mouse events; 4K working raster for lower camera quantization',
+    'Optional subtitle track, no decorative frame; not a Remotion or cloud render',
     'Up to 0.1 seconds of final-frame padding for 25-to-30 fps rounding'];
   mkdirSync(folder, {recursive: true});
   const browser = await chromium.launch({channel: 'chrome', headless: true});
@@ -318,9 +358,17 @@ async function main() {
             const focus = await act(page, shot, record);
             if (record) {
               const elapsed = Date.now() - started;
-              assert.ok(elapsed < 6500, `Action too slow for ${shot.id}: ${elapsed}ms`);
-              await page.waitForTimeout(7500 - elapsed);
+              const durationMs = shot.frames / 30 * 1000;
+              assert.ok(elapsed < durationMs - 500, `Action too slow for ${shot.id}: ${elapsed}ms`);
+              await page.waitForTimeout(durationMs - elapsed);
               shot.recorded_seconds = (Date.now() - started) / 1000;
+              shot.pointer_movements = movementLogs.get(page) || [];
+              assert.ok(shot.pointer_movements.length > 0);
+              for (const movement of shot.pointer_movements) {
+                assert.equal(movement.event_count, 61);
+                assert.ok(movement.duration_ms >= 900);
+                assert.ok(movement.max_gap_ms < 200, 'Capture host stalled during pointer movement');
+              }
               shot.focus = focus;
               shot.observed = true;
               await page.screenshot({path: path.join(folder, `${shot.id}-observed.png`)});
@@ -331,10 +379,11 @@ async function main() {
         if (record) {
           await page.video().saveAs(path.join(folder, shot.source));
           const info = probe(path.join(folder, shot.source));
+          shot.capture_fps = info.streams.find(stream => stream.codec_type === 'video').avg_frame_rate;
           shot.source_in = Math.max(0, Number(info.format.duration) - shot.recorded_seconds);
           shot.source_sha256 = sha256(path.join(folder, shot.source));
           shot.source_url = URL;
-          assert.ok(Number(info.format.duration) >= 7.5);
+          assert.ok(Number(info.format.duration) >= shot.frames / 30);
         }
       }
       if (phase === 'discover') writeFileSync(path.join(folder, 'discovery.json'), JSON.stringify(fields, null, 2));
@@ -342,7 +391,7 @@ async function main() {
     }
     validateEdit(edit);
     writeFileSync(path.join(folder, 'edit.json'), JSON.stringify(edit, null, 2));
-    await render(browser, edit, folder);
+    await render(edit, folder);
   } finally { await browser.close(); }
 }
 

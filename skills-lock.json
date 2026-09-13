@@ -1,11 +1,29 @@
 {
   "version": 1,
   "skills": {
+    "remotion-best-practices": {
+      "source": "remotion-dev/skills",
+      "sourceType": "github",
+      "skillPath": "skills/remotion-best-practices/SKILL.md",
+      "computedHash": "810aab437ee074a8a5251d6b8558f9bab91115e7184f1055c44328aa9f5cf32b"
+    },
     "ui-demo": {
       "source": "affaan-m/ecc",
       "sourceType": "github",
       "skillPath": "skills/ui-demo/SKILL.md",
       "computedHash": "ef1ef19b86f1d5c88d395cd43200b0613a71102065c7ff8370201143b18a5ee6"
+    },
+    "video-edit": {
+      "source": "prime-skills/runcomfy-agent-skills",
+      "sourceType": "github",
+      "skillPath": "video-edit/SKILL.md",
+      "computedHash": "f5e3dae395e536ff13fb2f66c20bbe84120739c161ff4a95b9c9e168b4d84105"
+    },
+    "video-edit-genmedia": {
+      "source": "genmedia-labs/skills",
+      "sourceType": "github",
+      "skillPath": "video-edit/SKILL.md",
+      "computedHash": "f5e3dae395e536ff13fb2f66c20bbe84120739c161ff4a95b9c9e168b4d84105"
     }
   }
 }

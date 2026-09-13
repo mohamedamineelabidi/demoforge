@@ -41,10 +41,13 @@ Remove-Item Env:DEMOFORGE_WALKTHROUGH_OUTPUT
 ```
 
 The harness first discovers fields, then rehearses every action, then records eight clips.
-1280x800 capture intentionally differs from the skill's 1280x720 default to retain editor controls.
-Subtitles are added after capture in a separate footer so zoom cannot enlarge/crop them over app UI.
-The 60-second, 1920x1080 silent review draft has eight 225-frame shots, cuts, bounded 1.35x smoothstep
-zoom-in/out and a visible arrow tied to actual mouse events. Raw clips, editable shot metadata,
+Revision 2 records 1280x720 and fills the 1920x1080 video without an outer frame or burnt-in labels.
+Section captions are optional in captions.vtt and also listed on the offline review page.
+The 60-second silent draft allocates more time to caption editing and less to read-only sections.
+It uses bounded 1.20x smoothstep zoom over 60 frames, a 3840x2160 yuv444 working raster before
+downsampling, and a visible arrow tied to paced real mouse events. Mouse steps alone do not enforce
+duration: explicitly space events and measure their actual timing. Reject stalls over 200 ms.
+Raw clips, editable shot metadata,
 source hashes, discovery/rehearsal records, measurements and offline review HTML remain local.
 This is a fixture proof, not Tella/FocuSee parity, a public export, or a general capture/editor feature.
 Human motion/privacy/creative review remains pending until the user watches the complete draft.
@@ -53,7 +56,28 @@ Camera geometry is checked in the default unit gate. The opt-in media gate requi
 1800 frames, 60 seconds, full decode, unchanged raw hashes and distinct intended motion samples.
 Use `-fps_mode passthrough` for sampled MD5 on this FFmpeg build; `-vsync` is unavailable.
 Playwright WebM rounding can lose the last 30 fps frame; at most 0.1 seconds of disclosed final-frame
-padding is applied before the exact 225-frame shot cap. Never conceal a failed action with padding.
+padding is applied before each exact shot frame cap. Never conceal a failed action with padding.
+Capture frame rate is recorded separately: Playwright WebM on this host is 25 fps. Export at 30 fps
+does not make that native 30/60 fps footage. Browser dropped-frame counts are playback diagnostics,
+not equivalent to encoded missing frames. Report them, including nonzero counts; do not claim zero
+drops based on full decode or sparse MD5 pairs. Close unused assistant browsers before media gates.
+
+### Additional requested skills
+
+Installed on 2026-09-13 with source locks:
+- [Remotion guidance](remotion-best-practices/SKILL.md), from remotion-dev/skills.
+- [RunComfy video-edit](video-edit/SKILL.md), from prime-skills/runcomfy-agent-skills.
+- [Genmedia video-edit](video-edit-genmedia/SKILL.md), from genmedia-labs/skills, locally aliased
+	to avoid overwriting the other video-edit skill. The lock retains its upstream source hash;
+	the local name/frontmatter differs. Preserve this alias when updating the skills.
+
+The two video-edit sources currently provide the same RunComfy generative-restyle workflow.
+They are not lossless UI editing tools. No cloud upload, login or paid request is authorized by
+installation alone. Do not use a generative restyle that could alter UI text or product behavior.
+The Remotion skill's frame-driven timing and bounded interpolation principles inform the local
+motion edit. No Remotion runtime is installed, selected, or used to render this test. TASK-082's
+benchmark/license ADR is still required before that change. Skills are guidance, not new shipped
+product features or permission to bypass the existing renderer and capture gates.
 
 FFmpeg/ffprobe, Python/Pillow, pinned Node LTS + Playwright/Chromium (rig in
 `$LOCALAPPDATA/Temp/demoforge-rig`). Add NumPy only if the audio task needs it. No Remotion until

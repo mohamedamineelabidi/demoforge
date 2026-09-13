@@ -46,6 +46,31 @@ Do not install hosted infrastructure or start deck/logo work to complete this mi
 
 ## Initial Backend Integration
 
+- [x] **TASK-104**: Revise owned-app walkthrough framing and motion; install requested editing skills.
+  - Installed genmedia-labs/skills video-edit (local alias video-edit-genmedia),
+    prime-skills/runcomfy-agent-skills video-edit, and remotion-dev/skills remotion-best-practices.
+    Sources locked; skill files reviewed. Both video-edit sources describe generative RunComfy routes,
+    not exact UI preservation. No cloud requests, media uploads, credentials or Remotion runtime added.
+  - Removed the rejected frame/header/footer; edge-to-edge 16:9 recording with optional VTT captions.
+    Pointer moves now have 61 time-spaced real events instead of unpaced step bursts. Actual movement
+    spans 1.463-2.387 seconds, maximum observed event gap 66 ms. Camera is bounded to 1.20x with
+    60-frame easing and a 4K yuv444 working raster to reduce integer crop stepping. Longer action
+    shots preserve editing/save interactions; total remains 60 seconds. No invented intermediate UI.
+  - Verified: focused RED/GREEN, dedicated capture/render 2 passed, full pytest 356 passed/3 skipped,
+    Ruff clean, no editor errors. Two earlier full-suite runs hit WinError10053 in an unchanged API
+    test; it passed in isolation and the complete suite passed after browser/environment cleanup.
+  - New review: reviews/owned-ui-demo-smooth-20260913-02 under LOCALAPPDATA/demoforge.
+    MP4: 1920x1080, 30 fps, 1800 frames, 60 seconds, silent (peak N/A), full decode and 8 intended
+    motion MD5 pairs passed; raw source hashes verified. SHA-256:
+    91abba86c79d3cf9f81c6125ba677981364559358dfa79130d94bf73b1b321e3.
+    Encoded section frames inspected. Buffered full playback reached the end with no media error
+    but reported 3 dropped frames (an earlier playback reported 4). Zero-drop playback is NOT verified.
+  - Limits: raw Playwright capture remains 25 fps, not native 30/60; synthetic frame interpolation
+    is not used. Full human creative/privacy review is pending. This task records the implemented
+    revision, not user acceptance, Tella/FocuSee parity, a Remotion render or general-app support.
+    Keep arbitrary URLs blocked. Generalization needs separately authorized scenarios, measured
+    capture cadence, isolation/egress, controller/editor integration and exact approvals.
+
 - [x] **TASK-103**: Install requested ui-demo skill and produce an owned-app recording/edit test.
   - User explicitly authorized recording DemoForge at http://127.0.0.1:8001/ on 2026-09-13.
     Installed affaan-m/ecc ui-demo for Copilot with source lock. Applied Discover -> Rehearse -> Record.
