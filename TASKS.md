@@ -429,6 +429,11 @@ new IDs replace unstarted legacy tasks rather than silently reusing their meanin
   - Compare identical three-scene HTML/FFmpeg and Remotion prototypes under frozen assets/fonts/spec.
   - Gate: report export latency, peak memory, text quality, preview/export consistency and development
     effort; review license eligibility and record explicit approval before adoption. Select one backend.
+  - Remotion benchmark prototype built on 2026-09-15: ADR-0006 accepted for evaluation benchmark;
+    built 6-scene Google Workspace-style walkthrough in demo-video/ (900 frames, 30 fps, 1920x1080) with
+    Material Design 3 easing, spring physics, vector UI mockups, and Remotion CLI rendering. Full decode
+    passed, SHA-256 F9D0B3A4E130829BF24DFAF592E62796953CD01DF94694C5287BDA0F9F84F932. Final comparison
+    report and formal selection ADR remain pending.
 - [ ] **TASK-083**: React scene editor and local API adapter (depends 082, 078; FR-10).
   - React/TypeScript/Vite, TanStack Query, accessible components; preview, captions, trims, ordering,
     brand controls and revision history. FastAPI adapter binds to loopback for single-user local use.

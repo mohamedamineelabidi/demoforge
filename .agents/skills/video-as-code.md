@@ -132,8 +132,18 @@ benchmark/license ADR is still required before that change. Skills are guidance,
 product features or permission to bypass the existing renderer and capture gates.
 
 FFmpeg/ffprobe, Python/Pillow, pinned Node LTS + Playwright/Chromium (rig in
-`$LOCALAPPDATA/Temp/demoforge-rig`). Add NumPy only if the audio task needs it. No Remotion until
-TASK-082 benchmark/license selection. No media runtime is claimed installed by this recipe.
+`$LOCALAPPDATA/Temp/demoforge-rig`). Add NumPy only if the audio task needs it.
+Remotion benchmark prototype evaluated under ADR-0006 (TASK-082); formal selection ADR pending.
+
+### Remotion evaluation benchmark (TASK-082, ADR-0006)
+
+A standalone Remotion benchmark project is in `demo-video/` for TASK-082 evaluation:
+- React 19 + Remotion 4.0.524 with TypeScript
+- Six scenes (Opening, RepoEntry, Storyboard, ApproveRender, ReviewExport, Closing), 900 frames, 30 fps
+- Google Material Design 3 easing curves (`lib/easing.ts`) and vector UI mockups (`components/MockUI.tsx`)
+- Preview: `npm --prefix demo-video run studio`
+- Render: `npx --prefix demo-video remotion render DemoForgeDemo <out.mp4>`
+- Verified output: 900 frames, 30.0s, 1920x1080, full decode, SHA-256 `F9D0B3A4E130829BF24DFAF592E62796953CD01DF94694C5287BDA0F9F84F932`
 
 ## Layout
 ```
