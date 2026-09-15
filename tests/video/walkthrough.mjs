@@ -10,7 +10,10 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const URL = 'http://127.0.0.1:8001/';
 const WIDTH = 1280;
 const HEIGHT = 720;
-const CAMERA = {lead: 12, ramp: 60, amount: .2};
+const CAMERA = {lead: 6, ramp: 12, amount: .2};
+const POINTER = {duration: 400, steps: 20};
+const motionProfile = () => ({pointer_ms: POINTER.duration, zoom_frames: CAMERA.ramp,
+  lead_frames: CAMERA.lead, maximum_zoom: 1 + CAMERA.amount});
 const pointers = new WeakMap();
 const movementLogs = new WeakMap();
 const native = value => path.resolve(value).replaceAll('\\', '/');
@@ -33,11 +36,11 @@ export function pointerPath(start, end) {
   for (const point of [start, end]) {
     assert.ok(Number.isFinite(point.x) && Number.isFinite(point.y));
   }
-  return Array.from({length: 61}, (_, index) => {
-    const progress = index / 60;
+  return Array.from({length: POINTER.steps + 1}, (_, index) => {
+    const progress = index / POINTER.steps;
     const eased = progress * progress * (3 - 2 * progress);
     return {x: start.x + (end.x - start.x) * eased,
-      y: start.y + (end.y - start.y) * eased, time: progress * 1000};
+      y: start.y + (end.y - start.y) * eased, time: progress * POINTER.duration};
   });
 }
 
@@ -47,7 +50,8 @@ async function movePointer(page, focus, paced) {
     const times = [];
     const started = performance.now();
     for (const point of pointerPath(start, focus)) {
-      await page.waitForTimeout(1000 / 60);
+      const remaining = point.time - (performance.now() - started);
+      if (remaining > 0) await page.waitForTimeout(remaining);
       await page.mouse.move(point.x, point.y);
       times.push(performance.now() - started);
     }
@@ -82,7 +86,8 @@ export function makeEdit() {
     ['review', 'Review', 'Draft checks are visible. Video export is disabled.'],
     ['teaser', 'Source teaser', 'Connected repository entry. No run is submitted.']
   ];
-  return {schema_version: 2, style: 'edge-to-edge', scope: 'owned-demoforge-fixture', url: URL,
+  return {schema_version: 3, style: 'edge-to-edge', motion: motionProfile(),
+    scope: 'owned-demoforge-fixture', url: URL,
     human_approved: false, fps: 30, width: 1920, height: 1080,
     shots: entries.map(([id, title, caption], index) => ({id, title, caption,
       evidence_id: `observed-${index + 1}`, source: `${id}.webm`, source_in: 0,
@@ -91,7 +96,8 @@ export function makeEdit() {
 }
 
 export function validateEdit(edit) {
-  assert.equal(edit.schema_version, 2);
+  assert.equal(edit.schema_version, 3);
+  assert.deepEqual(edit.motion, motionProfile());
   assert.equal(edit.style, 'edge-to-edge');
   assert.equal(edit.scope, 'owned-demoforge-fixture');
   assert.equal(edit.url, URL);
@@ -153,7 +159,7 @@ async function click(page, locator, label, paced) {
   assert.ok(box, `${label} has no geometry`);
   const focus = {x: box.x + box.width / 2, y: box.y + box.height / 2};
   await movePointer(page, focus, paced);
-  if (paced) await page.waitForTimeout(350);
+  if (paced) await page.waitForTimeout(120);
   await locator.click();
   console.log(`Verified control: ${label}`);
   return focus;
@@ -263,7 +269,7 @@ async function render(edit, folder) {
   assert.equal(decode.trim(), '');
   let sampleOffset = 0;
   const sampleFrames = edit.shots.flatMap(shot => {
-    const pair = [sampleOffset + 20, sampleOffset + 90];
+    const pair = [sampleOffset + CAMERA.lead, sampleOffset + CAMERA.lead + CAMERA.ramp];
     sampleOffset += shot.frames;
     return pair;
   });
@@ -277,7 +283,7 @@ async function render(edit, folder) {
   }
   writeFileSync(path.join(folder, 'motion-framemd5.txt'), md5);
   const measurements = {frame_count: 1800, duration_seconds: 60, width: 1920, height: 1080,
-    style: edit.style, pointer_timing: 'passed', working_resolution: '3840x2160',
+    style: edit.style, motion: edit.motion, pointer_timing: 'passed', working_resolution: '3840x2160',
     maximum_zoom: 1.2, capture_fps: edit.shots.map(shot => shot.capture_fps),
     fps: 30, has_audio: false, full_decode: 'passed', motion_pairs: 'passed',
     human_review: 'pending', sha256: sha256(target), edit_sha256: sha256(path.join(folder, 'edit.json')),
@@ -302,7 +308,8 @@ async function render(edit, folder) {
     main{max-width:1200px;margin:auto}video{width:100%;aspect-ratio:16/9;background:#172d38}
     h1{font-size:24px}p{line-height:1.5}code{overflow-wrap:anywhere}</style><main>
     <h1>DemoForge / Recorded UI walkthrough</h1><p>Review draft. Real local app interactions with
-    built-in demo data. Full-screen footage, paced cursor and bounded 1.20x zoom. Silent. The source-teaser run
+    built-in demo data. Full-screen footage, fast paced cursor and 0.4-second bounded 1.20x zoom
+    transitions. Silent. The source-teaser run
     list was hidden for privacy; no run was submitted. Local approvals and export were not performed.</p>
     <video controls preload="metadata" src="walkthrough-review.mp4">
     <track kind="subtitles" src="captions.vtt" srclang="en" label="Section notes"></video>
@@ -329,7 +336,7 @@ async function main() {
   edit.disclosures = ['Built-in demo data', 'Local draft edits only',
     'Source teaser run list suppressed for privacy', 'No production approvals',
     'Review draft, not final export', '1280x720 capture; edge-to-edge 16:9 edit',
-    'Timed mouse events; 4K working raster for lower camera quantization',
+    '400ms scheduled cursor; 12-frame zoom transitions; 4K working raster',
     'Optional subtitle track, no decorative frame; not a Remotion or cloud render',
     'Up to 0.1 seconds of final-frame padding for 25-to-30 fps rounding'];
   mkdirSync(folder, {recursive: true});
@@ -365,8 +372,9 @@ async function main() {
               shot.pointer_movements = movementLogs.get(page) || [];
               assert.ok(shot.pointer_movements.length > 0);
               for (const movement of shot.pointer_movements) {
-                assert.equal(movement.event_count, 61);
-                assert.ok(movement.duration_ms >= 900);
+                assert.equal(movement.event_count, POINTER.steps + 1);
+                assert.ok(movement.duration_ms >= 350 && movement.duration_ms <= 800,
+                  'Pointer movement missed fast timing budget');
                 assert.ok(movement.max_gap_ms < 200, 'Capture host stalled during pointer movement');
               }
               shot.focus = focus;

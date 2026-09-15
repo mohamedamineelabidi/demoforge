@@ -17,12 +17,17 @@ const {cameraAt, validateEdit, makeEdit, pointerPath, videoFilter} = await impor
 const edit = makeEdit();
 assert.equal(edit.style, 'edge-to-edge');
 const movement = pointerPath({x:100,y:100}, {x:1100,y:600});
-assert.equal(movement.length, 61);
+assert.equal(movement.length, 21);
 assert.equal(movement[0].time, 0);
-assert.equal(movement.at(-1).time, 1000);
+assert.equal(movement.at(-1).time, 400);
 assert.equal(movement.at(-1).x, 1100);
 assert.ok(movement.slice(1).every((point, index) => point.time > movement[index].time));
-assert.ok(movement.slice(1).every((point, index) => Math.abs(point.x - movement[index].x) < 32));
+assert.ok(movement.slice(1).every((point, index) => Math.abs(point.x - movement[index].x) < 76));
+assert.deepEqual(edit.motion, {pointer_ms:400, zoom_frames:12, lead_frames:6, maximum_zoom:1.2});
+assert.equal(cameraAt(6,225,{x:900,y:500}).zoom, 1);
+assert.equal(cameraAt(18,225,{x:900,y:500}).zoom, 1.2);
+assert.equal(cameraAt(206,225,{x:900,y:500}).zoom, 1.2);
+assert.equal(cameraAt(218,225,{x:900,y:500}).zoom, 1);
 const filter = videoFilter(edit.shots[0]);
 assert.doesNotMatch(filter, /(?:^|,)pad=|overlay=/);
 assert.match(filter, /scale=3840:2160/);
@@ -54,6 +59,7 @@ for (const mutate of [
  value => value.shots[0].focus.x = 9000,
  value => value.shots[0].frames = 0,
  value => value.shots[0].title = '<script>fake</script>',
+ value => value.motion.pointer_ms = 900,
  value => value.human_approved = true
 ]) {
  const invalid = structuredClone(edit);
@@ -87,6 +93,10 @@ def test_record_and_edit_owned_app(tmp_path):
     assert measurements["human_review"] == "pending"
     assert measurements["style"] == "edge-to-edge"
     assert measurements["pointer_timing"] == "passed"
+    for shot in measurements["shots"]:
+        for movement in shot["pointer_movements"]:
+            assert 350 <= movement["duration_ms"] <= 800
+            assert movement["event_count"] == 21
     assert len(measurements["sha256"]) == 64
     assert len(measurements["shots"]) == 8
     assert all(shot["observed"] for shot in measurements["shots"])

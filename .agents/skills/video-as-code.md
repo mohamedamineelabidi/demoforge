@@ -41,12 +41,18 @@ Remove-Item Env:DEMOFORGE_WALKTHROUGH_OUTPUT
 ```
 
 The harness first discovers fields, then rehearses every action, then records eight clips.
-Revision 2 records 1280x720 and fills the 1920x1080 video without an outer frame or burnt-in labels.
+Revision 3 records 1280x720 and fills the 1920x1080 video without an outer frame or burnt-in labels.
 Section captions are optional in captions.vtt and also listed on the offline review page.
 The 60-second silent draft allocates more time to caption editing and less to read-only sections.
-It uses bounded 1.20x smoothstep zoom over 60 frames, a 3840x2160 yuv444 working raster before
-downsampling, and a visible arrow tied to paced real mouse events. Mouse steps alone do not enforce
-duration: explicitly space events and measure their actual timing. Reject stalls over 200 ms.
+It uses bounded 1.20x smoothstep zoom with a 6-frame lead and 12-frame (0.4-second) in/out ramps,
+a 3840x2160 yuv444 working raster before downsampling, and a visible event-linked arrow.
+The fast pointer profile schedules 21 real events against elapsed time over 400 ms; do not add a
+fixed delay to every browser call because protocol overhead accumulates. A 120 ms pre-click pause
+separates arrival from activation. Keep typing and result holds at normal speed. The strict v3 edit
+metadata records this profile; incompatible settings are rejected rather than silently ignored.
+Measure actual movement: require 350-800 ms and reject event gaps over 200 ms. The fast proof measured
+402-420 ms with maximum gap 48 ms. Sample zoom motion at the lead and settled frames, not two frames
+inside the static hold. Camera bounds and both fast ramp endpoints are regression-tested.
 Raw clips, editable shot metadata,
 source hashes, discovery/rehearsal records, measurements and offline review HTML remain local.
 This is a fixture proof, not Tella/FocuSee parity, a public export, or a general capture/editor feature.
@@ -61,6 +67,40 @@ Capture frame rate is recorded separately: Playwright WebM on this host is 25 fp
 does not make that native 30/60 fps footage. Browser dropped-frame counts are playback diagnostics,
 not equivalent to encoded missing frames. Report them, including nonzero counts; do not claim zero
 drops based on full decode or sparse MD5 pairs. Close unused assistant browsers before media gates.
+
+### Recorded Demo integration proposal (not implemented)
+
+Keep Recorded Demo distinct from the connected Source Teaser and browser-only draft editor.
+Promote the owned-app proof in small controller-backed slices, not by exposing its test script as an API.
+
+1. In `schemas/`, define versioned capture authorization, approved scenario, observation/event log and
+	motion recipe contracts. Link source evidence, raw SHA-256, viewport/DPR, measured capture FPS,
+	tool versions and served app build identity. Checkout HEAD alone does not prove the served revision.
+2. In `video/`, implement a trusted capture adapter for an explicitly allowlisted owned app. Use fresh
+	contexts, safe action types, reset/readiness/result assertions and Discover -> Rehearse -> Record.
+	Record monotonic event times, click/scroll positions and target bounds against the video clock.
+	Keep private inputs out of logs; review/mask footage before publishing derivatives. General URLs
+	remain blocked until tested DNS/redirect/private-IP egress defenses and job isolation exist.
+3. Separate acquisition from editing. Preserve real action timing in raw footage; derive trim ranges,
+	action-centered zoom targets, 12-frame ramps, holds and optional captions into an immutable recipe.
+	Zoom edits can reuse approved footage. The current cursor is burnt into capture: changing its speed
+	still requires re-recording. A later separate cursor layer needs cursor-free capture plus accurate
+	event synchronization, and must not imply clicks or product states that did not occur.
+4. In `workflow/`, reuse SQLite, attempts, manifests and exact-revision approvals: scenario approval ->
+	capture/observation checks -> storyboard review -> render -> technical QA -> full human approval ->
+	export. Caption/camera changes invalidate downstream render approval, not unchanged raw capture.
+	Start with foreground local jobs, progress reporting and cancellation at supported boundaries;
+	do not claim mid-render cancellation until owned-process termination/recovery is implemented.
+5. In the existing React editor, add capture setup, scenario approval, real footage preview and motion
+	controls: preset selector, zoom target, ramp duration, hold and trim. Show source FPS separately from
+	output FPS. Preview and export must consume the same validated recipe, with stale approval states.
+	The API dispatches stage functions; it must not duplicate controller rules or run generated scripts.
+6. Keep the current FFmpeg proof while TASK-082 benchmarks shared preview/export rendering and records
+	the Remotion license/backend decision. No second permanent renderer or hosted infrastructure yet.
+
+First integration acceptance: one authorized owned-app run from scenario through reviewed MP4, raw and
+recipe hashes preserved, camera edit invalidation tested, privacy checks, rejected unauthorized targets,
+failed-action handling and crash/retry tests. This proposal does not make that workflow available today.
 
 ### Additional requested skills
 

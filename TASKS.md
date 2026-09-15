@@ -46,6 +46,27 @@ Do not install hosted infrastructure or start deck/logo work to complete this mi
 
 ## Initial Backend Integration
 
+- [x] **TASK-105**: Accelerate owned-app cursor/zoom motion and document recorder integration.
+  - Completed on: 2026-09-15. Revision 3 stores a strict fast-motion profile in the edit metadata.
+    Cursor scheduling uses elapsed deadlines instead of adding sleep to each browser call: 21 events,
+    400 ms target, actual 402-420 ms, maximum event gap 48 ms. Pre-click pause is 120 ms.
+    Zoom in/out each take 12 frames (0.4 seconds), with 6-frame lead and bounded 1.20x scale.
+    Typing and readable result holds retain normal speed; eight shots still total 60 seconds.
+  - Verified: timing regression RED then GREEN; Discover -> Rehearse -> Record media gate 2 passed;
+    full pytest 356 passed/3 skipped; Ruff clean; touched code has no editor diagnostics.
+    MP4: 1920x1080, 30 fps, 1800 frames, 60 seconds, silent (peak N/A); full decode, raw SHA checks
+    and 8 intended zoom MD5 pairs passed. Contact frames inspected; full browser playback ended with
+    no media error and 0 dropped of 1800 frames in this run. Capture remains 25 fps, not native 30/60.
+  - Local review: LOCALAPPDATA/demoforge/reviews/owned-ui-demo-fast-20260915-01.
+    MP4 SHA-256: dfbef952a788909221eb45c1ae07ae448ba2c7b855e180be642d3bcb8ffe29ed.
+    Edit SHA-256: e0c82638e547df0bbe9cc63e39b473db103ea94e49525034b5e26f7649f8f45d.
+  - Integration proposal is in .agents/skills/video-as-code.md: typed authorization/scenario/events,
+    isolated allowlisted capture, separate motion recipe, existing controller approvals/invalidation,
+    then connected editor controls. Current cursor is burnt into capture; changing its speed still
+    requires re-recording. Separate cursor composition needs a later synchronized cursor-free source.
+    No new capture API/editor feature, arbitrary URL support, Remotion runtime or hosted stack shipped.
+    Full human creative/privacy review remains pending; automated playback is not that approval.
+
 - [x] **TASK-104**: Revise owned-app walkthrough framing and motion; install requested editing skills.
   - Installed genmedia-labs/skills video-edit (local alias video-edit-genmedia),
     prime-skills/runcomfy-agent-skills video-edit, and remotion-dev/skills remotion-best-practices.
