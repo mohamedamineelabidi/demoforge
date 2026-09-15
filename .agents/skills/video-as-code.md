@@ -18,6 +18,18 @@ fixture-video test. Reference films remain unreviewed until actually inspected; 
 timing attribution is verified by the supplied analysis. Preserve 30 fps pilot scope and TASK-082 gating.
 
 ## Toolchain
+### Recorded-demo contract gate
+
+TASK-106 implements frozen planning, assertion coverage and source-bounded shot specifications in
+`demoforge/schemas/recorded_demo.py`. Run
+`uv run pytest tests/schemas/test_recorded_demo.py tests/schemas/test_style_profile.py -q` before
+extending these types. The [implementation roadmap](../../docs/RECORDED_DEMO.md) records the six-step
+frontend flow, primary unreviewed references and remaining capture/editor gates.
+Do not execute declarative steps directly: no authorization, locator compiler or browser runner exists
+in this module. Coverage is scoped to selected assertions; unresolved frontier is not cleared by a
+passing report. Check actual artifact hashes and approvals in the owning stage, not through schema
+validation. Keep existing pilot style/duration contracts unchanged.
+
 ### Owned-app walkthrough proof (ui-demo)
 
 The user-requested [ui-demo](ui-demo/SKILL.md) skill is installed from affaan-m/ecc;

@@ -5,6 +5,11 @@ TASK-068 implements the first slice. This replaces the original unimplemented 13
 production-data migration is required. Examples below are illustrative until schema tests implement them.
 The remaining contracts are implemented with their owning tasks, not all in one large schema task.
 
+TASK-106 adds an isolated recorded-demo planning/coverage/timeline slice in
+[recorded_demo.py](../demoforge/schemas/recorded_demo.py). See
+[Recorded Demo Implementation](RECORDED_DEMO.md) for its fields, invariants and execution limits.
+It does not replace the pilot contracts or implement browser capture, approval or export authority.
+
 ## Shared rules
 
 - Pydantic v2, snake_case, explicit schema_version, UTC timestamps, stable IDs, immutable revisions.

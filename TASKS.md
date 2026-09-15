@@ -41,6 +41,33 @@ Do not install hosted infrastructure or start deck/logo work to complete this mi
 
 ## Ready next
 
+- [x] **TASK-106**: Start recorded-demo integration with planning, coverage and shot contracts.
+  - User requested implementation on 2026-09-15. Scope and follow-up sequence: docs/RECORDED_DEMO.md.
+    This additive contract slice does not waive existing pilot/capture/renderer prerequisites.
+  - Implemented: frozen app states/features/scenarios, complete assertion result coverage and
+    hash-linked source-bounded frame timelines. No capture runner or frontend added.
+  - Verified 2026-09-15: tests-first RED/GREEN, 32 new regressions plus 5 legacy style tests passed;
+    full pytest passed (388 passed, 3 skipped), Ruff clean. No dependencies or old contracts changed.
+    Source-rate arithmetic, partial coverage, invalid evidence links, immutable nested records and
+    frame-contiguous timelines covered. Contract validation does not prove observed behavior or approval.
+- [ ] **TASK-107**: Authorized bounded discovery and scenario compiler (depends 106, 079, 080).
+  - Typed safe actions, reset/readiness/results, role/state distinctions, budget/frontier and scope review.
+    Gate: deterministic fixture, authorization, unsafe action rejection, missing/ambiguous selectors.
+- [ ] **TASK-108**: Capture adapter and event-linked footage (depends 107; TASK-081 for remote URLs).
+  - Discover/rehearse/record, source identity, observation hashes, cursor-free capture and event sync.
+    Gate: repeatable reset, failed-action stop, source FPS/bounds, privacy and owned-process cleanup.
+- [ ] **TASK-109**: Connected six-step Recorded Demo workspace (depends 108, 083).
+  - Setup -> App map -> Scenario -> Test/record -> Edit -> Review/export; preserve legacy drafts/teasers.
+    Resolve serial self-capture/progress limits; test revisions, stale approvals, conflicts and recovery.
+- [ ] **TASK-110**: Reference-directed shared preview/export (depends 108, 082).
+  - Review both supplied Google reference links from accessible footage; approve 10-15 second sample.
+    Renderer/license decision first; real UI with editable camera/cursor/text, no generative UI restyle.
+    Gate: sample review, preview/export frame parity, readable text, synchronized cursor/transformed masks.
+- [ ] **TASK-111**: Recorded-demo end-to-end acceptance (depends 109, 110).
+  - Highlight, chaptered walkthrough and separate coverage report from approved footage.
+    Gate: full-app and new-feature cases, failed/blocked coverage retained, exact approvals and real media
+    checks plus complete human review. No exhaustive-testing claim or automatic creative approval.
+
 - [ ] Complete the remaining **TASK-072..078** acceptance gates. Initial working CLI slice is recorded
   below; none of those full task definitions is marked complete by the initial integration.
 
