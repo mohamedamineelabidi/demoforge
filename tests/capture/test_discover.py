@@ -22,6 +22,14 @@ def test_authorized_url_boundaries():
     assert not is_authorized_url("http://evil.internal.network/")
 
 
+def test_authorized_domains_via_env(monkeypatch):
+    monkeypatch.setenv("DEMOFORGE_ALLOWED_DOMAINS", "my-app.vercel.app,example.org")
+    assert is_authorized_url("https://my-app.vercel.app/dashboard")
+    assert is_authorized_url("https://sub.example.org/features")
+    assert not is_authorized_url("https://unauthorized-domain.com/")
+    assert not is_authorized_url("http://10.0.0.1/")
+
+
 def test_validate_target_url_raises_on_invalid():
     with pytest.raises(ValueError, match="authorized"):
         validate_target_url("ftp://unsupported.proto")
@@ -58,4 +66,11 @@ def test_discover_from_html_extracts_interactive_elements():
     assert "Storyboard" in labels
     # Disabled button should either be filtered or marked
     assert "Disabled Button" not in [t.label for t in inventory.targets if t.role == "button"]
+
+
+def test_fetch_target_html_graceful_on_unreachable():
+    from demoforge.capture.discover import fetch_target_html
+    # Unreachable port returns None instead of raising an unhandled exception
+    res = fetch_target_html("http://127.0.0.1:59999", timeout=0.2)
+    assert res is None
 

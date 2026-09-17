@@ -8,7 +8,11 @@ import shutil
 import uuid
 from pathlib import Path
 
-from demoforge.capture.discover import discover_from_html, validate_target_url
+from demoforge.capture.discover import (
+    discover_from_html,
+    fetch_target_html,
+    validate_target_url,
+)
 from demoforge.enrich.scenario_compiler import compile_hybrid_spec
 from demoforge.schemas.recorded_demo import RecordedJobStatus
 from demoforge.video.remotion_render import render_hybrid_video
@@ -107,13 +111,17 @@ class RecordedDemoService:
             )
             self._save_job(job)
 
-            # Check if index.html is locally available for the loopback app
-            frontend_dist = Path(__file__).resolve().parents[2] / "frontend" / "dist" / "index.html"
-            sample_html = (
-                frontend_dist.read_text(encoding="utf-8")
-                if frontend_dist.exists()
-                else "<html><title>DemoForge</title><body><button>Action</button></body></html>"
-            )
+            # Discover DOM landmarks from target URL (live fetch first, local fallback)
+            sample_html = fetch_target_html(job.target_url)
+            if not sample_html:
+                frontend_dist = (
+                    Path(__file__).resolve().parents[2] / "frontend" / "dist" / "index.html"
+                )
+                sample_html = (
+                    frontend_dist.read_text(encoding="utf-8")
+                    if frontend_dist.exists()
+                    else "<html><title>DemoForge</title><body><button>Action</button></body></html>"
+                )
             inventory = discover_from_html(sample_html, job.target_url)
 
             # Stage 2: Compile scenario and camera motion spec

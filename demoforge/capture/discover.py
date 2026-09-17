@@ -2,13 +2,17 @@
 
 from __future__ import annotations
 
+import os
 import re
 from html.parser import HTMLParser
 from urllib.parse import urlsplit
 
+import httpx
+
 from demoforge.schemas.recorded_demo import ActionTarget, DiscoveredAppInventory
 
 LOOPBACK_HOSTS = {"127.0.0.1", "localhost"}
+LOOPBACK_HOSTS = {"127.0.0.1", "localhost", "::1"}
 
 
 def is_authorized_url(url: str) -> bool:
@@ -23,12 +27,35 @@ def is_authorized_url(url: str) -> bool:
 
     host = parts.hostname or ""
     # Loopback IP or localhost
+    host = (parts.hostname or "").lower()
+    if not host:
+        return False
+
+    # Cloud metadata and private network ranges are forbidden
+    if (
+        host.startswith("169.254.")
+        or host.startswith("10.")
+        or host.startswith("192.168.")
+        or (host.startswith("172.") and any(host.startswith(f"172.{i}.") for i in range(16, 32)))
+    ):
+        return False
+
+    # Loopback IP or localhost on any port
     if host in LOOPBACK_HOSTS:
         return True
 
     # Cloud metadata or link-local addresses are forbidden
     if host.startswith("169.254.") or host.startswith("10.") or host.startswith("192.168."):
         return False
+    # Check environment variable allowlist: DEMOFORGE_ALLOWED_DOMAINS
+    # e.g. "my-app.vercel.app,demo.example.com" or "*" for any public domain
+    allowed_env = os.environ.get("DEMOFORGE_ALLOWED_DOMAINS", "").strip()
+    if allowed_env:
+        if allowed_env == "*":
+            return True
+        allowed_set = {d.strip().lower() for d in allowed_env.split(",") if d.strip()}
+        if host in allowed_set or any(host.endswith(f".{d}") for d in allowed_set):
+            return True
 
     return False
 
@@ -41,6 +68,9 @@ def validate_target_url(url: str) -> str:
     if not is_authorized_url(cleaned):
         raise ValueError(
             f"Target URL '{cleaned}' is not authorized. Must be a loopback application (e.g. http://127.0.0.1:8000)."
+            f"Target URL '{cleaned}' is not authorized. Must be a loopback host "
+            "(e.g. http://localhost:3000, http://127.0.0.1:8000) or an approved domain "
+            "configured via DEMOFORGE_ALLOWED_DOMAINS."
         )
     parts = urlsplit(cleaned)
     path = parts.path or "/"
@@ -50,6 +80,18 @@ def validate_target_url(url: str) -> str:
     if parts.fragment:
         rebuilt += f"#{parts.fragment}"
     return rebuilt
+
+
+def fetch_target_html(target_url: str, timeout: float = 3.5) -> str | None:
+    """Safely fetch HTML content from the target URL."""
+    try:
+        with httpx.Client(timeout=timeout, follow_redirects=True, trust_env=False) as client:
+            resp = client.get(target_url)
+            if resp.status_code == 200 and resp.text.strip():
+                return resp.text
+    except Exception:
+        pass
+    return None
 
 
 class _DOMExtractor(HTMLParser):
