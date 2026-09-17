@@ -106,13 +106,18 @@ def make_server(service: TeaserService, *, port=8000, frontend: Path | None = No
                         or "target_url" not in body
                         or not isinstance(body["target_url"], str)
                     ):
-                        raise ValueError("target_url string is required")
-                    job = service.recorded_demo.create_job(
-                        body["target_url"],
-                        goal=body.get("goal"),
-                    )
-                    self.respond(200, job.model_dump())
-                    return
+                        self.respond(400, {"error": "target_url string is required"})
+                        return
+                    try:
+                        job = service.recorded_demo.create_job(
+                            body["target_url"],
+                            goal=body.get("goal"),
+                        )
+                        self.respond(200, job.model_dump())
+                        return
+                    except ValueError as exc:
+                        self.respond(400, {"error": str(exc)})
+                        return
                 elif path == "/api/runs":
                     if set(body) != {"repository_url", "request_id"} or not all(
                         isinstance(value, str) for value in body.values()

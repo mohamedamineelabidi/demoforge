@@ -11,12 +11,33 @@ import httpx
 
 from demoforge.schemas.recorded_demo import ActionTarget, DiscoveredAppInventory
 
-LOOPBACK_HOSTS = {"127.0.0.1", "localhost"}
 LOOPBACK_HOSTS = {"127.0.0.1", "localhost", "::1"}
+STANDARD_APP_DOMAINS = (
+    "vercel.app",
+    "netlify.app",
+    "github.io",
+    "pages.dev",
+    "railway.app",
+    "onrender.com",
+    "fly.dev",
+    "ngrok-free.app",
+    "ngrok.io",
+    "loca.lt",
+)
+BLOCKED_SUFFIXES = (
+    ".internal",
+    ".internal.network",
+    ".local",
+    ".corp",
+    ".lan",
+    ".home",
+    ".test",
+    ".invalid",
+)
 
 
 def is_authorized_url(url: str) -> bool:
-    """Enforce authorized target boundaries (loopback or explicitly approved domains)."""
+    """Enforce authorized target boundaries (loopback, standard app hosts, or domains)."""
     try:
         parts = urlsplit(url)
     except Exception:
@@ -25,18 +46,17 @@ def is_authorized_url(url: str) -> bool:
     if parts.scheme not in ("http", "https"):
         return False
 
-    host = parts.hostname or ""
-    # Loopback IP or localhost
-    host = (parts.hostname or "").lower()
+    host = (parts.hostname or "").lower().strip()
     if not host:
         return False
 
-    # Cloud metadata and private network ranges are forbidden
+    # Cloud metadata and private network ranges are forbidden (SSRF protection)
     if (
         host.startswith("169.254.")
         or host.startswith("10.")
         or host.startswith("192.168.")
         or (host.startswith("172.") and any(host.startswith(f"172.{i}.") for i in range(16, 32)))
+        or any(host.endswith(sfx) or f"{sfx}." in host for sfx in BLOCKED_SUFFIXES)
     ):
         return False
 
@@ -44,11 +64,7 @@ def is_authorized_url(url: str) -> bool:
     if host in LOOPBACK_HOSTS:
         return True
 
-    # Cloud metadata or link-local addresses are forbidden
-    if host.startswith("169.254.") or host.startswith("10.") or host.startswith("192.168."):
-        return False
-    # Check environment variable allowlist: DEMOFORGE_ALLOWED_DOMAINS
-    # e.g. "my-app.vercel.app,demo.example.com" or "*" for any public domain
+    # Check environment variable allowlist if configured
     allowed_env = os.environ.get("DEMOFORGE_ALLOWED_DOMAINS", "").strip()
     if allowed_env:
         if allowed_env == "*":
@@ -56,6 +72,11 @@ def is_authorized_url(url: str) -> bool:
         allowed_set = {d.strip().lower() for d in allowed_env.split(",") if d.strip()}
         if host in allowed_set or any(host.endswith(f".{d}") for d in allowed_set):
             return True
+        return False
+
+    # Standard authorized developer web hosting / preview platforms (e.g. vercel.app)
+    if any(host == d or host.endswith(f".{d}") for d in STANDARD_APP_DOMAINS):
+        return True
 
     return False
 

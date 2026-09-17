@@ -219,6 +219,7 @@ function Workspace() {
       return [];
     }
   });
+  const [view, setView] = useState<View>(window.location.hash.startsWith("#teaser") ? "Teaser" : "Projects");
   const [view, setView] = useState<View>(
     window.location.hash.startsWith("#recorded")
       ? "Recorded"
