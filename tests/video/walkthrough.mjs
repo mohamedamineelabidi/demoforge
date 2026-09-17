@@ -12,8 +12,9 @@ const WIDTH = 1280;
 const HEIGHT = 720;
 const CAMERA = {lead: 6, ramp: 12, amount: .2};
 const POINTER = {duration: 400, steps: 20};
+const CURSOR_PX = 36;
 const motionProfile = () => ({pointer_ms: POINTER.duration, zoom_frames: CAMERA.ramp,
-  lead_frames: CAMERA.lead, maximum_zoom: 1 + CAMERA.amount});
+  lead_frames: CAMERA.lead, maximum_zoom: 1 + CAMERA.amount, cursor_px: CURSOR_PX});
 const pointers = new WeakMap();
 const movementLogs = new WeakMap();
 const native = value => path.resolve(value).replaceAll('\\', '/');
@@ -91,7 +92,7 @@ export function makeEdit() {
     human_approved: false, fps: 30, width: 1920, height: 1080,
     shots: entries.map(([id, title, caption], index) => ({id, title, caption,
       evidence_id: `observed-${index + 1}`, source: `${id}.webm`, source_in: 0,
-      frames: [180, 270, 330, 180, 180, 210, 210, 240][index],
+      frames: [120, 210, 240, 90, 90, 120, 120, 150][index],
       focus: {x: 760, y: 420}}))};
 }
 
@@ -117,35 +118,48 @@ export function validateEdit(edit) {
     assert.ok(Number.isFinite(shot.focus.x) && shot.focus.x >= 0 && shot.focus.x <= WIDTH);
     assert.ok(Number.isFinite(shot.focus.y) && shot.focus.y >= 0 && shot.focus.y <= HEIGHT);
   }
-  assert.equal(edit.shots.reduce((total, shot) => total + shot.frames, 0), 1800);
+  assert.equal(edit.shots.reduce((total, shot) => total + shot.frames, 0), 1140);
 }
 
 async function cursor(page) {
   pointers.set(page, {x: WIDTH / 2, y: HEIGHT / 2});
   await page.mouse.move(WIDTH / 2, HEIGHT / 2);
-  await page.evaluate(() => {
+  await page.evaluate(px => {
     const element = document.createElement('div');
     element.id = 'demo-cursor';
-    element.style.cssText = 'position:fixed;left:640px;top:360px;z-index:2147483647;'
-      + 'width:26px;height:30px;pointer-events:none;filter:drop-shadow(1px 2px 2px #0005)';
+    element.style.cssText = `position:fixed;left:640px;top:360px;z-index:2147483647;`
+      + `width:${px}px;height:${Math.round(px * 1.17)}px;pointer-events:none;`
+      + 'filter:drop-shadow(2px 3px 3px #0008)';
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.setAttribute('viewBox', '0 0 24 28');
+    svg.setAttribute('width', String(px));
+    svg.setAttribute('height', String(Math.round(px * 1.17)));
     const arrow = document.createElementNS(svg.namespaceURI, 'path');
     arrow.setAttribute('d', 'M3 2 L20 15 L12 16 L8 24 Z');
     arrow.setAttribute('fill', 'white');
-    arrow.setAttribute('stroke', '#172d38');
-    arrow.setAttribute('stroke-width', '1.5');
+    arrow.setAttribute('stroke', '#10b981');
+    arrow.setAttribute('stroke-width', '2.2');
     svg.append(arrow);
     element.append(svg);
     document.body.append(element);
-    document.addEventListener('mousemove', event => {
+    const follow = event => {
       element.style.left = `${event.clientX}px`;
       element.style.top = `${event.clientY}px`;
+    };
+    document.addEventListener('mousemove', follow);
+    document.addEventListener('mousedown', event => {
+      element.animate([{scale: '1'}, {scale: '.85'}, {scale: '1'}], {duration: 260});
+      const ring = document.createElement('div');
+      const size = 14;
+      ring.style.cssText = `position:fixed;left:${event.clientX - size / 2}px;`
+        + `top:${event.clientY - size / 2}px;width:${size}px;height:${size}px;`
+        + 'border:3px solid #10b981;border-radius:50%;z-index:2147483647;pointer-events:none';
+      document.body.append(ring);
+      ring.animate([{transform: 'scale(1)', opacity: '0.9'},
+        {transform: 'scale(3.2)', opacity: '0'}], {duration: 420, easing: 'ease-out'})
+        .onfinish = () => ring.remove();
     });
-    document.addEventListener('mousedown', () => {
-      element.animate([{scale: '1'}, {scale: '.82'}, {scale: '1'}], {duration: 260});
-    });
-  });
+  }, CURSOR_PX);
 }
 
 async function click(page, locator, label, paced) {

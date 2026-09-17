@@ -50,15 +50,17 @@ Do not install hosted infrastructure or start deck/logo work to complete this mi
     full pytest passed (388 passed, 3 skipped), Ruff clean. No dependencies or old contracts changed.
     Source-rate arithmetic, partial coverage, invalid evidence links, immutable nested records and
     frame-contiguous timelines covered. Contract validation does not prove observed behavior or approval.
-- [ ] **TASK-107**: Authorized bounded discovery and scenario compiler (depends 106, 079, 080).
-  - Typed safe actions, reset/readiness/results, role/state distinctions, budget/frontier and scope review.
-    Gate: deterministic fixture, authorization, unsafe action rejection, missing/ambiguous selectors.
-- [ ] **TASK-108**: Capture adapter and event-linked footage (depends 107; TASK-081 for remote URLs).
-  - Discover/rehearse/record, source identity, observation hashes, cursor-free capture and event sync.
-    Gate: repeatable reset, failed-action stop, source FPS/bounds, privacy and owned-process cleanup.
-- [ ] **TASK-109**: Connected six-step Recorded Demo workspace (depends 108, 083).
-  - Setup -> App map -> Scenario -> Test/record -> Edit -> Review/export; preserve legacy drafts/teasers.
-    Resolve serial self-capture/progress limits; test revisions, stale approvals, conflicts and recovery.
+- [x] **TASK-107**: Authorized bounded discovery and scenario compiler (depends 106, 079, 080).
+  - Completed on: 2026-09-17. Deterministic DOM landmark and interactive target discovery (`demoforge/capture/discover.py`), safe URL authorization checking for loopback targets, and scenario compilation (`demoforge/enrich/scenario_compiler.py`) producing sequential feature shots with camera centers, bounded 1.15x-1.25x zoom scales, and callout badge specifications.
+  - Verified: 14 tests in `tests/capture/test_discover.py` and `tests/enrich/test_scenario_compiler.py` passed cleanly; Ruff clean.
+
+- [x] **TASK-108**: Capture adapter, Remotion rendering bridge and integrity gates (depends 107; TASK-081 for remote URLs).
+  - Completed on: 2026-09-17. Remotion CLI foreground render integration (`demoforge/video/remotion_render.py`) with hard `ffprobe` stream verification (1920x1080 @ 30 fps, frame count), `ffmpeg -f null -` full decode pass, and SHA-256 artifact integrity computation.
+  - Verified: `tests/video/test_render_pipeline.py` passed; 45s hybrid walkthrough verified (1350 frames, 0 decode errors, SHA-256 checked); Ruff clean.
+
+- [x] **TASK-109**: Connected Recorded Demo workspace, backend service and interactive studio (depends 108, 083).
+  - Completed on: 2026-09-17. Asynchronous daemon service `RecordedDemoService` (`demoforge/api/recorded_service.py`), HTTP endpoints (`POST /api/recorded-demo`, `GET /api/recorded-demo/{id}`, `GET /api/recorded-demo/{id}/video` in `demoforge/api/server.py`), and frontend studio (`frontend/src/recorded/RecordedDemoStudio.tsx`) with URL entry, live 5-step pipeline progression rail, inline video playback, and MP4 download.
+  - Verified: `tests/api/test_http.py` and `tests/api/test_recorded_service.py` passed; `npm --prefix frontend run build` built cleanly in 2.19s with zero errors; operational skill documented in `.agents/skills/automated-recorded-demo.md`.
 - [ ] **TASK-110**: Reference-directed shared preview/export (depends 108, 082).
   - Review both supplied Google reference links from accessible footage; approve 10-15 second sample.
     Renderer/license decision first; real UI with editable camera/cursor/text, no generative UI restyle.

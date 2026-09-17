@@ -1,0 +1,240 @@
+.recorded-studio {
+  padding: 32px 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #202321;
+}
+
+.recorded-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.recorded-hero {
+  background: linear-gradient(135deg, #F8FAFC 0%, #EEF2FF 100%);
+  border: 1px solid #E0E7FF;
+  border-radius: 16px;
+  padding: 36px 32px;
+  margin-bottom: 32px;
+}
+
+.recorded-hero h1 {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  margin: 0 0 10px 0;
+  color: #1E1B4B;
+}
+
+.recorded-hero p {
+  font-size: 16px;
+  color: #4B5563;
+  line-height: 1.5;
+  margin: 0 0 24px 0;
+  max-width: 720px;
+}
+
+.recorded-form {
+  display: flex;
+  gap: 12px;
+  max-width: 840px;
+  align-items: stretch;
+}
+
+.recorded-input-group {
+  flex: 1;
+  position: relative;
+}
+
+.recorded-input {
+  width: 100%;
+  height: 52px;
+  padding: 0 16px;
+  border: 1px solid #D1D5DB;
+  border-radius: 10px;
+  font-size: 16px;
+  font-family: monospace;
+  background: #FFFFFF;
+  color: #111827;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.recorded-input:focus {
+  border-color: #6366F1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.recorded-btn-primary {
+  height: 52px;
+  padding: 0 28px;
+  background: #10B981;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+  transition: background 0.15s, transform 0.1s;
+}
+
+.recorded-btn-primary:hover:not(:disabled) {
+  background: #059669;
+}
+
+.recorded-btn-primary:disabled {
+  background: #9CA3AF;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.recorded-progress-box {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 14px;
+  padding: 28px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+  margin-bottom: 32px;
+}
+
+.recorded-progress-bar-wrap {
+  width: 100%;
+  height: 8px;
+  background: #F3F4F6;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 16px 0;
+}
+
+.recorded-progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #6366F1 0%, #10B981 100%);
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+
+.recorded-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.recorded-step-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: #6B7280;
+}
+
+.recorded-step-item.active {
+  color: #4F46E5;
+  font-weight: 700;
+}
+
+.recorded-step-item.done {
+  color: #10B981;
+  font-weight: 600;
+}
+
+.recorded-step-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #E5E7EB;
+  margin-bottom: 4px;
+}
+
+.recorded-step-item.active .recorded-step-dot {
+  background: #6366F1;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+}
+
+.recorded-step-item.done .recorded-step-dot {
+  background: #10B981;
+}
+
+.recorded-result-card {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.1);
+}
+
+.recorded-video-wrap {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #0C0D0E;
+  margin-bottom: 24px;
+  box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.3);
+}
+
+.recorded-video-wrap video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.recorded-result-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.recorded-btn-secondary {
+  height: 44px;
+  padding: 0 20px;
+  background: #FFFFFF;
+  color: #374151;
+  border: 1px solid #D1D5DB;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.recorded-btn-secondary:hover {
+  background: #F9FAFC;
+  border-color: #9CA3AF;
+}
+
+.recorded-btn-download {
+  height: 46px;
+  padding: 0 24px;
+  background: #10B981;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+}
+
+.recorded-btn-download:hover {
+  background: #059669;
+}

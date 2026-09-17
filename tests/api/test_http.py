@@ -89,3 +89,26 @@ def test_declared_preview_supports_ranges(tmp_path):
         httpd.shutdown()
         worker.join()
         httpd.server_close()
+
+
+def test_recorded_demo_endpoints(server):
+    import json
+
+    origin = f"http://127.0.0.1:{server.server_port}"
+    headers = {"Origin": origin, "Content-Type": "application/json"}
+    target_url = f"http://127.0.0.1:{server.server_port}/"
+    body = json.dumps({"target_url": target_url, "goal": "Feature Walkthrough"})
+    status, payload, _ = request(
+        server, "POST", path="/api/recorded-demo", body=body, headers=headers
+    )
+    assert status == 200
+    data = json.loads(payload)
+    assert "job_id" in data
+    assert data["target_url"].startswith("http://127.0.0.1:")
+    
+    # Query job status
+    get_status, get_payload, _ = request(server, "GET", path=f"/api/recorded-demo/{data['job_id']}")
+    assert get_status == 200
+    get_data = json.loads(get_payload)
+    assert get_data["job_id"] == data["job_id"]
+

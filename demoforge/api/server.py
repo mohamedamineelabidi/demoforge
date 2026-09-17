@@ -100,7 +100,20 @@ def make_server(service: TeaserService, *, port=8000, frontend: Path | None = No
                 if not isinstance(body, dict):
                     raise ValueError("object required")
                 path = self.path
-                if path == "/api/runs":
+                if path == "/api/recorded-demo":
+                    if (
+                        not isinstance(body, dict)
+                        or "target_url" not in body
+                        or not isinstance(body["target_url"], str)
+                    ):
+                        raise ValueError("target_url string is required")
+                    job = service.recorded_demo.create_job(
+                        body["target_url"],
+                        goal=body.get("goal"),
+                    )
+                    self.respond(200, job.model_dump())
+                    return
+                elif path == "/api/runs":
                     if set(body) != {"repository_url", "request_id"} or not all(
                         isinstance(value, str) for value in body.values()
                     ):
@@ -153,6 +166,13 @@ def make_server(service: TeaserService, *, port=8000, frontend: Path | None = No
                     return
                 if self.path == "/api/health":
                     self.respond(200, {"status": "ready", "mode": "local-foreground"})
+                elif match := re.fullmatch(r"/api/recorded-demo/([a-zA-Z0-9_-]+)/video", self.path):
+                    video_path = service.recorded_demo.get_video_path(match[1])
+                    disposition = {"Content-Disposition": 'attachment; filename="demo.mp4"'}
+                    self.send_file(video_path, "video/mp4", disposition)
+                elif match := re.fullmatch(r"/api/recorded-demo/([a-zA-Z0-9_-]+)", self.path):
+                    job = service.recorded_demo.get_job(match[1])
+                    self.respond(200, job.model_dump())
                 elif self.path == "/api/runs":
                     self.respond(200, {"runs": service.list_runs()})
                 elif match := re.fullmatch(RUN_PATH, self.path):

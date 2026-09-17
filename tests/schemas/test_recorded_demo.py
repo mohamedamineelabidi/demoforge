@@ -196,3 +196,57 @@ def test_nested_records_cannot_be_mutated_in_place():
     assert isinstance(plan.scenarios[0].steps, tuple)
     with pytest.raises(ValidationError):
         plan.scenarios[0].steps[0].target = "Delete project"
+
+
+def test_action_target_and_inventory_contracts():
+    from demoforge.schemas.recorded_demo import ActionTarget, DiscoveredAppInventory
+
+    target = ActionTarget(
+        target_id="btn-save",
+        selector="button[data-testid='save']",
+        label="Save Storyboard",
+        role="button",
+        x=240.5,
+        y=180.0,
+        width=120.0,
+        height=40.0,
+    )
+    assert target.center == (300.5, 200.0)
+    inventory = DiscoveredAppInventory(
+        url="http://127.0.0.1:8000/",
+        title="DemoForge App",
+        targets=(target,),
+        routes=("/", "/#storyboard"),
+    )
+    assert len(inventory.targets) == 1
+    assert inventory.routes[0] == "/"
+
+
+def test_camera_and_badge_spec():
+    from demoforge.schemas.recorded_demo import BadgeSpec, CameraSpec
+
+    badge = BadgeSpec(text="1. Live Caption Editing", frame=25, color="#6366F1")
+    camera = CameraSpec(focus_x=640.0, focus_y=360.0, zoom_scale=1.22, ramp_frames=12)
+    assert badge.frame == 25
+    assert camera.zoom_scale == 1.22
+
+
+def test_recorded_job_status():
+    from demoforge.schemas.recorded_demo import RecordedJobStatus
+
+    job = RecordedJobStatus(
+        job_id="job-123",
+        target_url="http://127.0.0.1:8000/",
+        status="recording",
+        progress_pct=50,
+        message="Recording clip 2 of 4",
+    )
+    assert job.status == "recording"
+    assert job.progress_pct == 50
+    assert not job.is_terminal
+
+    completed = job.model_copy(
+        update={"status": "ready", "progress_pct": 100, "video_path": "demo.mp4"}
+    )
+    assert completed.is_terminal
+

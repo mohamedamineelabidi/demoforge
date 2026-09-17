@@ -59,10 +59,11 @@ import { MotionPreview } from "./motion/MotionPreview";
 import { RunStatusPanel } from "./run/RunStatusPanel";
 import { mockRunStatus } from "./mocks/run";
 import { TeaserStudio } from "./teaser/TeaserStudio";
+import { RecordedDemoStudio } from "./recorded/RecordedDemoStudio";
 import "./workspace-review.css";
 import "./entry/entry.css";
 
-type View = "Projects" | "New" | "Source" | "Teaser" | "Storyboard" | "Evidence" | "Footage" | "Review" | "Approvals";
+type View = "Projects" | "New" | "Source" | "Teaser" | "Recorded" | "Storyboard" | "Evidence" | "Footage" | "Review" | "Approvals";
 type Media = {
   url: string;
   name: string;
@@ -500,6 +501,10 @@ function Workspace() {
             onClick={() => { window.history.replaceState(null, "", "#teaser"); navigate("Teaser"); }}>
             <Clapperboard size={19} />Source teaser
           </button>
+          <button className={`nav-item ${view === "Recorded" ? "selected" : ""}`}
+            onClick={() => { window.history.replaceState(null, "", "#recorded"); navigate("Recorded"); }}>
+            <Film size={19} />Recorded demo
+          </button>
           {navigation.map((item) => (
             <button
               key={item.name}
@@ -568,7 +573,7 @@ function Workspace() {
           </div>
         )}
         <main id="workspace">
-          {view === "Teaser" ? <TeaserStudio onBack={() => { window.history.replaceState(null, "", window.location.pathname); navigate("Projects"); }} /> : view === "Source" ? <RepositoryEntry disabled={storageBlocked} onCancel={() => navigate("Projects")}
+          {view === "Recorded" ? <RecordedDemoStudio onBack={() => { window.history.replaceState(null, "", window.location.pathname); navigate("Projects"); }} /> : view === "Teaser" ? <TeaserStudio onBack={() => { window.history.replaceState(null, "", window.location.pathname); navigate("Projects"); }} /> : view === "Source" ? <RepositoryEntry disabled={storageBlocked} onCancel={() => navigate("Projects")}
             onCreate={input => {
               const base = createProject(input.name);
               const draft = { ...base, repository: input.repository, brief: input.brief };

@@ -53,6 +53,9 @@ class TeaserService:
     def __init__(self, config: WorkspaceConfig, dependencies: TeaserDependencies | None = None):
         self.config = config
         self.dependencies = dependencies or TeaserDependencies()
+        from demoforge.api.recorded_service import RecordedDemoService
+
+        self.recorded_demo = RecordedDemoService(self.config.root)
 
     @contextmanager
     def session(self, run_id=None):

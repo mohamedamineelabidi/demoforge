@@ -23,7 +23,8 @@ assert.equal(movement.at(-1).time, 400);
 assert.equal(movement.at(-1).x, 1100);
 assert.ok(movement.slice(1).every((point, index) => point.time > movement[index].time));
 assert.ok(movement.slice(1).every((point, index) => Math.abs(point.x - movement[index].x) < 76));
-assert.deepEqual(edit.motion, {pointer_ms:400, zoom_frames:12, lead_frames:6, maximum_zoom:1.2});
+assert.deepEqual(edit.motion,
+  {pointer_ms:400, zoom_frames:12, lead_frames:6, maximum_zoom:1.2, cursor_px:36});
 assert.equal(cameraAt(6,225,{x:900,y:500}).zoom, 1);
 assert.equal(cameraAt(18,225,{x:900,y:500}).zoom, 1.2);
 assert.equal(cameraAt(206,225,{x:900,y:500}).zoom, 1.2);
@@ -33,7 +34,7 @@ assert.doesNotMatch(filter, /(?:^|,)pad=|overlay=/);
 assert.match(filter, /scale=3840:2160/);
 assert.match(filter, /s=1920x1080/);
 assert.equal(edit.shots.length, 8);
-assert.equal(edit.shots.reduce((total, shot) => total + shot.frames, 0), 1800);
+assert.equal(edit.shots.reduce((total, shot) => total + shot.frames, 0), 1140);
 assert.equal(edit.human_approved, false);
 assert.equal(edit.scope, 'owned-demoforge-fixture');
 for (const focus of [{x:0,y:0},{x:1280,y:720},{x:1120,y:560}]) {
@@ -86,8 +87,8 @@ def test_record_and_edit_owned_app(tmp_path):
     )
     assert result.returncode == 0, result.stdout.decode() + result.stderr.decode()
     measurements = json.loads((folder / "measurements.json").read_text(encoding="utf-8"))
-    assert measurements["frame_count"] == 1800
-    assert measurements["duration_seconds"] == 60
+    assert measurements["frame_count"] == 1140
+    assert measurements["duration_seconds"] == 38
     assert measurements["full_decode"] == "passed"
     assert measurements["has_audio"] is False
     assert measurements["human_review"] == "pending"

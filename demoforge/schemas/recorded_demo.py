@@ -207,3 +207,56 @@ class RecordedDemoSpec(FrozenModel):
         if cursor != self.total_frames:
             raise ValueError("shots must cover the total duration")
         return self
+
+
+class ActionTarget(FrozenModel):
+    target_id: Identifier
+    selector: NonBlankStr
+    label: Text
+    role: NonBlankStr
+    x: float = Field(ge=0, allow_inf_nan=False)
+    y: float = Field(ge=0, allow_inf_nan=False)
+    width: float = Field(ge=0, allow_inf_nan=False)
+    height: float = Field(ge=0, allow_inf_nan=False)
+
+    @property
+    def center(self) -> tuple[float, float]:
+        return (self.x + self.width / 2, self.y + self.height / 2)
+
+
+class DiscoveredAppInventory(FrozenModel):
+    url: NonBlankStr
+    title: Text
+    targets: tuple[ActionTarget, ...] = Field(default=(), max_length=1000)
+    routes: tuple[NonBlankStr, ...] = Field(default=(), max_length=100)
+
+
+class BadgeSpec(FrozenModel):
+    text: Annotated[Text, Field(max_length=60)]
+    frame: Frame
+    color: str | None = Field(default=None, pattern=r"^#[0-9a-fA-F]{6}$")
+
+
+class CameraSpec(FrozenModel):
+    focus_x: float = Field(ge=0, allow_inf_nan=False)
+    focus_y: float = Field(ge=0, allow_inf_nan=False)
+    zoom_scale: float = Field(default=1.20, ge=1.0, le=1.5, allow_inf_nan=False)
+    ramp_frames: Annotated[int, Field(strict=True, ge=1, le=60)] = 12
+
+
+class RecordedJobStatus(FrozenModel):
+    job_id: Identifier
+    target_url: NonBlankStr
+    status: Literal[
+        "pending", "discovering", "planning", "recording", "rendering", "ready", "failed"
+    ]
+    progress_pct: Annotated[int, Field(strict=True, ge=0, le=100)]
+    message: Text
+    video_path: str | None = None
+    sha256: Sha256 | None = None
+    error: Text | None = None
+
+    @property
+    def is_terminal(self) -> bool:
+        return self.status in ("ready", "failed")
+

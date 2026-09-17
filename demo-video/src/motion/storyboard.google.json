@@ -1,0 +1,31 @@
+{
+  "fps": 30,
+  "durationInFrames": 900,
+  "cameraTrack": [
+    {"frame": 0, "zoom": 1.0, "x": 0, "y": 0},
+    {"frame": 35, "zoom": 1.0, "x": 0, "y": 0},
+    {"frame": 60, "zoom": 1.4, "x": 520, "y": -330},
+    {"frame": 420, "zoom": 1.4, "x": 520, "y": -330},
+    {"frame": 450, "zoom": 1.25, "x": 180, "y": -120},
+    {"frame": 780, "zoom": 1.25, "x": 180, "y": -120},
+    {"frame": 840, "zoom": 1.0, "x": 0, "y": 0},
+    {"frame": 900, "zoom": 1.0, "x": 0, "y": 0}
+  ],
+  "cursorTrack": [
+    {"frame": 0, "x": 300, "y": 600},
+    {"frame": 35, "x": 1420, "y": 125},
+    {"frame": 39, "x": 1420, "y": 125, "isClicking": true},
+    {"frame": 60, "x": 1420, "y": 125},
+    {"frame": 200, "x": 1420, "y": 125},
+    {"frame": 212, "x": 960, "y": 540},
+    {"frame": 460, "x": 960, "y": 540},
+    {"frame": 472, "x": 1600, "y": 400},
+    {"frame": 800, "x": 1600, "y": 400},
+    {"frame": 812, "x": 960, "y": 540}
+  ],
+  "badgeCues": [
+    {"text": "Effortless meeting minutes", "startFrame": 15, "durationFrames": 70},
+    {"text": "Notes saved to the project record", "startFrame": 100, "durationFrames": 90},
+    {"text": "Review every step before export", "startFrame": 500, "durationFrames": 90}
+  ]
+}
