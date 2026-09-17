@@ -219,7 +219,13 @@ function Workspace() {
       return [];
     }
   });
-  const [view, setView] = useState<View>(window.location.hash.startsWith("#teaser") ? "Teaser" : "Projects");
+  const [view, setView] = useState<View>(
+    window.location.hash.startsWith("#recorded")
+      ? "Recorded"
+      : window.location.hash.startsWith("#teaser")
+      ? "Teaser"
+      : "Projects"
+  );
   const [activeId, setActiveId] = useState<string | null>(null);
   const [sceneId, setSceneId] = useState("");
   const [search, setSearch] = useState("");
