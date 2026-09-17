@@ -28,6 +28,22 @@ export const RemotionRoot: React.FC = () => {
         fps={FPS}
         width={WIDTH}
         height={HEIGHT}
+        calculateMetadata={({ props }) => {
+          const spec = (props && 'shots' in props ? props : (props as any)?.spec) || DEFAULT_HYBRID_SPEC;
+          if (spec && spec.shots && Array.isArray(spec.shots)) {
+            const intro = spec.introDuration ?? 90;
+            const outro = spec.outroDuration ?? 120;
+            const shotsTotal = spec.shots.reduce(
+              (acc: number, s: any) => acc + (s.durationInFrames ?? 210),
+              0
+            );
+            return {
+              durationInFrames: intro + shotsTotal + outro,
+              props: { spec },
+            };
+          }
+          return { durationInFrames: hybridTotalFrames };
+        }}
       />
       <Composition
         id="GoogleWalkthrough"

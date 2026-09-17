@@ -24,6 +24,7 @@ export interface HybridShot {
   };
   zoomAmount?: number;
   badge?: ActionBadge;
+  url?: string;
 }
 
 export interface HybridDemoSpec {
@@ -35,6 +36,7 @@ export interface HybridDemoSpec {
   introDuration: number;
   outroDuration: number;
   shots: HybridShot[];
+  targetUrl?: string;
 }
 
 /**

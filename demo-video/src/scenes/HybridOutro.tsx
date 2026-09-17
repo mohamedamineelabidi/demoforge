@@ -3,7 +3,15 @@ import { AbsoluteFill, useCurrentFrame, interpolate } from 'remotion';
 import { springPop, emphasizedDecelerate } from '../lib/easing';
 import { COLORS, FONT, FONT_MONO } from '../lib/timing';
 
-export const HybridOutro: React.FC = () => {
+interface HybridOutroProps {
+  title?: string;
+  tagline?: string;
+}
+
+export const HybridOutro: React.FC<HybridOutroProps> = ({
+  title = 'DemoForge',
+  tagline = 'Ship features, not slide decks.',
+}) => {
   const frame = useCurrentFrame();
 
   const titleScale = interpolate(frame, [10, 36], [0, 1], {
@@ -29,6 +37,8 @@ export const HybridOutro: React.FC = () => {
     { label: 'Frame-Accurate Edits', icon: '⏱️', color: '#F59E0B' },
     { label: 'SHA-256 Approval Chains', icon: '🔒', color: '#10B981' },
   ];
+
+  const fontSize = title.length > 30 ? '60px' : title.length > 20 ? '76px' : '92px';
 
   return (
     <AbsoluteFill
@@ -57,15 +67,18 @@ export const HybridOutro: React.FC = () => {
       {/* Main Title */}
       <div
         style={{
-          fontSize: '92px',
+          fontSize,
           fontWeight: 800,
           color: '#FFFFFF',
           letterSpacing: '-2px',
           scale: titleScale,
           marginBottom: '16px',
+          textAlign: 'center',
+          maxWidth: '1600px',
+          padding: '0 40px',
         }}
       >
-        DemoForge
+        {title}
       </div>
 
       <div
@@ -74,9 +87,12 @@ export const HybridOutro: React.FC = () => {
           color: '#9CA3AF',
           marginBottom: '40px',
           opacity: cardsOpacity,
+          textAlign: 'center',
+          maxWidth: '1400px',
+          padding: '0 40px',
         }}
       >
-        Ship features, not slide decks.
+        {tagline}
       </div>
 
       {/* Value Pillars */}
@@ -130,4 +146,3 @@ export const HybridOutro: React.FC = () => {
     </AbsoluteFill>
   );
 };
-

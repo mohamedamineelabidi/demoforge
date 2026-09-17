@@ -3,5 +3,8 @@ dist/
 out/
 .remotion/
 public/*.jpeg
+public/*.png
 public/footage/
+public/captured/
+public/render_props.json
 

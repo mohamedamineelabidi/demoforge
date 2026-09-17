@@ -9,14 +9,17 @@ interface HybridWalkthroughProps {
   spec?: HybridDemoSpec;
 }
 
-export const HybridWalkthrough: React.FC<HybridWalkthroughProps> = ({
-  spec = DEFAULT_HYBRID_SPEC,
-}) => {
+export const HybridWalkthrough: React.FC<HybridWalkthroughProps & Partial<HybridDemoSpec>> = (props) => {
+  const spec: HybridDemoSpec =
+    props && 'shots' in props && Array.isArray(props.shots)
+      ? (props as unknown as HybridDemoSpec)
+      : props?.spec || DEFAULT_HYBRID_SPEC;
+
   return (
     <TransitionSeries>
       {/* Intro Card */}
       <TransitionSeries.Sequence durationInFrames={spec.introDuration} name="Intro">
-        <HybridIntro />
+        <HybridIntro title={spec.title} tagline={spec.tagline} />
       </TransitionSeries.Sequence>
 
       {/* Real Recorded UI Shots */}
@@ -26,15 +29,14 @@ export const HybridWalkthrough: React.FC<HybridWalkthroughProps> = ({
           durationInFrames={shot.durationInFrames}
           name={shot.title}
         >
-          <HybridScene shot={shot} />
+          <HybridScene shot={shot} targetUrl={spec.targetUrl} />
         </TransitionSeries.Sequence>
       ))}
 
       {/* Outro Card */}
       <TransitionSeries.Sequence durationInFrames={spec.outroDuration} name="Outro">
-        <HybridOutro />
+        <HybridOutro title={spec.title} tagline={spec.tagline} />
       </TransitionSeries.Sequence>
     </TransitionSeries>
   );
 };
-

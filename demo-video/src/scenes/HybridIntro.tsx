@@ -3,7 +3,15 @@ import { AbsoluteFill, useCurrentFrame, interpolate } from 'remotion';
 import { springPop, emphasizedDecelerate } from '../lib/easing';
 import { COLORS, FONT, FONT_MONO } from '../lib/timing';
 
-export const HybridIntro: React.FC = () => {
+interface HybridIntroProps {
+  title?: string;
+  tagline?: string;
+}
+
+export const HybridIntro: React.FC<HybridIntroProps> = ({
+  title = 'DemoForge',
+  tagline = 'Source-Linked Release Demos for Web Apps',
+}) => {
   const frame = useCurrentFrame();
 
   const titleProgress = interpolate(frame, [8, 32], [0, 1], {
@@ -23,6 +31,8 @@ export const HybridIntro: React.FC = () => {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
+
+  const fontSize = title.length > 30 ? '64px' : title.length > 20 ? '80px' : '96px';
 
   return (
     <AbsoluteFill
@@ -71,15 +81,18 @@ export const HybridIntro: React.FC = () => {
       {/* Main Wordmark */}
       <div
         style={{
-          fontSize: '108px',
+          fontSize,
           fontWeight: 800,
           color: '#FFFFFF',
-          letterSpacing: '-3px',
+          letterSpacing: '-2px',
           scale: titleProgress,
           marginBottom: '16px',
+          textAlign: 'center',
+          maxWidth: '1600px',
+          padding: '0 40px',
         }}
       >
-        DemoForge
+        {title}
       </div>
 
       {/* Accent Line */}
@@ -96,16 +109,18 @@ export const HybridIntro: React.FC = () => {
       {/* Tagline */}
       <div
         style={{
-          fontSize: '32px',
+          fontSize: '30px',
           fontWeight: 400,
           color: '#9CA3AF',
           letterSpacing: '-0.5px',
           opacity: subtitleOpacity,
+          textAlign: 'center',
+          maxWidth: '1400px',
+          padding: '0 40px',
         }}
       >
-        Source-Linked Release Demos for Web Apps
+        {tagline}
       </div>
     </AbsoluteFill>
   );
 };
-

@@ -1,5 +1,5 @@
 import React from 'react';
-import { AbsoluteFill, OffthreadVideo, staticFile, useCurrentFrame, interpolate, Easing } from 'remotion';
+import { AbsoluteFill, Img, OffthreadVideo, staticFile, useCurrentFrame, interpolate, Easing } from 'remotion';
 import { HybridShot } from '../lib/hybridSpec';
 import { BrowserFrame } from '../components/BrowserFrame';
 import { DynamicCamera } from '../components/DynamicCamera';
@@ -9,6 +9,7 @@ import { COLORS, FONT } from '../lib/timing';
 
 interface HybridSceneProps {
   shot: HybridShot;
+  targetUrl?: string;
 }
 
 const ENTER = Easing.bezier(0.16, 1, 0.3, 1);
@@ -109,7 +110,7 @@ const GlowRing: React.FC<{
   );
 };
 
-export const HybridScene: React.FC<HybridSceneProps> = ({ shot }) => {
+export const HybridScene: React.FC<HybridSceneProps> = ({ shot, targetUrl }) => {
   const frame = useCurrentFrame();
 
   // Corporate grammar: slow push-in handled by DynamicCamera (45f ramp + hold).
@@ -177,7 +178,11 @@ export const HybridScene: React.FC<HybridSceneProps> = ({ shot }) => {
           zIndex: 20,
         }}
       >
-        <BrowserFrame width={1600} height={860} url={`http://127.0.0.1:8000/#${shot.id}`}>
+        <BrowserFrame
+          width={1600}
+          height={860}
+          url={shot.url || targetUrl || "https://demo.app"}
+        >
           <DynamicCamera
             focus={shot.focus}
             zoomAmount={shot.zoomAmount ?? 1.2}
@@ -188,16 +193,27 @@ export const HybridScene: React.FC<HybridSceneProps> = ({ shot }) => {
             sourceWidth={SRC_W}
             sourceHeight={SRC_H}
           >
-            <OffthreadVideo
-              src={staticFile(shot.source)}
-              startFrom={startFromFrames}
-              muted
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-              }}
-            />
+            {shot.source.endsWith('.png') || shot.source.endsWith('.jpg') || shot.source.endsWith('.jpeg') ? (
+              <Img
+                src={staticFile(shot.source)}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                }}
+              />
+            ) : (
+              <OffthreadVideo
+                src={staticFile(shot.source)}
+                startFrom={startFromFrames}
+                muted
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                }}
+              />
+            )}
           </DynamicCamera>
         </BrowserFrame>
 

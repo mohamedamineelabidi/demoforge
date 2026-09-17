@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import json
 import os
-import shutil
 import uuid
 from pathlib import Path
 
+from demoforge.capture.capture_shots import capture_app_shots
 from demoforge.capture.discover import (
     discover_from_html,
     fetch_target_html,
@@ -136,15 +136,28 @@ class RecordedDemoService:
             spec = compile_hybrid_spec(inventory, goal=goal)
             (job_dir / "spec.json").write_text(json.dumps(spec, indent=2), encoding="utf-8")
 
-            # Stage 3: Recording feature clips
+            # Stage 3: Recording real feature captures
             job = job.model_copy(
                 update={
                     "status": "recording",
                     "progress_pct": 65,
-                    "message": "Rehearsing and capturing event-linked feature footage",
+                    "message": "Rehearsing and capturing real UI views with Playwright",
                 }
             )
             self._save_job(job)
+
+            project_public = Path(__file__).resolve().parents[2] / "demo-video" / "public"
+            captured_dir = project_public / "captured" / job.job_id
+            captured_sources = capture_app_shots(job.target_url, captured_dir)
+
+            # Recompile spec with real captured footage and targetUrl
+            spec = compile_hybrid_spec(
+                inventory,
+                goal=goal,
+                captured_sources=captured_sources if captured_sources else None,
+                target_url=job.target_url,
+            )
+            (job_dir / "spec.json").write_text(json.dumps(spec, indent=2), encoding="utf-8")
 
             # Stage 4: Render hybrid Remotion video
             job = job.model_copy(
@@ -157,21 +170,7 @@ class RecordedDemoService:
             self._save_job(job)
 
             out_video = job_dir / "demo.mp4"
-            # If standard hybrid video was already pre-rendered, reuse or render fresh
-            cached_demo = (
-                Path(os.environ.get("LOCALAPPDATA", "."))
-                / "demoforge"
-                / "reviews"
-                / "hybrid-demo-v1"
-                / "hybrid-walkthrough.mp4"
-            )
-            if cached_demo.exists() and not out_video.exists():
-                shutil.copyfile(cached_demo, out_video)
-                from demoforge.video.remotion_render import verify_rendered_video
-
-                report = verify_rendered_video(out_video)
-            else:
-                report = render_hybrid_video(spec, out_video)
+            report = render_hybrid_video(spec, out_video)
 
             # Stage 5: Ready
             job = job.model_copy(

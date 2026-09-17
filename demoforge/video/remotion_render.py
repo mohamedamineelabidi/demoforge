@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import shutil
 import subprocess
 from pathlib import Path
 from typing import Any
@@ -78,16 +79,19 @@ def render_hybrid_video(
     if project_dir is None:
         project_dir = Path(__file__).resolve().parents[2] / "demo-video"
 
-    prepare_render_props(spec, project_dir / "public")
+    props_file = prepare_render_props(spec, project_dir / "public")
     output_path.parent.mkdir(parents=True, exist_ok=True)
     clean_out = str(output_path).replace("\\", "/")
+    clean_props = str(props_file).replace("\\", "/")
 
+    npx_bin = shutil.which("npx") or "npx.cmd"
     cmd = [
-        "npx",
+        npx_bin,
         "remotion",
         "render",
         "HybridWalkthrough",
         clean_out,
+        f"--props={clean_props}",
     ]
     # Execute foreground render
     subprocess.run(cmd, cwd=str(project_dir), check=True, capture_output=True, text=True)

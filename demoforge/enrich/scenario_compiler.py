@@ -23,10 +23,13 @@ def compile_hybrid_spec(
     *,
     goal: str | None = None,
     fps: int = 30,
+    captured_sources: list[str] | None = None,
+    target_url: str | None = None,
 ) -> dict[str, Any]:
     """Compile discovered app features into a polished Google Workspace-style walkthrough spec."""
     title = inventory.title or "Application Demo"
     tagline = goal or "Feature Walkthrough and Workflow Demo"
+    effective_url = target_url or getattr(inventory, "url", "https://demo.app")
 
     targets = list(inventory.targets)
     if not targets:
@@ -60,10 +63,19 @@ def compile_hybrid_spec(
             ],
         }
 
+    GENERIC_LABELS = {
+        "less", "more", "details", "click", "close", "cancel", "ok", "submit", "btn", "button",
+        "read more", "learn more",
+    }
+
+    # Prefer descriptive targets over trivial UI buttons
+    descriptive_targets = [t for t in targets if t.label.strip().lower() not in GENERIC_LABELS]
+    pool = descriptive_targets if len(descriptive_targets) >= 2 else targets
+
     # Group targets into stages: navigation -> interaction -> action/result
-    nav_targets = [t for t in targets if t.role in ("link", "heading")]
-    input_targets = [t for t in targets if t.role == "input"]
-    button_targets = [t for t in targets if t.role == "button"]
+    nav_targets = [t for t in pool if t.role in ("link", "heading")]
+    input_targets = [t for t in pool if t.role == "input"]
+    button_targets = [t for t in pool if t.role == "button"]
 
     selected_targets = []
     if nav_targets:
@@ -76,15 +88,15 @@ def compile_hybrid_spec(
             if len(selected_targets) >= 5:
                 break
 
-    # If still fewer than 3, add whatever remains
-    for t in targets:
+    # If still fewer than 4, add whatever remains in the pool
+    for t in pool:
         if t not in selected_targets:
             selected_targets.append(t)
-            if len(selected_targets) >= 4:
+            if len(selected_targets) >= 5:
                 break
 
     shots = []
-    # Mapping to existing standard footage clips for rendering parity
+    # Mapping to existing standard footage clips for fallback when no real footage captured
     standard_clips = [
         ("footage/library.webm", 3.0),
         ("footage/canvas.webm", 2.8),
@@ -93,20 +105,36 @@ def compile_hybrid_spec(
         ("footage/review.webm", 2.8),
     ]
 
-    for idx, target in enumerate(selected_targets):
+    total_count = len(captured_sources) if captured_sources else min(len(selected_targets), 5)
+    if total_count == 0:
+        total_count = 1
+
+    for idx in range(total_count):
         color = ACCENT_COLORS[idx % len(ACCENT_COLORS)]
         step_num = idx + 1
-        clip_source, source_in = standard_clips[idx % len(standard_clips)]
 
-        label = target.label
-        if target.role == "button":
-            caption = f"Trigger action: {label}."
-        elif target.role == "input":
-            caption = f"Configure field: {label}."
+        if captured_sources:
+            clip_source = captured_sources[idx]
+            source_in = 0.0
         else:
-            caption = f"Inspect section: {label}."
+            clip_source, source_in = standard_clips[idx % len(standard_clips)]
 
-        center_x, center_y = target.center
+        target = selected_targets[idx] if idx < len(selected_targets) else None
+        if target:
+            label = target.label
+            if target.role == "button":
+                caption = f"Trigger action: {label}."
+            elif target.role == "input":
+                caption = f"Configure field: {label}."
+            else:
+                caption = f"Inspect section: {label}."
+            center_x, center_y = target.center
+            zoom = 1.20 if target.role != "heading" else 1.12
+        else:
+            label = f"App Feature {step_num}"
+            caption = f"Explore application view {step_num}."
+            center_x, center_y = 640.0, 360.0
+            zoom = 1.15
 
         shots.append(
             {
@@ -114,13 +142,14 @@ def compile_hybrid_spec(
                 "title": _clean_caption(label, 40),
                 "caption": _clean_caption(caption, 90),
                 "source": clip_source,
+                "url": effective_url,
                 "durationInFrames": 210,  # 7 seconds each
                 "sourceInSeconds": source_in,
                 "focus": {
                     "x": max(100.0, min(1820.0, center_x)),
                     "y": max(100.0, min(980.0, center_y)),
                 },
-                "zoomAmount": 1.20 if target.role != "heading" else 1.12,
+                "zoomAmount": zoom,
                 "badge": {
                     "text": f"{step_num}. {label[:28]}",
                     "frame": 22,
@@ -134,6 +163,7 @@ def compile_hybrid_spec(
     return {
         "title": title,
         "tagline": _clean_caption(tagline),
+        "targetUrl": effective_url,
         "fps": fps,
         "width": 1920,
         "height": 1080,
