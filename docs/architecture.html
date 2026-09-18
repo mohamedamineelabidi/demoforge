@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DemoForge — Full System Architecture</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    :root {
+      --bg-dark: #0A0B0D;
+      --card-bg: #121417;
+      --card-border: #22252A;
+      --accent: #6366F1;
+      --accent-glow: rgba(99, 102, 241, 0.25);
+      --emerald: #10B981;
+      --amber: #F59E0B;
+      --cyan: #06B6D4;
+    }
+    body {
+      background-color: var(--bg-dark);
+      color: #E2E8F0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #27272A;
+      border-radius: 4px;
+    }
+    .glow-hover:hover {
+      box-shadow: 0 0 25px var(--accent-glow);
+      border-color: #6366F1;
+    }
+    .pipeline-step.active {
+      border-color: #6366F1;
+      background: rgba(99, 102, 241, 0.08);
+    }
+    canvas {
+      image-rendering: pixelated;
+    }
+  </style>
+</head>
+<body class="min-h-screen p-6 md:p-10 custom-scroll">
+
+  <!-- Header Section -->
+  <header class="max-w-7xl mx-auto mb-8 border-b border-[#22252A] pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div>
+      <div class="flex items-center gap-3">
+        <span class="px-3 py-1 text-xs font-mono font-semibold tracking-widest text-emerald-400 bg-emerald-950/50 border border-emerald-800/60 rounded-full">
+          LIVE DEMOFORGE ARCHITECTURE
+        </span>
+        <span class="text-xs text-gray-400 font-mono">v2.4 Generalized Engine</span>
+      </div>
+      <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-white mt-2">
+        Full System & Pipeline Architecture
+      </h1>
+      <p class="text-gray-400 text-sm mt-1">
+        Zero-human-intervention pipeline converting any target URL into cinematic, source-linked product demo videos.
+      </p>
+    </div>
+
+    <!-- Live Status Pill -->
+    <div class="flex items-center gap-3 bg-[#16181D] border border-[#272A30] px-4 py-2.5 rounded-xl shadow-inner">
+      <div class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></div>
+      <div>
+        <div class="text-xs text-gray-400 uppercase font-mono tracking-wider">Local Daemon Server</div>
+        <a href="http://127.0.0.1:8000/#recorded" target="_blank" class="text-sm font-semibold text-white hover:text-indigo-400 transition-colors flex items-center gap-1.5">
+          http://127.0.0.1:8000
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav class="max-w-7xl mx-auto mb-8 flex flex-wrap gap-2 border-b border-[#22252A] pb-3">
+    <button onclick="switchTab('overview')" id="tab-btn-overview" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition-all bg-indigo-600 text-white">
+      1. Global Architecture Diagram
+    </button>
+    <button onclick="switchTab('pipeline')" id="tab-btn-pipeline" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-[#16181D]">
+      2. The 5-Stage Automated Pipeline
+    </button>
+    <button onclick="switchTab('simulator')" id="tab-btn-simulator" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-[#16181D]">
+      3. Live Bezier Cursor Simulator
+    </button>
+    <button onclick="switchTab('contracts')" id="tab-btn-contracts" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-[#16181D]">
+      4. Data Contracts & Schemas
+    </button>
+    <button onclick="switchTab('deployment')" id="tab-btn-deployment" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-[#16181D]">
+      5. Deployment & Topology (OSS / Cloud)
+    </button>
+  </nav>
+
+  <!-- MAIN TAB CONTENT AREA -->
+  <main class="max-w-7xl mx-auto">
+
+    <!-- TAB 1: GLOBAL ARCHITECTURE OVERVIEW -->
+    <div id="tab-overview" class="tab-content block space-y-8">
+      <!-- System Architecture Diagram Card -->
+      <div class="bg-[#121417] border border-[#22252A] rounded-2xl p-6 md:p-8 shadow-2xl">
+        <h2 class="text-xl font-bold text-white mb-2 flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>
+          End-to-End System Topology
+        </h2>
+        <p class="text-sm text-gray-400 mb-6">
+          High-level visual breakdown of Control Plane, Distributed Queue, Media Execution Engine, and Storage Lake.
+        </p>
+
+        <!-- SVG Architecture Flow -->
+        <div class="bg-[#0A0B0D] p-4 md:p-6 rounded-xl border border-[#1E2126] overflow-x-auto custom-scroll">
+          <svg viewBox="0 0 1060 480" class="w-full min-w-[900px] font-sans">
+            <defs>
+              <linearGradient id="indigoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#4F46E5" />
+                <stop offset="100%" stop-color="#7C3AED" />
+              </linearGradient>
+              <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#059669" />
+                <stop offset="100%" stop-color="#10B981" />
+              </linearGradient>
+              <linearGradient id="amberGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#D97706" />
+                <stop offset="100%" stop-color="#F59E0B" />
+              </linearGradient>
+              <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#6366F1" flood-opacity="0.3"/>
+              </filter>
+            </defs>
+
+            <!-- Clients -->
+            <rect x="20" y="40" width="180" height="90" rx="12" fill="#16181D" stroke="#374151" stroke-width="1.5" />
+            <text x="110" y="75" fill="#FFFFFF" font-size="14" font-weight="700" text-anchor="middle">CLIENT LAYER</text>
+            <text x="110" y="98" fill="#9CA3AF" font-size="12" text-anchor="middle">Studio UI • CLI • API</text>
+
+            <!-- Arrow Client -> Gateway -->
+            <path d="M 200 85 L 260 85" stroke="#6366F1" stroke-width="2" marker-end="url(#arrow)" />
+            <text x="230" y="75" fill="#818CF8" font-size="10" text-anchor="middle" font-family="monospace">POST /demo</text>
+
+            <!-- Gateway -->
+            <rect x="260" y="30" width="220" height="110" rx="12" fill="#181B22" stroke="#4F46E5" stroke-width="2" filter="url(#glow)"/>
+            <text x="370" y="65" fill="#FFFFFF" font-size="15" font-weight="700" text-anchor="middle">FASTAPI GATEWAY</text>
+            <text x="370" y="88" fill="#A5B4FC" font-size="11" text-anchor="middle">SSRF & Egress Guardrail</text>
+            <text x="370" y="108" fill="#9CA3AF" font-size="11" text-anchor="middle">WebSocket Progress Dispatcher</text>
+
+            <!-- Arrow Gateway -> Queue -->
+            <path d="M 480 85 L 540 85" stroke="#6366F1" stroke-width="2" />
+            <text x="510" y="75" fill="#818CF8" font-size="10" text-anchor="middle" font-family="monospace">Job Payload</text>
+
+            <!-- Redis Queue -->
+            <rect x="540" y="40" width="190" height="90" rx="12" fill="#1C1818" stroke="#DC2626" stroke-width="1.5" />
+            <text x="635" y="75" fill="#F87171" font-size="14" font-weight="700" text-anchor="middle">REDIS BROKER</text>
+            <text x="635" y="98" fill="#9CA3AF" font-size="12" text-anchor="middle">Task Queue & PubSub</text>
+
+            <!-- Arrow Queue -> Worker Pool -->
+            <path d="M 730 85 L 800 85" stroke="#DC2626" stroke-width="2" />
+
+            <!-- Worker Pods -->
+            <rect x="800" y="30" width="230" height="110" rx="12" fill="#181B22" stroke="#10B981" stroke-width="2" />
+            <text x="915" y="65" fill="#34D399" font-size="15" font-weight="700" text-anchor="middle">WORKER POOL</text>
+            <text x="915" y="88" fill="#9CA3AF" font-size="11" text-anchor="middle">Xvfb Virtual Display + GPU</text>
+            <text x="915" y="108" fill="#9CA3AF" font-size="11" text-anchor="middle">Playwright + Remotion CLI</text>
+
+            <!-- Divider Line -->
+            <line x1="20" y1="180" x2="1030" y2="180" stroke="#272A30" stroke-dasharray="6 6" />
+
+            <!-- Pipeline Boxes Inside Worker -->
+            <rect x="30" y="210" width="180" height="140" rx="10" fill="#121418" stroke="#6366F1" stroke-width="1.5" />
+            <text x="120" y="240" fill="#818CF8" font-size="13" font-weight="700" text-anchor="middle">1. INTENT ENGINE</text>
+            <text x="120" y="270" fill="#E2E8F0" font-size="11" text-anchor="middle">• Semantic DOM Crawler</text>
+            <text x="120" y="295" fill="#E2E8F0" font-size="11" text-anchor="middle">• LLM Director Scripting</text>
+            <text x="120" y="320" fill="#9CA3AF" font-size="10" text-anchor="middle">Structured Spec Output</text>
+
+            <path d="M 210 280 L 235 280" stroke="#6366F1" stroke-width="2" />
+
+            <rect x="235" y="210" width="180" height="140" rx="10" fill="#10B981" stroke="#10B981" stroke-width="1.5" />
+            <text x="325" y="240" fill="#34D399" font-size="13" font-weight="700" text-anchor="middle">2. CAPTURE ENGINE</text>
+            <text x="325" y="270" fill="#E2E8F0" font-size="11" text-anchor="middle">• Cubic Bezier Mouse</text>
+            <text x="325" y="295" fill="#E2E8F0" font-size="11" text-anchor="middle">• Smooth Scroll Easing</text>
+            <text x="325" y="320" fill="#9CA3AF" font-size="10" text-anchor="middle">Multi-Resolution Viewport</text>
+
+            <path d="M 415 280 L 440 280" stroke="#10B981" stroke-width="2" />
+
+            <rect x="440" y="210" width="180" height="140" rx="10" fill="#121418" stroke="#F59E0B" stroke-width="1.5" />
+            <text x="530" y="240" fill="#FBBF24" font-size="13" font-weight="700" text-anchor="middle">3. AUDIO SYNTHESIS</text>
+            <text x="530" y="270" fill="#E2E8F0" font-size="11" text-anchor="middle">• Natural TTS Narration</text>
+            <text x="530" y="295" fill="#E2E8F0" font-size="11" text-anchor="middle">• Faster-Whisper Align</text>
+            <text x="530" y="320" fill="#9CA3AF" font-size="10" text-anchor="middle">Word-Level Timestamps</text>
+
+            <path d="M 620 280 L 645 280" stroke="#F59E0B" stroke-width="2" />
+
+            <rect x="645" y="210" width="180" height="140" rx="10" fill="#121418" stroke="#06B6D4" stroke-width="1.5" />
+            <text x="735" y="240" fill="#22D3EE" font-size="13" font-weight="700" text-anchor="middle">4. CAMERA & POLISH</text>
+            <text x="735" y="270" fill="#E2E8F0" font-size="11" text-anchor="middle">• Spring Zoom Physics</text>
+            <text x="735" y="295" fill="#E2E8F0" font-size="11" text-anchor="middle">• Kinetic Badges & Text</text>
+            <text x="735" y="320" fill="#9CA3AF" font-size="10" text-anchor="middle">Browser Window Frame</text>
+
+            <path d="M 825 280 L 850 280" stroke="#06B6D4" stroke-width="2" />
+
+            <rect x="850" y="210" width="180" height="140" rx="10" fill="#121418" stroke="#8B5CF6" stroke-width="1.5" />
+            <text x="940" y="240" fill="#A78BFA" font-size="13" font-weight="700" text-anchor="middle">5. REMOTION RENDER</text>
+            <text x="940" y="270" fill="#E2E8F0" font-size="11" text-anchor="middle">• React Composition</text>
+            <text x="940" y="295" fill="#E2E8F0" font-size="11" text-anchor="middle">• Sidechain Audio Duck</text>
+            <text x="940" y="320" fill="#9CA3AF" font-size="10" text-anchor="middle">1080p MP4 + 9:16 + GIF</text>
+
+            <!-- Output Storage Arrow -->
+            <path d="M 940 350 L 940 400 L 530 400" stroke="#10B981" stroke-width="2" stroke-dasharray="4 4" />
+
+            <!-- S3 / MinIO Storage Object -->
+            <rect x="360" y="380" width="340" height="60" rx="10" fill="#13231B" stroke="#059669" stroke-width="2" />
+            <text x="530" y="405" fill="#6EE7B7" font-size="13" font-weight="700" text-anchor="middle">S3 / MinIO STORAGE LAKE</text>
+            <text x="530" y="425" fill="#9CA3AF" font-size="11" text-anchor="middle">Artifacts • SHA-256 Hashes • Presigned Downloads</text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Core Pillars Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-[#121417] border border-[#22252A] p-6 rounded-xl glow-hover transition-all">
+          <div class="w-10 h-10 rounded-lg bg-indigo-950/80 border border-indigo-700/50 flex items-center justify-center text-indigo-400 font-bold mb-4">
+            01
+          </div>
+          <h3 class="text-white font-bold text-base mb-2">Zero Hallucination Guarantee</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">
+            All script assertions, visual focus targets, and feature badges are strictly grounded in deterministic DOM inspection and genuine viewport captures.
+          </p>
+        </div>
+
+        <div class="bg-[#121417] border border-[#22252A] p-6 rounded-xl glow-hover transition-all">
+          <div class="w-10 h-10 rounded-lg bg-emerald-950/80 border border-emerald-700/50 flex items-center justify-center text-emerald-400 font-bold mb-4">
+            02
+          </div>
+          <h3 class="text-white font-bold text-base mb-2">Humanized Kinematics</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">
+            Mouse movements calculate Cubic Bezier trajectories with human motor noise and ease-out deceleration, avoiding rigid mechanical pointer behavior.
+          </p>
+        </div>
+
+        <div class="bg-[#121417] border border-[#22252A] p-6 rounded-xl glow-hover transition-all">
+          <div class="w-10 h-10 rounded-lg bg-amber-950/80 border border-amber-700/50 flex items-center justify-center text-amber-400 font-bold mb-4">
+            03
+          </div>
+          <h3 class="text-white font-bold text-base mb-2">Multi-Format Compositing</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">
+            Orchestrated via Remotion with declarative React timelines, supporting 16:9 YouTube video, 9:16 vertical reels, and lightweight animated preview GIFs.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: 5-STAGE PIPELINE DETAILS -->
+    <div id="tab-pipeline" class="tab-content hidden space-y-6">
+      <div class="bg-[#121417] border border-[#22252A] rounded-2xl p-6 md:p-8">
+        <h2 class="text-2xl font-bold text-white mb-3">The 5-Stage Automated Pipeline</h2>
+        <p class="text-gray-400 text-sm mb-8">
+          Click through each stage to examine its internal inputs, runtime procedures, and verifiable deliverables.
+        </p>
+
+        <!-- Stage Navigation Buttons -->
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-8">
+          <button onclick="showStage(1)" id="stage-btn-1" class="pipeline-step active p-4 rounded-xl border border-[#272A30] text-left transition-all">
+            <div class="text-xs text-indigo-400 font-mono font-semibold">STAGE 1</div>
+            <div class="text-white font-bold text-sm mt-1">Intent & Scripting</div>
+          </button>
+          <button onclick="showStage(2)" id="stage-btn-2" class="pipeline-step p-4 rounded-xl border border-[#272A30] text-left transition-all">
+            <div class="text-xs text-emerald-400 font-mono font-semibold">STAGE 2</div>
+            <div class="text-white font-bold text-sm mt-1">Capture & Motion</div>
+          </button>
+          <button onclick="showStage(3)" id="stage-btn-3" class="pipeline-step p-4 rounded-xl border border-[#272A30] text-left transition-all">
+            <div class="text-xs text-amber-400 font-mono font-semibold">STAGE 3</div>
+            <div class="text-white font-bold text-sm mt-1">Audio & Subtitles</div>
+          </button>
+          <button onclick="showStage(4)" id="stage-btn-4" class="pipeline-step p-4 rounded-xl border border-[#272A30] text-left transition-all">
+            <div class="text-xs text-cyan-400 font-mono font-semibold">STAGE 4</div>
+            <div class="text-white font-bold text-sm mt-1">Camera Physics</div>
+          </button>
+          <button onclick="showStage(5)" id="stage-btn-5" class="pipeline-step p-4 rounded-xl border border-[#272A30] text-left transition-all">
+            <div class="text-xs text-purple-400 font-mono font-semibold">STAGE 5</div>
+            <div class="text-white font-bold text-sm mt-1">Remotion Render</div>
+          </button>
+        </div>
+
+        <!-- STAGE DETAIL PANELS -->
+        <div id="stage-detail-1" class="stage-detail block bg-[#0D0F12] border border-[#1F2228] p-6 rounded-xl">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-bold text-indigo-400">Stage 1: Intent Discovery & LLM Script Synthesis</h3>
+            <span class="text-xs font-mono bg-indigo-950/60 text-indigo-300 border border-indigo-800/60 px-2.5 py-1 rounded">demoforge/capture/discover.py</span>
+          </div>
+          <p class="text-gray-300 text-sm mb-4 leading-relaxed">
+            A headless Playwright browser traverses the target URL (authenticated or public), parses the accessibility tree, interactive DOM landmarks (buttons, forms, links), and page copy. The LLM Director takes this sanitized inventory and produces a structured <code>DemoScriptSpec</code> with timed scenes and voiceover narration.
+          </p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+            <div class="bg-[#14161B] p-3.5 rounded-lg border border-[#262A33]">
+              <div class="text-gray-400 font-bold mb-1 uppercase">Inputs</div>
+              <ul class="text-gray-300 space-y-1">
+                <li>• Target URL (e.g. localhost, staging, hosted)</li>
+                <li>• Optional Auth Cookies / LocalStorage State</li>
+                <li>• User Goal Brief (e.g. "Feature Walkthrough")</li>
+              </ul>
+            </div>
+            <div class="bg-[#14161B] p-3.5 rounded-lg border border-[#262A33]">
+              <div class="text-gray-400 font-bold mb-1 uppercase">Deliverables</div>
+              <ul class="text-gray-300 space-y-1">
+                <li>• <code>inventory.json</code>: Landmarks, bounding boxes</li>
+                <li>• <code>script_spec.json</code>: Timed scenes, voiceover copy</li>
+                <li>• SSRF validation & Domain Authorization clearance</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div id="stage-detail-2" class="stage-detail hidden bg-[#0D0F12] border border-[#1F2228] p-6 rounded-xl">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-bold text-emerald-400">Stage 2: Session Capture & Humanized Interaction</h3>
+            <span class="text-xs font-mono bg-emerald-950/60 text-emerald-300 border border-emerald-800/60 px-2.5 py-1 rounded">demoforge/capture/human_cursor.py</span>
+          </div>
+          <p class="text-gray-300 text-sm mb-4 leading-relaxed">
+            The session runner boots a browser with responsive viewports (1920x1080 16:9 or 1080x1920 9:16). It simulates realistic interactions: moving the pointer along Cubic Bezier curves with micro-jitter, hovering over primary CTAs, filling sample text with natural keystroke cadence, and scrolling with decelerating inertia.
+          </p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+            <div class="bg-[#14161B] p-3.5 rounded-lg border border-[#262A33]">
+              <div class="text-gray-400 font-bold mb-1 uppercase">Motion Kinematics</div>
+              <ul class="text-gray-300 space-y-1">
+                <li>• $B(t)$ Cubic Bezier trajectory curve</li>
+                <li>• Sine ease-out velocity deceleration</li>
+                <li>• Decelerating trackpad scroll delta vectors</li>
+              </ul>
+            </div>
+            <div class="bg-[#14161B] p-3.5 rounded-lg border border-[#262A33]">
+              <div class="text-gray-400 font-bold mb-1 uppercase">Deliverables</div>
+              <ul class="text-gray-300 space-y-1">
+                <li>• High-resolution raw viewport captures (PNG/WebM)</li>
+                <li>• Synchronized interaction timestamps</li>
+                <li>• Interaction event coordinate trace</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div id="stage-detail-3" class="stage-detail hidden bg-[#0D0F12] border border-[#1F2228] p-6 rounded-xl">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-bold text-amber-400">Stage 3: Audio Synthesis & Word-Level Alignment</h3>
+            <span class="text-xs font-mono bg-amber-950/60 text-amber-300 border border-amber-800/60 px-2.5 py-1 rounded">demoforge/audio/</span>
+          </div>
+          <p class="text-gray-300 text-sm mb-4 leading-relaxed">
+            Natural speech synthesis converts the scene voiceover copy into studio-grade 48kHz audio stems using Kokoro-82M or ElevenLabs. A forced aligner (faster-whisper) extracts exact start and end millisecond timestamps for every individual spoken word, powering syllable-accurate karaoke subtitles.
+          </p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+            <div class="bg-[#14161B] p-3.5 rounded-lg border border-[#262A33]">
+              <div class="text-gray-400 font-bold mb-1 uppercase">Audio Engine</div>
+              <ul class="text-gray-300 space-y-1">
+                <li>• 48kHz 24-bit PCM WAV narration track</li>
+                <li>• Dynamic scene duration re-sync to voice</li>
+                <li>• Background score selection from brand tokens</li>
+              </ul>
+            </div>
+            <div class="bg-[#14161B] p-3.5 rounded-lg border border-[#262A33]">
+              <div class="text-gray-400 font-bold mb-1 uppercase">Deliverables</div>
+              <ul class="text-gray-300 space-y-1">
+                <li>• <code>narration.wav</code> clean voiceover stem</li>
+                <li>• <code>word_timestamps.json</code> word boundary track</li>
+                <li>• Formatted SRT / VTT subtitle tracks</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div id="stage-detail-4" class="stage-detail hidden bg-[#0D0F12] border border-[#1F2228] p-6 rounded-xl">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-bold text-cyan-400">Stage 4: Dynamic Camera Physics & Visual Polish</h3>
+            <span class="text-xs font-mono bg-cyan-950/60 text-cyan-300 border border-cyan-800/60 px-2.5 py-1 rounded">demo-video/src/scenes/</span>
+          </div>
+          <p class="text-gray-300 text-sm mb-4 leading-relaxed">
+            The director computes dynamic camera transforms centered directly on active interactions. Camera moves employ spring physics (stiffness: 120, damping: 14) with bounded zooms (1.12x - 1.25x). The footage is placed in a macOS browser frame with active URL bar, step chips, and animated cursor ripples.
+          </p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+            <div class="bg-[#14161B] p-3.5 rounded-lg border border-[#262A33]">
+              <div class="text-gray-400 font-bold mb-1 uppercase">Visual Grammar</div>
+              <ul class="text-gray-300 space-y-1">
+                <li>• Spring-physics pan & zoom on click targets</li>
+                <li>• macOS Safari / Chrome glassmorphism frame</li>
+                <li>• Kinetic badge callouts & animated progress track</li>
+              </ul>
+            </div>
+            <div class="bg-[#14161B] p-3.5 rounded-lg border border-[#262A33]">
+              <div class="text-gray-400 font-bold mb-1 uppercase">Deliverables</div>
+              <ul class="text-gray-300 space-y-1">
+                <li>• <code>render_props.json</code> Remotion composition input</li>
+                <li>• Frame-accurate timeline coordinates</li>
+                <li>• Safe-area alignment checks</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div id="stage-detail-5" class="stage-detail hidden bg-[#0D0F12] border border-[#1F2228] p-6 rounded-xl">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-bold text-purple-400">Stage 5: Remotion Render & Multi-Format Export</h3>
+            <span class="text-xs font-mono bg-purple-950/60 text-purple-300 border border-purple-800/60 px-2.5 py-1 rounded">demoforge/video/remotion_render.py</span>
+          </div>
+          <p class="text-gray-300 text-sm mb-4 leading-relaxed">
+            The Remotion CLI foreground engine renders the multi-scene composition frame-by-frame with GPU acceleration. Audio ducking sidechains background music down by -14dB during voiceover copy. The video is validated via ffprobe stream checks, null-decode integrity passes, and SHA-256 checksum hashing.
+          </p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+            <div class="bg-[#14161B] p-3.5 rounded-lg border border-[#262A33]">
+              <div class="text-gray-400 font-bold mb-1 uppercase">Integrity Gates</div>
+              <ul class="text-gray-300 space-y-1">
+                <li>• <code>ffprobe</code> frame count & resolution match</li>
+                <li>• <code>ffmpeg -f null -</code> zero-error full decode</li>
+                <li>• SHA-256 tamper-proof artifact fingerprinting</li>
+              </ul>
+            </div>
+            <div class="bg-[#14161B] p-3.5 rounded-lg border border-[#262A33]">
+              <div class="text-gray-400 font-bold mb-1 uppercase">Deliverables</div>
+              <ul class="text-gray-300 space-y-1">
+                <li>• <code>demo.mp4</code> (1920x1080 30fps landscape)</li>
+                <li>• <code>demo_vertical.mp4</code> (1080x1920 9:16 vertical)</li>
+                <li>• <code>demo_preview.gif</code> lightweight email teaser</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 3: LIVE BEZIER CURSOR SIMULATOR -->
+    <div id="tab-simulator" class="tab-content hidden space-y-6">
+      <div class="bg-[#121417] border border-[#22252A] rounded-2xl p-6 md:p-8">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+          <div>
+            <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+              Live Humanized Bezier Cursor Simulator
+            </h2>
+            <p class="text-gray-400 text-sm mt-1">
+              Click anywhere inside the canvas to trigger a natural, ease-out cubic Bezier mouse trajectory with simulated motor micro-jitter.
+            </p>
+          </div>
+          <div class="flex items-center gap-3">
+            <button onclick="triggerDemoPath()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-lg transition-colors shadow">
+              ▶ Run Demo Motion Path
+            </button>
+            <button onclick="resetCanvas()" class="px-4 py-2 bg-[#22252A] hover:bg-[#2C3036] text-gray-300 text-xs font-semibold rounded-lg transition-colors">
+              Clear Canvas
+            </button>
+          </div>
+        </div>
+
+        <!-- Simulator Canvas Area -->
+        <div class="relative bg-[#07080A] border border-[#1E2126] rounded-xl overflow-hidden shadow-2xl flex flex-col items-center">
+          <canvas id="simCanvas" width="960" height="480" class="cursor-crosshair max-w-full h-auto"></canvas>
+          <div class="absolute bottom-3 left-4 text-xs font-mono text-gray-400 bg-black/60 px-3 py-1.5 rounded border border-gray-800 pointer-events-none">
+            Click canvas to target • Current Formula: $B(t) = (1-t)^3 P_0 + 3(1-t)^2 t P_1 + 3(1-t) t^2 P_2 + t^3 P_3$
+          </div>
+        </div>
+
+        <!-- Physics Parameters -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
+          <div class="bg-[#0D0F12] p-4 rounded-xl border border-[#1F2228]">
+            <div class="text-xs text-gray-400 uppercase font-mono mb-1">Easing Profile</div>
+            <div class="text-white font-bold text-sm">Sine Ease-Out Decel</div>
+            <div class="text-xs text-indigo-400 mt-1">$t_{eased} = \sin(t \cdot \pi / 2)$</div>
+          </div>
+          <div class="bg-[#0D0F12] p-4 rounded-xl border border-[#1F2228]">
+            <div class="text-xs text-gray-400 uppercase font-mono mb-1">Arc Deviation Scale</div>
+            <div class="text-white font-bold text-sm">0.25 Randomized Vector</div>
+            <div class="text-xs text-emerald-400 mt-1">Perpendicular displacement</div>
+          </div>
+          <div class="bg-[#0D0F12] p-4 rounded-xl border border-[#1F2228]">
+            <div class="text-xs text-gray-400 uppercase font-mono mb-1">Hand Motor Jitter</div>
+            <div class="text-white font-bold text-sm">&plusmn; 1.2px Noise</div>
+            <div class="text-xs text-amber-400 mt-1">Zero jitter at endpoints</div>
+          </div>
+          <div class="bg-[#0D0F12] p-4 rounded-xl border border-[#1F2228]">
+            <div class="text-xs text-gray-400 uppercase font-mono mb-1">Step Count</div>
+            <div class="text-white font-bold text-sm">40 Frames per Leap</div>
+            <div class="text-xs text-cyan-400 mt-1">450ms movement budget</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: DATA CONTRACTS -->
+    <div id="tab-contracts" class="tab-content hidden space-y-6">
+      <div class="bg-[#121417] border border-[#22252A] rounded-2xl p-6 md:p-8">
+        <h2 class="text-2xl font-bold text-white mb-2">Standardized Pydantic Data Contracts</h2>
+        <p class="text-gray-400 text-sm mb-6">
+          Immutable contracts defined in <code>demoforge/schemas/pipeline_spec.py</code> governing every stage of the video pipeline.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Contract 1 -->
+          <div class="bg-[#0A0B0D] p-5 rounded-xl border border-[#1F2228]">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-sm font-bold text-indigo-400 font-mono">DemoScriptSpec</h3>
+              <span class="text-xs text-gray-500 font-mono">Root Orchestration</span>
+            </div>
+            <pre class="text-xs text-gray-300 font-mono overflow-x-auto p-3 bg-[#111317] rounded custom-scroll">
+class DemoScriptSpec(BaseModel):
+    project_id: str
+    target_url: str
+    title: str
+    tagline: str
+    aspect_ratio: Literal["16:9", "9:16", "1:1"] = "16:9"
+    fps: int = 30
+    theme_accent_color: str = "#6366F1"
+    background_music_preset: str = "corporate_ambient"
+    scenes: list[SceneSpec]
+            </pre>
+          </div>
+
+          <!-- Contract 2 -->
+          <div class="bg-[#0A0B0D] p-5 rounded-xl border border-[#1F2228]">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-sm font-bold text-emerald-400 font-mono">SceneSpec</h3>
+              <span class="text-xs text-gray-500 font-mono">Timed Segment</span>
+            </div>
+            <pre class="text-xs text-gray-300 font-mono overflow-x-auto p-3 bg-[#111317] rounded custom-scroll">
+class SceneSpec(BaseModel):
+    scene_id: str
+    title: str
+    voiceover_script: str
+    interactions: list[InteractionStep]
+    camera_focus: ElementBoundingBox | None
+    camera_zoom: float = 1.2
+    badge_label: str | None
+    word_timestamps: list[WordTimestamp]
+    duration_frames: int = 210
+            </pre>
+          </div>
+
+          <!-- Contract 3 -->
+          <div class="bg-[#0A0B0D] p-5 rounded-xl border border-[#1F2228]">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-sm font-bold text-amber-400 font-mono">InteractionStep</h3>
+              <span class="text-xs text-gray-500 font-mono">Action Primitive</span>
+            </div>
+            <pre class="text-xs text-gray-300 font-mono overflow-x-auto p-3 bg-[#111317] rounded custom-scroll">
+class InteractionStep(BaseModel):
+    action_type: Literal["click", "type", "hover", "scroll", "wait"]
+    target_selector: str
+    input_value: str | None = None
+    scroll_delta_y: int | None = None
+    target_bounds: ElementBoundingBox | None = None
+    duration_ms: int = 1000
+            </pre>
+          </div>
+
+          <!-- Contract 4 -->
+          <div class="bg-[#0A0B0D] p-5 rounded-xl border border-[#1F2228]">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-sm font-bold text-cyan-400 font-mono">JobSubmissionRequest</h3>
+              <span class="text-xs text-gray-500 font-mono">REST API Ingestion</span>
+            </div>
+            <pre class="text-xs text-gray-300 font-mono overflow-x-auto p-3 bg-[#111317] rounded custom-scroll">
+class JobSubmissionRequest(BaseModel):
+    target_url: str
+    goal: str | None = "Product Feature Walkthrough"
+    aspect_ratio: Literal["16:9", "9:16"] = "16:9"
+    auth_cookies: dict[str, str] | None = None
+    custom_headers: dict[str, str] | None = None
+    voice_id: str = "natural_en_male_1"
+            </pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: DEPLOYMENT TOPOLOGY -->
+    <div id="tab-deployment" class="tab-content hidden space-y-6">
+      <div class="bg-[#121417] border border-[#22252A] rounded-2xl p-6 md:p-8">
+        <h2 class="text-2xl font-bold text-white mb-2">Self-Hosted OSS vs. Multi-Tenant Cloud SaaS</h2>
+        <p class="text-gray-400 text-sm mb-6">
+          The pipeline runs identically in a single-box <code>docker-compose.yml</code> setup or across horizontally auto-scaling Kubernetes worker pods.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div class="bg-[#0D0F12] border border-[#1F2228] p-6 rounded-xl">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="px-2.5 py-1 text-xs font-mono font-bold bg-indigo-950 text-indigo-400 border border-indigo-800 rounded">TOPOLOGY A</span>
+              <h3 class="text-white font-bold text-lg">Self-Hosted OSS Core</h3>
+            </div>
+            <p class="text-xs text-gray-400 mb-4 leading-relaxed">
+              Ideal for private enterprise VPCs, local testing, and on-premises deployment without external SaaS dependencies.
+            </p>
+            <ul class="text-xs text-gray-300 space-y-2 font-mono">
+              <li class="flex items-center gap-2"><span class="text-emerald-400">✔</span> Single <code>docker-compose.yml</code> orchestration</li>
+              <li class="flex items-center gap-2"><span class="text-emerald-400">✔</span> MinIO local S3-compatible bucket</li>
+              <li class="flex items-center gap-2"><span class="text-emerald-400">✔</span> Local Kokoro-82M TTS inference node</li>
+              <li class="flex items-center gap-2"><span class="text-emerald-400">✔</span> Xvfb virtual frame buffer with CPU/GPU mapping</li>
+            </ul>
+          </div>
+
+          <div class="bg-[#0D0F12] border border-[#1F2228] p-6 rounded-xl">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="px-2.5 py-1 text-xs font-mono font-bold bg-emerald-950 text-emerald-400 border border-emerald-800 rounded">TOPOLOGY B</span>
+              <h3 class="text-white font-bold text-lg">Multi-Tenant Cloud SaaS</h3>
+            </div>
+            <p class="text-xs text-gray-400 mb-4 leading-relaxed">
+              Engineered for high concurrency, multi-user job isolation, global CDN delivery, and auto-scaled rendering pools.
+            </p>
+            <ul class="text-xs text-gray-300 space-y-2 font-mono">
+              <li class="flex items-center gap-2"><span class="text-emerald-400">✔</span> AWS ECS / Kubernetes GPU Render Workers</li>
+              <li class="flex items-center gap-2"><span class="text-emerald-400">✔</span> AWS S3 + CloudFront signed download distribution</li>
+              <li class="flex items-center gap-2"><span class="text-emerald-400">✔</span> ElevenLabs Turbo v2 API integration</li>
+              <li class="flex items-center gap-2"><span class="text-emerald-400">✔</span> Dedicated Egress Proxy blocking private IP subnets (SSRF)</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Security / SSRF Box -->
+        <div class="bg-indigo-950/20 border border-indigo-900/50 p-5 rounded-xl">
+          <h4 class="text-sm font-bold text-indigo-400 mb-2 flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            Security & Egress Isolation Policies
+          </h4>
+          <p class="text-xs text-gray-300 leading-relaxed">
+            Crawlers operate in non-root containers with restricted network namespaces. Outbound network requests reject AWS/GCP cloud metadata endpoints (<code>169.254.169.254</code>) and private LAN CIDRs (<code>10.0.0.0/8</code>, <code>172.16.0.0/12</code>, <code>192.168.0.0/16</code>) to ensure secure multi-tenant execution.
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="max-w-7xl mx-auto mt-12 pt-6 border-t border-[#22252A] text-center text-xs text-gray-500 font-mono">
+    DemoForge &copy; 2026 • Grounded, source-linked product demo videos • Tested & Verified
+  </footer>
+
+  <!-- INTERACTIVE JAVASCRIPT LOGIC -->
+  <script>
+    // Tab Switching Logic
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('block'));
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-indigo-600', 'text-white');
+        btn.classList.add('text-gray-400');
+      });
+
+      const activeTab = document.getElementById('tab-' + tabId);
+      if (activeTab) {
+        activeTab.classList.remove('hidden');
+        activeTab.classList.add('block');
+      }
+      const activeBtn = document.getElementById('tab-btn-' + tabId);
+      if (activeBtn) {
+        activeBtn.classList.add('bg-indigo-600', 'text-white');
+        activeBtn.classList.remove('text-gray-400');
+      }
+
+      if (tabId === 'simulator') {
+        initCanvas();
+      }
+    }
+
+    // Stage Details Switching Logic
+    function showStage(stageNum) {
+      document.querySelectorAll('.stage-detail').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.stage-detail').forEach(el => el.classList.remove('block'));
+      document.querySelectorAll('.pipeline-step').forEach(btn => btn.classList.remove('active'));
+
+      const detail = document.getElementById('stage-detail-' + stageNum);
+      if (detail) {
+        detail.classList.remove('hidden');
+        detail.classList.add('block');
+      }
+      const btn = document.getElementById('stage-btn-' + stageNum);
+      if (btn) {
+        btn.classList.add('active');
+      }
+    }
+
+    // Live Bezier Cursor Simulation Canvas
+    let canvas, ctx;
+    let currentPoint = { x: 140, y: 380 };
+    let isAnimating = false;
+
+    function initCanvas() {
+      canvas = document.getElementById('simCanvas');
+      if (!canvas) return;
+      ctx = canvas.getContext('2d');
+      drawCurrentState();
+
+      canvas.onclick = function(e) {
+        if (isAnimating) return;
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        const targetX = (e.clientX - rect.left) * scaleX;
+        const targetY = (e.clientY - rect.top) * scaleY;
+        animateTo(targetX, targetY);
+      };
+    }
+
+    function drawGrid() {
+      ctx.fillStyle = '#07080A';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.strokeStyle = '#14171D';
+      ctx.lineWidth = 1;
+      for (let x = 0; x < canvas.width; x += 40) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+        ctx.stroke();
+      }
+      for (let y = 0; y < canvas.height; y += 40) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+      }
+    }
+
+    function drawCurrentState() {
+      drawGrid();
+      // Draw Cursor at current point
+      drawCursor(currentPoint.x, currentPoint.y);
+    }
+
+    function drawCursor(x, y, isClicking = false) {
+      ctx.save();
+      // Drop Shadow
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
+      ctx.shadowBlur = 8;
+      ctx.shadowOffsetX = 2;
+      ctx.shadowOffsetY = 4;
+
+      // macOS cursor arrow
+      ctx.fillStyle = '#FFFFFF';
+      ctx.strokeStyle = '#1E1E1E';
+      ctx.lineWidth = 1.5;
+
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x, y + 18);
+      ctx.lineTo(x + 5, y + 14);
+      ctx.lineTo(x + 9, y + 21);
+      ctx.lineTo(x + 12, y + 20);
+      ctx.lineTo(x + 8, y + 13);
+      ctx.lineTo(x + 14, y + 13);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      if (isClicking) {
+        // Ripple effect
+        ctx.strokeStyle = '#10B981';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(x, y, 16, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    function animateTo(targetX, targetY) {
+      if (isAnimating) return;
+      isAnimating = true;
+
+      const start = { ...currentPoint };
+      const end = { x: targetX, y: targetY };
+      const dx = end.x - start.x;
+      const dy = end.y - start.y;
+      const distance = Math.hypot(dx, dy);
+
+      const perpX = -dy / (distance || 1);
+      const perpY = dx / (distance || 1);
+      const dev1 = (Math.random() - 0.5) * distance * 0.35;
+      const dev2 = (Math.random() - 0.5) * distance * 0.35;
+
+      const p1 = { x: start.x + dx * 0.25 + perpX * dev1, y: start.y + dy * 0.25 + perpY * dev1 };
+      const p2 = { x: start.x + dx * 0.75 + perpX * dev2, y: start.y + dy * 0.75 + perpY * dev2 };
+
+      const totalSteps = 40;
+      let step = 0;
+      const trajectory = [];
+
+      const timer = setInterval(() => {
+        step++;
+        const t = step / totalSteps;
+        const easedT = Math.sin(t * Math.PI / 2); // Ease-out deceleration
+        const u = 1 - easedT;
+
+        const x = (u**3 * start.x) + (3 * u**2 * easedT * p1.x) + (3 * u * easedT**2 * p2.x) + (easedT**3 * end.x);
+        const y = (u**3 * start.y) + (3 * u**2 * easedT * p1.y) + (3 * u * easedT**2 * p2.y) + (easedT**3 * end.y);
+        const jitter = (step > 0 && step < totalSteps) ? (Math.random() - 0.5) * 1.5 : 0;
+
+        trajectory.push({ x: x + jitter, y: y + jitter });
+        currentPoint = { x: x + jitter, y: y + jitter };
+
+        drawGrid();
+
+        // Draw trajectory trail
+        ctx.strokeStyle = 'rgba(99, 102, 241, 0.4)';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath();
+        ctx.moveTo(start.x, start.y);
+        for (let pt of trajectory) {
+          ctx.lineTo(pt.x, pt.y);
+        }
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Draw current cursor
+        drawCursor(currentPoint.x, currentPoint.y, step === totalSteps);
+
+        if (step >= totalSteps) {
+          clearInterval(timer);
+          isAnimating = false;
+        }
+      }, 14);
+    }
+
+    function triggerDemoPath() {
+      const targets = [
+        { x: 260, y: 120 },
+        { x: 780, y: 220 },
+        { x: 500, y: 380 },
+        { x: 840, y: 140 },
+        { x: 180, y: 280 }
+      ];
+      const pick = targets[Math.floor(Math.random() * targets.length)];
+      animateTo(pick.x, pick.y);
+    }
+
+    function resetCanvas() {
+      currentPoint = { x: 140, y: 380 };
+      drawCurrentState();
+    }
+
+    window.onload = function() {
+      initCanvas();
+    };
+  </script>
+</body>
+</html>
