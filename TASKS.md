@@ -62,6 +62,10 @@ Do not install hosted infrastructure or start deck/logo work to complete this mi
 - [x] **TASK-109**: Connected Recorded Demo workspace, backend service and interactive studio (depends 108, 083).
   - Completed on: 2026-09-17. Asynchronous daemon service `RecordedDemoService` (`demoforge/api/recorded_service.py`), HTTP endpoints (`POST /api/recorded-demo`, `GET /api/recorded-demo/{id}`, `GET /api/recorded-demo/{id}/video` in `demoforge/api/server.py`), and frontend studio (`frontend/src/recorded/RecordedDemoStudio.tsx`) with URL entry, live 5-step pipeline progression rail, inline video playback, and MP4 download.
   - Verified: `tests/api/test_http.py` and `tests/api/test_recorded_service.py` passed; `npm --prefix frontend run build` built cleanly in 2.19s with zero errors; operational skill documented in `.agents/skills/automated-recorded-demo.md`.
+
+- [x] **TASK-112**: Generalized automated pipeline architecture, data contracts, and humanized cursor engine (depends 108, 109).
+  - Completed on: 2026-09-18. Designed decoupled 5-stage automated pipeline (`docs/GENERALIZED_PIPELINE_ARCHITECTURE.md`), standardized pipeline schemas (`demoforge/schemas/pipeline_spec.py`), and implemented humanized cubic Bezier cursor trajectories and smooth deceleration scroll physics (`demoforge/capture/human_cursor.py`).
+  - Verified: `tests/schemas/test_pipeline_spec.py` and `tests/capture/test_human_cursor.py` passed cleanly (7 tests); full test suite (368 passed, 3 skipped); Ruff clean.
 - [ ] **TASK-110**: Reference-directed shared preview/export (depends 108, 082).
   - Review both supplied Google reference links from accessible footage; approve 10-15 second sample.
     Renderer/license decision first; real UI with editable camera/cursor/text, no generative UI restyle.
