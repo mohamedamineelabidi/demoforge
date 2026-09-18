@@ -131,3 +131,4 @@ The system is decoupled into an **Asynchronous Control Plane** (FastAPI, Redis J
 - **Remotion Compositor**: Renders the complete React composition with GPU acceleration.
 - **Audio Ducking**: Merges voiceover and background score, automatically ducking music by -14dB during speech.
 - **Multi-Format Presets**: Outputs 16:9 Landscape MP4, 9:16 Vertical MP4, and animated preview GIF.
+
